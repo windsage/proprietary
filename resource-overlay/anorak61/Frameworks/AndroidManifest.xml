@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+     All rights reserved.
+     Confidential and Proprietary - Qualcomm Technologies, Inc.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="android.overlay.target">
+    <overlay android:targetPackage="android" android:isStatic="true" android:priority="500"/>
+    <application android:hasCode="false" />
+</manifest>

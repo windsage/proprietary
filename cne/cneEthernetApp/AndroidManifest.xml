@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+  All rights reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+ -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="vendor.qti.data.cneEthernetService"
+    android:sharedUserId="com.qualcomm.qti.qtidataservices"
+    android:versionCode="14"
+    android:versionName="14.1" >
+    <uses-sdk android:minSdkVersion="28" android:targetSdkVersion="33" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <application android:allowBackup="false"
+                 android:label="cneEthernetService"
+                 android:persistent="true"
+                 android:directBootAware="true"
+                 android:defaultToDeviceProtectedStorage="true"
+                 android:process=".qtidataservices">
+                 <receiver android:name=".BootCompleteReceiver"
+                           android:enabled="true"
+                           android:exported="true"
+                           android:singleUser="true">
+                     <intent-filter>
+                         <action android:name="android.intent.action.BOOT_COMPLETED" />
+                         <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                     </intent-filter>
+                 </receiver>
+    <service
+        android:name=".EthernetRequestHandler"
+        android:exported="true"
+        android:singleUser="true"
+        android:enabled="true">
+    </service>
+    </application>
+
+</manifest>

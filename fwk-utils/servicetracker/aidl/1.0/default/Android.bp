@@ -1,0 +1,43 @@
+cc_library_shared {
+    name: "vendor.qti.hardware.servicetrackeraidl-impl",
+    relative_install_path: "hw",
+    proprietary: true,
+    srcs: [
+        "Servicetracker.cpp",
+    ],
+    header_libs: [
+        "libcutils_headers",
+    ],
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+        "libhardware",
+        "libbase",
+        "liblog",
+        "libcutils",
+        "libutils",
+        "vendor.qti.hardware.servicetrackeraidl-V1-ndk",
+    ],
+}
+
+cc_binary {
+    name: "vendor.qti.hardware.servicetrackeraidl-service",
+    init_rc: ["vendor.qti.hardware.servicetrackeraidl-service.rc"],
+    vintf_fragments: ["vendor.qti.hardware.servicetrackeraidl-service.xml"],
+    vendor: true,
+    relative_install_path: "hw",
+    srcs: [
+        "service.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libbase",
+        "libdl",
+        "libhardware",
+        "libutils",
+        "libbinder_ndk",
+        "vendor.qti.hardware.servicetrackeraidl-V1-ndk",
+        "vendor.qti.hardware.servicetrackeraidl-impl",
+    ],
+}

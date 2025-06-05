@@ -1,0 +1,24 @@
+cc_library_headers {
+    name: "libxml_headers",
+    export_include_dirs: ["xmllib"],
+    vendor: true,
+    owner: "qti",
+    proprietary: true,
+    host_supported: true,
+}
+
+cc_library_headers {
+    name: "libshsc_headers",
+    export_include_dirs: ["shsusrd"],
+    vendor: true,
+    owner: "qti",
+    proprietary: true,
+}
+
+cc_library_headers {
+    name: "libnicm_headers",
+    export_include_dirs: ["nicm"],
+    vendor: true,
+    owner: "qti",
+    proprietary: true,
+}

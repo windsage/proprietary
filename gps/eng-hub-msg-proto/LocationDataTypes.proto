@@ -1,0 +1,2820 @@
+/*
+ * LocationDataTypes.proto
+ * Common location data types definitions, enums, structs
+ *
+ * Copyright (c) 2019, 2022-2023 Qualcomm Technologies, Inc.
+ * All Rights Reserved.
+ * Confidential and Proprietary - Qualcomm Technologies, Inc.
+ */
+
+syntax = "proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+// ============================================================================
+// Proto file versioning
+// ============================================================================
+enum PBLocationDataTypesVersion {
+    PB_LOCDATATYPES_VER_INVALID = 0;
+    // Major changes - compatibility breakage. Bump the first byte of version i.e. 1.x to 2.0
+    PB_LOCDATATYPES_VER_MAJOR = 1;
+    // Minor - New features / API addition. Bump the last byte of version i.e. x.8 to x.9
+    // Minor version 7: Add support for 3 new DRE cues.
+    PB_LOCDATATYPES_VER_MINOR = 7;
+}
+
+// ============================================================================
+// Enumerations and Masks
+// ============================================================================
+
+// Location position mode
+enum PBLocPositionMode {
+    PB_LOC_POSITION_MODE_STANDALONE = 0;
+    PB_LOC_POSITION_MODE_MS_BASED   = 1;
+    PB_LOC_POSITION_MODE_MS_ASSISTED = 2;
+    PB_LOC_POSITION_MODE_RESERVED_1 = 3;
+    PB_LOC_POSITION_MODE_RESERVED_2 = 4;
+    PB_LOC_POSITION_MODE_RESERVED_3 = 5;
+    PB_LOC_POSITION_MODE_RESERVED_4 = 6;
+    PB_LOC_POSITION_MODE_RESERVED_5 = 7;
+}
+
+// recurrence mode for GPS operation.
+enum PBLocGpsPositionRecurrence {
+    // Receive GPS fixes on a recurring basis at a specified period.
+    PB_LOC_GPS_POSITION_RECURRENCE_PERIODIC = 0;
+    // Request a single shot GPS fix.
+    PB_LOC_GPS_POSITION_RECURRENCE_SINGLE   = 1;
+}
+
+enum PBLocSessionStatus {
+    PB_LOC_SESS_SUCCESS        = 0;
+    PB_LOC_SESS_INTERMEDIATE   = 1;
+    PB_LOC_SESS_FAILURE        = 2;
+}
+
+enum PBLocPosTechMask {
+    PB_LOC_POS_TECH_MASK_DEFAULT                    = 0;
+    PB_LOC_POS_TECH_MASK_SATELLITE                  = 1;
+    PB_LOC_POS_TECH_MASK_CELLID                     = 2;
+    PB_LOC_POS_TECH_MASK_WIFI                       = 4;
+    PB_LOC_POS_TECH_MASK_SENSORS                    = 8;
+    PB_LOC_POS_TECH_MASK_REFERENCE_LOCATION         = 16;
+    PB_LOC_POS_TECH_MASK_INJECTED_COARSE_POSITION   = 32;
+    PB_LOC_POS_TECH_MASK_AFLT                       = 64;
+    PB_LOC_POS_TECH_MASK_HYBRID                     = 128;
+    PB_LOC_POS_TECH_MASK_PPE                        = 256;
+}
+
+/** Spoof mask in PBLocGpsLocation */
+enum PBLocGpsSpoofMask {
+    PB_LOC_GPS_LOCATION_NONE_SPOOFED            = 0;
+    PB_LOC_GPS_LOCATION_POSITION_SPOOFED        = 1;
+    PB_LOC_GPS_LOCATION_TIME_SPOOFED            = 2;
+    PB_LOC_GPS_LOCATION_NAVIGATION_DATA_SPOOFED = 4;
+}
+
+/** Note: GpsLocationExtendedFlags cannot be put into protobuf
+    enum, since the flags are 64bit and enum is 32bit integer. So
+    splitting into two enums to handle full 64 bit.
+    PBGpsLocationExtendedFlagsLower32 & PBGpsLocationExtendedFlagsUpper32
+    When assigning flags for upper 32bit, shift left value of
+    PBGpsLocationExtendedFlagsUpper32 by 31 and assign to flag */
+enum PBGpsLocationExtendedFlagsLower32 {
+    PB_GPS_LOCATION_EXTENDED_LOWER32_INVALID            = 0;
+    /** GpsLocationExtended has valid pdop, hdop, vdop. */
+    PB_GPS_LOCATION_EXTENDED_HAS_DOP                    = 1;
+    /** GpsLocationExtended has valid altitude
+        mean sea level. */
+    PB_GPS_LOCATION_EXTENDED_HAS_ALTITUDE_MEAN_SEA_LEVEL = 2;
+    /** UlpLocation has valid magnetic deviation. */
+    PB_GPS_LOCATION_EXTENDED_HAS_MAG_DEV                = 4;
+    /** UlpLocation has valid mode indicator. */
+    PB_GPS_LOCATION_EXTENDED_HAS_MODE_IND               = 8;
+    /** GpsLocationExtended has valid vertical
+        uncertainty */
+    PB_GPS_LOCATION_EXTENDED_HAS_VERT_UNC               = 16;
+    /** GpsLocationExtended has valid speed uncertainty */
+    PB_GPS_LOCATION_EXTENDED_HAS_SPEED_UNC              = 32;
+    /** GpsLocationExtended has valid heading uncertainty */
+    PB_GPS_LOCATION_EXTENDED_HAS_BEARING_UNC            = 64;
+    /** GpsLocationExtended has valid horizontal
+        reliability */
+    PB_GPS_LOCATION_EXTENDED_HAS_HOR_RELIABILITY        = 128;
+    /** GpsLocationExtended has valid vertical
+        reliability */
+    PB_GPS_LOCATION_EXTENDED_HAS_VERT_RELIABILITY       = 256;
+    /** GpsLocationExtended has valid Horizontal
+        Elliptical Uncertainty (Semi-Major Axis) */
+    PB_GPS_LOCATION_EXTENDED_HAS_HOR_ELIP_UNC_MAJOR     = 512;
+    /** GpsLocationExtended has valid Horizontal
+        Elliptical Uncertainty (Semi-Minor Axis) */
+    PB_GPS_LOCATION_EXTENDED_HAS_HOR_ELIP_UNC_MINOR     = 1024;
+    /** GpsLocationExtended has valid Elliptical
+        Horizontal Uncertainty Azimuth */
+    PB_GPS_LOCATION_EXTENDED_HAS_HOR_ELIP_UNC_AZIMUTH   = 2048;
+    /** GpsLocationExtended has valid gnss sv used in
+        position data */
+    PB_GPS_LOCATION_EXTENDED_HAS_GNSS_SV_USED_DATA      = 4096;
+    /** GpsLocationExtended has valid navSolutionMask */
+    PB_GPS_LOCATION_EXTENDED_HAS_NAV_SOLUTION_MASK      = 8192;
+    /** GpsLocationExtended has valid LocPosTechMask */
+    PB_GPS_LOCATION_EXTENDED_HAS_POS_TECH_MASK          = 16384;
+    /** GpsLocationExtended has valid LocSvInfoSource */
+    PB_GPS_LOCATION_EXTENDED_HAS_SV_SOURCE_INFO         = 32768;
+    /** GpsLocationExtended has valid position
+        dynamics data */
+    PB_GPS_LOCATION_EXTENDED_HAS_POS_DYNAMICS_DATA      = 65536;
+    /** GpsLocationExtended has GPS Time */
+    PB_GPS_LOCATION_EXTENDED_HAS_GPS_TIME               = 131072;
+    /** GpsLocationExtended has Extended Dilution of
+        Precision */
+    PB_GPS_LOCATION_EXTENDED_HAS_EXT_DOP                = 262144;
+    /** GpsLocationExtended has North standard
+        deviation */
+    PB_GPS_LOCATION_EXTENDED_HAS_NORTH_STD_DEV          = 524288;
+    /** GpsLocationExtended has East standard deviation*/
+    PB_GPS_LOCATION_EXTENDED_HAS_EAST_STD_DEV           = 1048576;
+    /** GpsLocationExtended has North Velocity */
+    PB_GPS_LOCATION_EXTENDED_HAS_NORTH_VEL              = 2097152;
+    /** GpsLocationExtended has East Velocity */
+    PB_GPS_LOCATION_EXTENDED_HAS_EAST_VEL               = 4194304;
+    /** GpsLocationExtended has up Velocity */
+    PB_GPS_LOCATION_EXTENDED_HAS_UP_VEL                 = 8388608;
+    /** GpsLocationExtended has North Velocity Uncertainty */
+    PB_GPS_LOCATION_EXTENDED_HAS_NORTH_VEL_UNC          = 16777216;
+    /** GpsLocationExtended has East Velocity Uncertainty */
+    PB_GPS_LOCATION_EXTENDED_HAS_EAST_VEL_UNC           = 33554432;
+    /** GpsLocationExtended has up Velocity Uncertainty */
+    PB_GPS_LOCATION_EXTENDED_HAS_UP_VEL_UNC             = 67108864;
+    /** GpsLocationExtended has Clock Bias */
+    PB_GPS_LOCATION_EXTENDED_HAS_CLOCK_BIAS             = 134217728;
+    /** GpsLocationExtended has Clock Bias std deviation*/
+    PB_GPS_LOCATION_EXTENDED_HAS_CLOCK_BIAS_STD_DEV     = 268435456;
+    /** GpsLocationExtended has Clock drift*/
+    PB_GPS_LOCATION_EXTENDED_HAS_CLOCK_DRIFT            = 536870912;
+    /** GpsLocationExtended has Clock drift std deviation**/
+    PB_GPS_LOCATION_EXTENDED_HAS_CLOCK_DRIFT_STD_DEV    = 1073741824;
+}
+
+/** GPS_LOCATION_EXTENDED_HAS_LEAP_SECONDS is 0x80000000, while
+    PB_GPS_LOCATION_EXTENDED_HAS_LEAP_SECONDS is 1. Shift left 1
+    by 31.
+    1 << 31 = 2147483648  (0x80000000). Similarly for other flags.
+    16 <<31 = 34359738368 (0x800000000) */
+enum PBGpsLocationExtendedFlagsUpper32 {
+    PB_GPS_LOCATION_EXTENDED_UPPER32_INVALID            = 0;
+    /** GpsLocationExtended has leap seconds **/
+    PB_GPS_LOCATION_EXTENDED_HAS_LEAP_SECONDS           = 1;
+    /** GpsLocationExtended has time uncertainty **/
+    PB_GPS_LOCATION_EXTENDED_HAS_TIME_UNC               = 2;
+    /** GpsLocationExtended has heading rate  **/
+    PB_GPS_LOCATION_EXTENDED_HAS_HEADING_RATE           = 4;
+    /** GpsLocationExtended has sensor calibration confidence */
+    PB_GPS_LOCATION_EXTENDED_HAS_CALIBRATION_CONFIDENCE = 8;
+    /** GpsLocationExtended has sensor calibration status */
+    PB_GPS_LOCATION_EXTENDED_HAS_CALIBRATION_STATUS     = 16;
+    /** GpsLocationExtended has multiband signals  **/
+    PB_GPS_LOCATION_EXTENDED_HAS_MULTIBAND              = 32;
+    /** GpsLocationExtended has the engine type that produced this
+        position, the bit mask will only be set when there are two
+        or more position engines running in the system */
+    PB_GPS_LOCATION_EXTENDED_HAS_OUTPUT_ENG_TYPE        = 64;
+    /** GpsLocationExtended has the engine mask that indicates
+        the set of engines contribute to the fix. */
+    PB_GPS_LOCATION_EXTENDED_HAS_OUTPUT_ENG_MASK        = 128;
+    /** GpsLocationExtended has dgnss correction source */
+    PB_GPS_LOCATION_EXTENDED_HAS_DGNSS_CORRECTION_SOURCE_TYPE = 256;
+    /** GpsLocationExtended has dgnss correction source ID */
+    PB_GPS_LOCATION_EXTENDED_HAS_DGNSS_CORRECTION_SOURCE_ID = 512;
+    /** GpsLocationExtended has dgnss constellation usage   */
+    PB_GPS_LOCATION_EXTENDED_HAS_DGNSS_CONSTELLATION_USAGE  = 1024;
+    /** GpsLocationExtended has dgnss ref station Id */
+    PB_GPS_LOCATION_EXTENDED_HAS_DGNSS_REF_STATION_ID       = 2048;
+    /** GpsLocationExtended has dgnss data age */
+    PB_GPS_LOCATION_EXTENDED_HAS_DGNSS_DATA_AGE             = 4096;
+}
+
+/** Flags to indicate which values are valid in a PBLocGpsLocation. */
+enum PBLocGpsLocationFlags {
+    PB_LOC_GPS_LOCATION_FLAGS_INVALID   = 0;
+    /** LocGpsLocation has valid latitude and longitude. */
+    PB_LOC_GPS_LOCATION_HAS_LAT_LONG    = 1;
+    /** LocGpsLocation has valid altitude. */
+    PB_LOC_GPS_LOCATION_HAS_ALTITUDE    = 2;
+    /** LocGpsLocation has valid speed. */
+    PB_LOC_GPS_LOCATION_HAS_SPEED       = 4;
+    /** LocGpsLocation has valid bearing. */
+    PB_LOC_GPS_LOCATION_HAS_BEARING     = 8;
+    /** LocGpsLocation has valid accuracy. */
+    PB_LOC_GPS_LOCATION_HAS_ACCURACY    = 16;
+    /** LocGpsLocation has valid vertical uncertainity */
+    PB_LOC_GPS_LOCATION_HAS_VERT_UNCERTAINITY = 64;
+    /** LocGpsLocation has valid spoof mask */
+    PB_LOC_GPS_LOCATION_HAS_SPOOF_MASK        = 128;
+    /** LocGpsLocation has valid speed accuracy */
+    PB_LOC_GPS_LOCATION_HAS_SPEED_ACCURACY    = 256;
+    /** LocGpsLocation has valid bearing accuracy */
+    PB_LOC_GPS_LOCATION_HAS_BEARING_ACCURACY  = 512;
+}
+
+enum PBGnssSvType {
+    PB_GNSS_SV_TYPE_UNKNOWN = 0;
+    PB_GNSS_SV_TYPE_GPS     = 1;
+    PB_GNSS_SV_TYPE_SBAS    = 2;
+    PB_GNSS_SV_TYPE_GLONASS = 3;
+    PB_GNSS_SV_TYPE_QZSS    = 4;
+    PB_GNSS_SV_TYPE_BEIDOU  = 5;
+    PB_GNSS_SV_TYPE_GALILEO = 6;
+    PB_GNSS_SV_TYPE_NAVIC   = 7;
+}
+
+enum PBGnssSvOptionsMask{
+    PB_GNSS_SV_OPTIONS_INVALID                     = 0;
+    PB_GNSS_SV_OPTIONS_HAS_EPHEMER_BIT             = 1;
+    PB_GNSS_SV_OPTIONS_HAS_ALMANAC_BIT             = 2;
+    PB_GNSS_SV_OPTIONS_USED_IN_FIX_BIT             = 4;
+    PB_GNSS_SV_OPTIONS_HAS_CARRIER_FREQUENCY_BIT   = 8;
+    PB_GNSS_SV_OPTIONS_HAS_GNSS_SIGNAL_TYPE_BIT    = 16;
+}
+
+enum PBGnssPowerMode {
+    PB_GNSS_POWER_MODE_INVALID = 0;
+    /* Improved Accuracy Mode */
+    PB_GNSS_POWER_MODE_M1   = 1;
+    /* Normal Mode */
+    PB_GNSS_POWER_MODE_M2   = 2;
+    /* Background Modes */
+    PB_GNSS_POWER_MODE_M3   = 3;
+    PB_GNSS_POWER_MODE_M4   = 4;
+    PB_GNSS_POWER_MODE_M5   = 5;
+}
+
+enum PBPositioningEngineMask {
+    PB_POS_ENG_MASK_INVALID        = 0;
+    PB_STANDARD_POSITIONING_ENGINE = 1;
+    PB_DEAD_RECKONING_ENGINE       = 2;
+    PB_PRECISE_POSITIONING_ENGINE  = 4;
+}
+
+enum PBLocReliability {
+    PB_LOC_RELIABILITY_NOT_SET = 0;
+    PB_LOC_RELIABILITY_VERY_LOW = 1;
+    PB_LOC_RELIABILITY_LOW = 2;
+    PB_LOC_RELIABILITY_MEDIUM = 3;
+    PB_LOC_RELIABILITY_HIGH = 4;
+}
+
+enum PBGnssAidingDataSvMask {
+    PB_GNSS_AIDING_DATA_SV_MASK_INVALID     = 0;
+    PB_GNSS_AIDING_DATA_SV_EPHEMERIS_BIT    = 1; // ephemeris
+    PB_GNSS_AIDING_DATA_SV_ALMANAC_BIT      = 2; // almanac
+    PB_GNSS_AIDING_DATA_SV_HEALTH_BIT       = 4; // health
+    PB_GNSS_AIDING_DATA_SV_DIRECTION_BIT    = 8; // direction
+    PB_GNSS_AIDING_DATA_SV_STEER_BIT        = 16; // steer
+    PB_GNSS_AIDING_DATA_SV_ALMANAC_CORR_BIT = 32; // almanac correction
+    PB_GNSS_AIDING_DATA_SV_BLACKLIST_BIT    = 64; // blacklist SVs
+    PB_GNSS_AIDING_DATA_SV_SA_DATA_BIT      = 128; // sensitivity assistance data
+    PB_GNSS_AIDING_DATA_SV_NO_EXIST_BIT     = 256; // SV does not exist
+    PB_GNSS_AIDING_DATA_SV_IONOSPHERE_BIT   = 512; // ionosphere correction
+    PB_GNSS_AIDING_DATA_SV_TIME_BIT         = 1024; // reset satellite time
+    PB_GNSS_AIDING_DATA_SV_MB_DATA          = 2048; // delete multiband data
+    PB_GNSS_AIDING_DATA_SV_POLY_BIT         = 5096; // poly
+}
+
+enum PBGnssAidingDataSvTypeMask {
+    PB_GNSS_AIDING_DATA_SV_TYPE_MASK_INVALID = 0;
+    PB_GNSS_AIDING_DATA_SV_TYPE_GPS_BIT      = 1;
+    PB_GNSS_AIDING_DATA_SV_TYPE_GLONASS_BIT  = 2;
+    PB_GNSS_AIDING_DATA_SV_TYPE_QZSS_BIT     = 4;
+    PB_GNSS_AIDING_DATA_SV_TYPE_BEIDOU_BIT   = 8;
+    PB_GNSS_AIDING_DATA_SV_TYPE_GALILEO_BIT  = 16;
+    PB_GNSS_AIDING_DATA_SV_TYPE_NAVIC_BIT    = 32;
+}
+
+enum PBGnssAidingDataCommonMask {
+    PB_GNSS_AIDING_DATA_COMMON_MASK_INVALID      = 0;
+    PB_GNSS_AIDING_DATA_COMMON_POSITION_BIT      = 1; // position estimate
+    PB_GNSS_AIDING_DATA_COMMON_TIME_BIT          = 2; // reset all clock values
+    PB_GNSS_AIDING_DATA_COMMON_UTC_BIT           = 4; // UTC estimate
+    PB_GNSS_AIDING_DATA_COMMON_RTI_BIT           = 8; // RTI
+    PB_GNSS_AIDING_DATA_COMMON_FREQ_BIAS_EST_BIT = 16; // frequency bias estimate
+    PB_GNSS_AIDING_DATA_COMMON_CELLDB_BIT        = 32; // all celldb info
+}
+
+enum PBGnss_LocSvSystemEnumType {
+    // Allow multiple enum items to use the same enum value
+    option allow_alias = true;
+    PB_GNSS_LOC_SV_SYSTEM_UNKNOWN                = 0;
+    /** unknown sv system. */
+    PB_GNSS_LOC_SV_SYSTEM_MIN                    = 1;
+    /**< Min enum of valid SV system. */
+    PB_GNSS_LOC_SV_SYSTEM_GPS                    = 1;
+    /**< GPS satellite. */
+    PB_GNSS_LOC_SV_SYSTEM_GALILEO                = 2;
+    /**< GALILEO satellite. */
+    PB_GNSS_LOC_SV_SYSTEM_SBAS                   = 3;
+    /**< SBAS satellite. */
+    PB_GNSS_LOC_SV_SYSTEM_GLONASS                = 4;
+    /**< GLONASS satellite. */
+    PB_GNSS_LOC_SV_SYSTEM_BDS                    = 5;
+    /**< BDS satellite. */
+    PB_GNSS_LOC_SV_SYSTEM_QZSS                   = 6;
+    /**< QZSS satellite. */
+    PB_GNSS_LOC_SV_SYSTEM_NAVIC                  = 7;
+    /**< NAVIC satellite. */
+    PB_GNSS_LOC_SV_SYSTEM_MAX                    = 7;
+    /**< Max enum of valid SV system. */
+}
+
+/** GNSS Signal Type and RF Band */
+enum PBGnssSignalInfoMask {
+    PB_GNSS_SIGNAL_TYPE_UNKNOWN             = 0;
+    /** GPS L1CA Signal */
+    PB_GNSS_SIGNAL_TYPE_GPS_L1CA            = 1;
+    /** GPS L1C Signal */
+    PB_GNSS_SIGNAL_TYPE_GPS_L1C             = 2;
+    /** GPS L2 RF Band */
+    PB_GNSS_SIGNAL_TYPE_GPS_L2              = 4;
+    /** GPS L5 RF Band */
+    PB_GNSS_SIGNAL_TYPE_GPS_L5              = 8;
+    /** GLONASS G1 (L1OF) RF Band */
+    PB_GNSS_SIGNAL_TYPE_GLONASS_G1          = 16;
+    /** GLONASS G2 (L2OF) RF Band */
+    PB_GNSS_SIGNAL_TYPE_GLONASS_G2          = 32;
+    /** GALILEO E1 RF Band */
+    PB_GNSS_SIGNAL_TYPE_GALILEO_E1          = 64;
+    /** GALILEO E5A RF Band */
+    PB_GNSS_SIGNAL_TYPE_GALILEO_E5A         = 128;
+    /** GALILEO E5B RF Band */
+    PB_GNSS_SIGNAL_TYPE_GALILEO_E5B         = 256;
+    /** BEIDOU B1_I RF Band */
+    PB_GNSS_SIGNAL_TYPE_BEIDOU_B1I          = 512;
+    /** BEIDOU B1C RF Band */
+    PB_GNSS_SIGNAL_TYPE_BEIDOU_B1C          = 1024;
+    /** BEIDOU B2_I RF Band */
+    PB_GNSS_SIGNAL_TYPE_BEIDOU_B2I          = 2048;
+    /** BEIDOU B2A_I RF Band */
+    PB_GNSS_SIGNAL_TYPE_BEIDOU_B2AI         = 4096;
+    /** QZSS L1CA RF Band */
+    PB_GNSS_SIGNAL_TYPE_QZSS_L1CA           = 8192;
+    /** QZSS L1S RF Band */
+    PB_GNSS_SIGNAL_TYPE_QZSS_L1S            = 16384;
+    /** QZSS L2 RF Band */
+    PB_GNSS_SIGNAL_TYPE_QZSS_L2             = 32768;
+    /** QZSS L5 RF Band */
+    PB_GNSS_SIGNAL_TYPE_QZSS_L5             = 65536;
+    /** SBAS L1 RF Band */
+    PB_GNSS_SIGNAL_TYPE_SBAS_L1             = 131072;
+    /** NAVIC L5 RF Band */
+    PB_GNSS_SIGNAL_TYPE_NAVIC_L5            = 262144;
+    /** BEIDOU B2A_Q RF Band */
+    PB_GNSS_SIGNAL_TYPE_BEIDOU_B2AQ         = 524288;
+}
+
+/* Gnss constellation type mask */
+enum PBGnssConstellationInfoMask {
+    PB_GNSS_CONSTELLATION_TYPE_UNKNOWN  = 0;
+    PB_GNSS_CONSTELLATION_TYPE_GPS      = 1;
+    PB_GNSS_CONSTELLATION_TYPE_GLONASS  = 2;
+    PB_GNSS_CONSTELLATION_TYPE_QZSS     = 4;
+    PB_GNSS_CONSTELLATION_TYPE_BEIDOU   = 8;
+    PB_GNSS_CONSTELLATION_TYPE_GALILEO  = 16;
+    PB_GNSS_CONSTELLATION_TYPE_SBAS     = 32;
+    PB_GNSS_CONSTELLATION_TYPE_NAVIC    = 64;
+}
+
+enum PBDrCalibrationStatusMask {
+    PB_DR_CALIBRATION_INVALID              = 0x00000000;
+    // Indicate that roll calibration is needed. Need to take more turns on level ground
+    PB_DR_ROLL_CALIBRATION_NEEDED          = 0x00000001;
+    // Indicate that pitch calibration is needed. Need to take more turns on level ground
+    PB_DR_PITCH_CALIBRATION_NEEDED         = 0x00000002;
+    // Indicate that yaw calibration is needed. Need to accelerate in a straight line
+    PB_DR_YAW_CALIBRATION_NEEDED           = 0x00000004;
+    // Indicate that odo calibration is needed. Need to accelerate in a straight line
+    PB_DR_ODO_CALIBRATION_NEEDED           = 0x00000008;
+    // Indicate that gyro calibration is needed. Need to take more turns on level ground
+    PB_DR_GYRO_CALIBRATION_NEEDED          = 0x00000010;
+    // Lot more turns on level ground needed
+    PB_DR_TURN_CALIBRATION_LOW             = 0x00000020;
+    // Some more turns on level ground needed
+    PB_DR_TURN_CALIBRATION_MEDIUM          = 0x00000040;
+    // Sufficient turns on level ground observed
+    PB_DR_TURN_CALIBRATION_HIGH            = 0x00000080;
+    // Lot more accelerations in straight line needed
+    PB_DR_LINEAR_ACCEL_CALIBRATION_LOW     = 0x00000100;
+    // Some more accelerations in straight line needed
+    PB_DR_LINEAR_ACCEL_CALIBRATION_MEDIUM  = 0x00000200;
+    // Sufficient acceleration events in straight line observed
+    PB_DR_LINEAR_ACCEL_CALIBRATION_HIGH    = 0x00000400;
+    // Lot more motion in straight line needed
+    PB_DR_LINEAR_MOTION_CALIBRATION_LOW    = 0x00000800;
+    // Some more motion in straight line needed
+    PB_DR_LINEAR_MOTION_CALIBRATION_MEDIUM = 0x00001000;
+    // Sufficient motion events in straight line observed
+    PB_DR_LINEAR_MOTION_CALIBRATION_HIGH   = 0x00002000;
+    // Lot more stationary events on level ground needed
+    PB_DR_STATIC_CALIBRATION_LOW           = 0x00004000;
+    // Some more stationary events on level ground needed
+    PB_DR_STATIC_CALIBRATION_MEDIUM        = 0x00008000;
+    // Sufficient stationary events on level ground observed
+    PB_DR_STATIC_CALIBRATION_HIGH          = 0x00010000;
+}
+
+enum PBSolutionStatusMask {
+    PB_VEHICLE_DRSOLUTION_INVALID             = 0x00000000;
+    PB_VEHICLE_SENSOR_SPEED_INPUT_DETECTED    = 0x00000001;
+    PB_VEHICLE_SENSOR_SPEED_INPUT_USED        = 0x00000002;
+    PB_DRE_WARNING_UNCALIBRATED               = 0x00000004;
+    PB_DRE_WARNING_GNSS_QUALITY_INSUFFICIENT  = 0x00000008;
+    PB_DRE_WARNING_FERRY_DETECTED             = 0x00000010;
+    PB_DRE_ERROR_6DOF_SENSOR_UNAVAILABLE      = 0x00000020;
+    PB_DRE_ERROR_VEHICLE_SPEED_UNAVAILABLE    = 0x00000040;
+    PB_DRE_ERROR_GNSS_EPH_UNAVAILABLE         = 0x00000080;
+    PB_DRE_ERROR_GNSS_MEAS_UNAVAILABLE        = 0x00000100;
+    PB_DRE_WARNING_INIT_POSITION_INVALID      = 0x00000200;
+    PB_DRE_WARNING_INIT_POSITION_UNRELIABLE   = 0x00000400;
+    PB_DRE_WARNING_POSITON_UNRELIABLE         = 0x00000800;
+    PB_DRE_ERROR_GENERIC                      = 0x00001000;
+    PB_DRE_WARNING_SENSOR_TEMP_OUT_OF_RANGE   = 0x00002000;
+    PB_DRE_WARNING_USER_DYNAMICS_INSUFFICIENT = 0x00004000;
+    PB_DRE_WARNING_FACTORY_DATA_INCONSISTENT  = 0x00008000;
+}
+enum PBLocOutputEngineType {
+    PB_LOC_OUTPUT_ENGINE_FUSED  = 0;
+    /** This is the GNSS fix from modem */
+    PB_LOC_OUTPUT_ENGINE_SPE    = 1;
+    /** This is the GNSS fix with correction PPP/RTK correction */
+    PB_LOC_OUTPUT_ENGINE_PPE    = 2;
+    PB_LOC_OUTPUT_ENGINE_COUNT  = 3;
+}
+
+/** Flags to indicate valid fields in epMeasUsageInfo */
+enum PBGnssMeasUsageInfoValidityMask {
+    PB_GNSS_MEAS_USAGE_INFO_INVALID            = 0;
+    PB_GNSS_PSEUDO_RANGE_RESIDUAL_VALID        = 1;
+    PB_GNSS_DOPPLER_RESIDUAL_VALID             = 2;
+    PB_GNSS_CARRIER_PHASE_RESIDUAL_VALID       = 4;
+    PB_GNSS_CARRIER_PHASE_AMBIGUITY_TYPE_VALID = 8;
+}
+
+enum PBGnssMeasUsageStatusBitMask {
+    PB_GNSS_MEAS_USAGE_STATUS_INVALID = 0;
+    /** Used in fix */
+    PB_GNSS_MEAS_USED_IN_PVT = 1;
+    /** Measurement is Bad */
+    PB_GNSS_MEAS_USAGE_STATUS_BAD_MEAS = 2;
+    /** Measurement has too low C/N */
+    PB_GNSS_MEAS_USAGE_STATUS_CNO_TOO_LOW = 4;
+    /** Measurement has too low elevation */
+    PB_GNSS_MEAS_USAGE_STATUS_ELEVATION_TOO_LOW = 8;
+    /** No ephemeris available for this measurement */
+    PB_GNSS_MEAS_USAGE_STATUS_NO_EPHEMERIS = 16;
+    /** No corrections available for the measurement */
+    PB_GNSS_MEAS_USAGE_STATUS_NO_CORRECTIONS = 32;
+    /** Corrections has timed out for the measurement */
+    PB_GNSS_MEAS_USAGE_STATUS_CORRECTION_TIMEOUT = 64;
+    /** Measurement is unhealthy */
+    PB_GNSS_MEAS_USAGE_STATUS_UNHEALTHY = 128;
+    /** Configuration is disabled for this measurement */
+    PB_GNSS_MEAS_USAGE_STATUS_CONFIG_DISABLED = 256;
+    /** Measurement not used for other reasons */
+    PB_GNSS_MEAS_USAGE_STATUS_OTHER = 512;
+}
+
+enum PBGpsSvMeasHeaderFlags {
+    PB_GNSS_SV_MEAS_HEADER_HAS_INVALID                      = 0x00000000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_LEAP_SECOND                  = 0x00000001;
+    PB_GNSS_SV_MEAS_HEADER_HAS_CLOCK_FREQ                   = 0x00000002;
+    PB_GNSS_SV_MEAS_HEADER_HAS_AP_TIMESTAMP                 = 0x00000004;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GPS_GLO_INTER_SYSTEM_BIAS    = 0x00000008;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GPS_BDS_INTER_SYSTEM_BIAS    = 0x00000010;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GPS_GAL_INTER_SYSTEM_BIAS    = 0x00000020;
+    PB_GNSS_SV_MEAS_HEADER_HAS_BDS_GLO_INTER_SYSTEM_BIAS    = 0x00000040;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GAL_GLO_INTER_SYSTEM_BIAS    = 0x00000080;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GAL_BDS_INTER_SYSTEM_BIAS    = 0x00000100;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GPSL1L5_TIME_BIAS            = 0x00000200;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GALE1E5A_TIME_BIAS           = 0x00000400;
+    PB_GNSS_SV_MEAS_HEADER_HAS_BDSB1IB2A_TIME_BIAS          = 0x00000800;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GPS_SYSTEM_TIME              = 0x00001000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GAL_SYSTEM_TIME              = 0x00002000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_BDS_SYSTEM_TIME              = 0x00004000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_QZSS_SYSTEM_TIME             = 0x00008000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GLO_SYSTEM_TIME              = 0x00010000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GPS_SYSTEM_TIME_EXT          = 0x00020000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GAL_SYSTEM_TIME_EXT          = 0x00040000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_BDS_SYSTEM_TIME_EXT          = 0x00080000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_QZSS_SYSTEM_TIME_EXT         = 0x00100000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GLO_SYSTEM_TIME_EXT          = 0x00200000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_REF_COUNT_TICKS              = 0x00400000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_DGNSS_CORRECTION_SOURCE_TYPE = 0x00800000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_DGNSS_CORRECTION_SOURCE_ID   = 0x01000000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_DGNSS_REF_STATION_ID         = 0x02000000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GPSL1L2C_TIME_BIAS           = 0x04000000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GLOG1G2_TIME_BIAS            = 0x08000000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_BDSB1IB1C_TIME_BIAS          = 0x10000000;
+    PB_GNSS_SV_MEAS_HEADER_HAS_GALE1E5B_TIME_BIAS           = 0x20000000;
+}
+
+enum PBGnssLocSvMeasStatusMaskType {
+    PB_GNSS_LOC_MEAS_STATUS_NULL                    = 0;
+    /**< No information state */
+    PB_GNSS_LOC_MEAS_STATUS_SM_VALID                = 1;
+    /**< Code phase is known */
+    PB_GNSS_LOC_MEAS_STATUS_SB_VALID                = 2;
+    /**< Sub-bit time is known */
+    PB_GNSS_LOC_MEAS_STATUS_MS_VALID                = 4;
+    /**< Satellite time is known */
+    PB_GNSS_LOC_MEAS_STATUS_BE_CONFIRM              = 8;
+    /**< Bit edge is confirmed from signal   */
+    PB_GNSS_LOC_MEAS_STATUS_VELOCITY_VALID          = 16;
+    /**< Satellite Doppler measured */
+    PB_GNSS_LOC_MEAS_STATUS_VELOCITY_FINE           = 32;
+    /**< TRUE: Fine Doppler measured, FALSE: Coarse Doppler measured */
+    PB_GNSS_LOC_MEAS_STATUS_LP_VALID                = 64;
+    /**<  TRUE/FALSE -- Lock Point is valid/invalid */
+    PB_GNSS_LOC_MEAS_STATUS_LP_POS_VALID            = 128;
+    /**<  TRUE/FALSE -- Lock Point is positive/negative */
+    PB_GNSS_LOC_MEAS_STATUS_FROM_RNG_DIFF           = 512;
+    /**< Range update from Satellite differences */
+    PB_GNSS_LOC_MEAS_STATUS_FROM_VE_DIFF            = 1024;
+    /**< Doppler update from Satellite differences */
+    PB_GNSS_LOC_MEAS_STATUS_DONT_USE_X              = 2048;
+    /**< Don't use measurement if bit is set */
+    PB_GNSS_LOC_MEAS_STATUS_DONT_USE_M              = 4096;
+    /**< Don't use measurement if bit is set */
+    PB_GNSS_LOC_MEAS_STATUS_DONT_USE_D              = 8192;
+    /**< Don't use measurement if bit is set */
+    PB_GNSS_LOC_MEAS_STATUS_DONT_USE_S              = 16384;
+    /**< Don't use measurement if bit is set */
+    PB_GNSS_LOC_MEAS_STATUS_DONT_USE_P              = 32768;
+    /**< Don't use measurement if bit is set */
+    PB_GNSS_LOC_MEAS_STATUS_GNSS_FRESH_MEAS         = 134217728;
+    /**< TRUE -- Fresh GNSS measurement observed in last second */
+}
+
+enum PBCarrierPhaseAmbiguityType {
+    PB_CARRIER_PHASE_AMBIGUITY_RESOLUTION_NONE  = 0;
+    PB_CARRIER_PHASE_AMBIGUITY_RESOLUTION_FLOAT = 1;
+    PB_CARRIER_PHASE_AMBIGUITY_RESOLUTION_FIXED = 2;
+}
+
+enum PBLocDgnssCorrectionSourceType {
+    /** Invalid DGNSS correction source type */
+    PB_LOC_DGNSS_CORR_SOURCE_TYPE_INVALID = 0;
+    /** DGNSS correction source type RTCM */
+    PB_LOC_DGNSS_CORR_SOURCE_TYPE_RTCM = 1;
+    /** DGNSS correction source type 3GPP */
+    PB_LOC_DGNSS_CORR_SOURCE_TYPE_3GPP = 2;
+}
+
+enum PBGnssLocationPosDataMask {
+    PB_LOCATION_NAV_DATA_INVALID             = 0;
+    PB_LOCATION_NAV_DATA_HAS_LONG_ACCEL_BIT  = 1; // Navigation data has Forward Acceleration
+    PB_LOCATION_NAV_DATA_HAS_LAT_ACCEL_BIT   = 2; // Navigation data has Sideward Acceleration
+    PB_LOCATION_NAV_DATA_HAS_VERT_ACCEL_BIT  = 3; // Navigation data has Vertical Acceleration
+    PB_LOCATION_NAV_DATA_HAS_YAW_RATE_BIT    = 8; // Navigation data has Heading Rate
+    PB_LOCATION_NAV_DATA_HAS_PITCH_BIT       = 16;  // Navigation data has Body pitch
+    // Navigation data has Forward Acceleration uncertainty
+    PB_LOCATION_NAV_DATA_HAS_LONG_ACCEL_UNC_BIT = 32;
+    // Navigation data has Sideward Acceleration uncertainty
+    PB_LOCATION_NAV_DATA_HAS_LAT_ACCEL_UNC_BIT  = 64;
+    // Navigation data has Vertical Acceleration uncertainty
+    PB_LOCATION_NAV_DATA_HAS_VERT_ACCEL_UNC_BIT = 128;
+    // Navigation data has Heading Rate uncertainty
+    PB_LOCATION_NAV_DATA_HAS_YAW_RATE_UNC_BIT   = 256;
+    // Navigation data has Body pitch uncertainty
+    PB_LOCATION_NAV_DATA_HAS_PITCH_UNC_BIT      = 512;
+    // Navigation data has pitch rate
+    PB_LOCATION_NAV_DATA_HAS_PITCH_RATE_BIT     = 1024;
+    // Navigation data has body pitch rate uncertainty
+    PB_LOCATION_NAV_DATA_HAS_PITCH_RATE_UNC_BIT = 2048;
+    // Navigation data has body roll
+    PB_LOCATION_NAV_DATA_HAS_ROLL_BIT           = 4096;
+    // Navigation data has body roll uncertainty
+    PB_LOCATION_NAV_DATA_HAS_ROLL_UNC_BIT       = 8192;
+    // Navigation data has body rate roll
+    PB_LOCATION_NAV_DATA_HAS_ROLL_RATE_BIT      = 16384;
+    // Navigation data has body roll rate uncertainty
+    PB_LOCATION_NAV_DATA_HAS_ROLL_RATE_UNC_BIT  = 32768;
+    // Navigation data has body yaw
+    PB_LOCATION_NAV_DATA_HAS_YAW_BIT            = 65536;
+    // Navigation data has body roll uncertainty
+    PB_LOCATION_NAV_DATA_HAS_YAW_UNC_BIT        = 131072;
+}
+
+enum PBGnssSvPolyStatusMaskValidity {
+    PB_GNSS_SV_POLY_STATUS_INVALID_V02   = 0;
+    PB_GNSS_SV_POLY_SRC_ALM_CORR_VALID_V02  = 1;
+    PB_GNSS_SV_POLY_GLO_STR4_VALID_V02      = 2;
+    PB_GNSS_SV_POLY_DELETE_VALID_V02        = 4;
+    PB_GNSS_SV_POLY_SRC_GAL_FNAV_OR_INAV_VALID_V02 = 8;
+}
+
+enum PBGnssSvPolyStatusMask {
+    PB_GNSS_SV_POLY_INVALID_V02 = 0;
+    PB_GNSS_SV_POLY_SRC_ALM_CORR_V02    = 1;
+    PB_GNSS_SV_POLY_GLO_STR4_V02        = 2;
+    PB_GNSS_SV_POLY_DELETE_V02          = 4;
+    PB_GNSS_SV_POLY_SRC_GAL_FNAV_OR_INAV_V02 = 8;
+}
+
+enum PBUlpGnssSvPolyValidFlags {
+    PB_ULP_GNSS_SV_POLY_BIT_INVALID                = 0;
+    PB_ULP_GNSS_SV_POLY_BIT_GLO_FREQ               = 1;
+    PB_ULP_GNSS_SV_POLY_BIT_T0                     = 2;
+    PB_ULP_GNSS_SV_POLY_BIT_IODE                   = 4;
+    PB_ULP_GNSS_SV_POLY_BIT_FLAG                   = 8;
+    PB_ULP_GNSS_SV_POLY_BIT_POLYCOEFF_XYZ0         = 16;
+    PB_ULP_GNSS_SV_POLY_BIT_POLYCOEFF_XYZN         = 32;
+    PB_ULP_GNSS_SV_POLY_BIT_POLYCOEFF_OTHER        = 64;
+    PB_ULP_GNSS_SV_POLY_BIT_SV_POSUNC              = 128;
+    PB_ULP_GNSS_SV_POLY_BIT_IONODELAY              = 256;
+    PB_ULP_GNSS_SV_POLY_BIT_IONODOT                = 512;
+    PB_ULP_GNSS_SV_POLY_BIT_SBAS_IONODELAY         = 1024;
+    PB_ULP_GNSS_SV_POLY_BIT_SBAS_IONODOT           = 2048;
+    PB_ULP_GNSS_SV_POLY_BIT_TROPODELAY             = 4096;
+    PB_ULP_GNSS_SV_POLY_BIT_ELEVATION              = 8192;
+    PB_ULP_GNSS_SV_POLY_BIT_ELEVATIONDOT           = 16384;
+    PB_ULP_GNSS_SV_POLY_BIT_ELEVATIONUNC           = 32768;
+    PB_ULP_GNSS_SV_POLY_BIT_VELO_COEFF             = 65536;
+    PB_ULP_GNSS_SV_POLY_BIT_ENHANCED_IOD           = 131072;
+    PB_ULP_GNSS_SV_POLY_BIT_GPS_ISC_L1CA           = 262144;
+    PB_ULP_GNSS_SV_POLY_BIT_GPS_ISC_L2C            = 524288;
+    PB_ULP_GNSS_SV_POLY_BIT_GPS_ISC_L5I5           = 1048576;
+    PB_ULP_GNSS_SV_POLY_BIT_GPS_ISC_L5Q5           = 2097152;
+    PB_ULP_GNSS_SV_POLY_BIT_GPS_TGD                = 4194304;
+    PB_ULP_GNSS_SV_POLY_BIT_GLO_TGD_G1G2           = 8388608;
+    PB_ULP_GNSS_SV_POLY_BIT_BDS_TGD_B1             = 16777216;
+    PB_ULP_GNSS_SV_POLY_BIT_BDS_TGD_B2             = 33554432;
+    PB_ULP_GNSS_SV_POLY_BIT_BDS_TGD_B2A            = 67108864;
+    PB_ULP_GNSS_SV_POLY_BIT_BDS_ISC_B2A            = 134217728;
+    PB_ULP_GNSS_SV_POLY_BIT_GAL_BGD_E1E5A          = 268435456;
+    PB_ULP_GNSS_SV_POLY_BIT_GAL_BGD_E1E5B          = 536870912;
+    PB_ULP_GNSS_SV_POLY_BIT_NAVIC_TGD_L5           = 1073741824;
+}
+
+enum PBUlpGnssSvMeasurementValidFlags {
+    PB_ULP_GNSS_SV_MEAS_BIT_INVALID         = 0;
+    PB_ULP_GNSS_SV_MEAS_BIT_GPS_TIME        = 1;
+    PB_ULP_GNSS_SV_MEAS_BIT_PSUEDO_RANGE    = 2;
+    PB_ULP_GNSS_SV_MEAS_BIT_MS_IN_WEEK      = 4;
+    PB_ULP_GNSS_SV_MEAS_BIT_SUB_MSEC        = 8;
+    PB_ULP_GNSS_SV_MEAS_BIT_CARRIER_PHASE   = 16;
+    PB_ULP_GNSS_SV_MEAS_BIT_DOPPLER_SHIFT   = 32;
+    PB_ULP_GNSS_SV_MEAS_BIT_CNO             = 64;
+    PB_ULP_GNSS_SV_MEAS_BIT_LOSS_OF_LOCK    = 128;
+}
+
+enum PBLocNavSolutionMask {
+    PB_LOC_NAV_MASK_INVALID = 0;
+    /* Bitmask to specify whether SBAS ionospheric correction is used  */
+    PB_LOC_NAV_MASK_SBAS_CORRECTION_IONO = 1;
+    /* Bitmask to specify whether SBAS fast correction is used  */
+    PB_LOC_NAV_MASK_SBAS_CORRECTION_FAST = 2;
+    /**<  Bitmask to specify whether SBAS long-tem correction is used  */
+    PB_LOC_NAV_MASK_SBAS_CORRECTION_LONG = 4;
+    /**<  Bitmask to specify whether SBAS integrity information is used  */
+    PB_LOC_NAV_MASK_SBAS_INTEGRITY = 8;
+    /**<  Bitmask to specify whether Position Report is DGNSS corrected  */
+    PB_LOC_NAV_MASK_DGNSS_CORRECTION = 16;
+    /**<  Bitmask to specify whether Position Report is RTK corrected   */
+    PB_LOC_NAV_MASK_RTK_CORRECTION = 32;
+    /**<  Bitmask to specify whether Position Report is PPP corrected   */
+    PB_LOC_NAV_MASK_PPP_CORRECTION = 64;
+    /**<  Bitmask to specify whether Position Report is RTK fixed corrected   */
+    PB_LOC_NAV_MASK_RTK_FIXED_CORRECTION = 128;
+}
+
+enum PBLocSvInfoSource {
+    PB_ULP_SVINFO_SOURCE_INVALID    = 0;
+    /** SVinfo source is GNSS/DR */
+    PB_ULP_SVINFO_IS_FROM_GNSS      = 1;
+    /** Raw SVinfo from GNSS */
+    PB_ULP_SVINFO_IS_FROM_DR        = 2;
+}
+
+enum PBGnssEphAction {
+    PB_GNSS_EPH_ACTION_UPDATE_SRC_UNKNOWN_V02 = 0; /**<Update ephemeris. Source of ephemeris is unknown  */
+    PB_GNSS_EPH_ACTION_UPDATE_SRC_OTA_V02     = 1; /**<Update ephemeris. Source of ephemeris is OTA  */
+    PB_GNSS_EPH_ACTION_UPDATE_SRC_NETWORK_V02 = 2; /**<Update ephemeris. Source of ephemeris is Network  */
+    PB_GNSS_EPH_ACTION_UPDATE_MAX_V02         = 999; /**<Max value for update ephemeris action. DO NOT USE  */
+    PB_GNSS_EPH_ACTION_DELETE_SRC_UNKNOWN_V02 = 1000; /**<Delete previous ephemeris from unknown source  */
+    PB_GNSS_EPH_ACTION_DELETE_SRC_NETWORK_V02 = 1001; /**<Delete previous ephemeris from network  */
+    PB_GNSS_EPH_ACTION_DELETE_SRC_OTA_V02     = 1002; /**<Delete previous ephemeris from OTA  */
+    PB_GNSS_EPH_ACTION_DELETE_MAX_V02     = 1999; /**<Max value for delete ephemeris action. DO NOT USE  */
+}
+
+enum PBGalEphSignalSource{
+    PB_GAL_EPH_SIGNAL_SRC_UNKNOWN_V02 = 0; /**<  GALILEO signal is unknown  */
+    PB_GAL_EPH_SIGNAL_SRC_E1B_V02     = 1; /**<  GALILEO signal is E1B  */
+    PB_GAL_EPH_SIGNAL_SRC_E5A_V02     = 2; /**<  GALILEO signal is E5A  */
+    PB_GAL_EPH_SIGNAL_SRC_E5B_V02     = 3; /**<  GALILEO signal is E5B  */
+}
+
+enum PBGnssAdditionalSystemInfoMask {
+    PB_GNSS_ADDITIONAL_SYSTEMINFO_INVALID = 0;
+    /* Bitmask to specify whether Tauc is valid */
+    PB_GNSS_ADDITIONAL_SYSTEMINFO_HAS_TAUC = 1;
+    /* Bitmask to specify whether leapSec is valid */
+    PB_GNSS_ADDITIONAL_SYSTEMINFO_HAS_LEAP_SEC = 2;
+}
+
+enum PBLocSvDgnssMeasStatusMask {
+    PB_LOC_MASK_DGNSS_INVALID               = 0;
+    /**<  DGNSS Epoch time is valid  */
+    PB_LOC_MASK_DGNSS_EPOCH_TIME_VALID      = 1;
+    /**<  Pseudo Range correction is valid  */
+    PB_LOC_MASK_DGNSS_MEAS_STATUS_PR_VALID  = 2;
+    /**<  Pseudo Range rate correction is valid  */
+    PB_LOC_MASK_DGNSS_MEAS_STATUS_PRR_VALID = 4;
+}
+
+enum PBSvSearchStatus {
+    PB_GNSS_SV_SRCH_STATUS_UNKNOWN   = 0;
+    PB_GNSS_SV_SRCH_STATUS_IDLE      = 1;
+     /**< SV is not being actively processed */
+    PB_GNSS_SV_SRCH_STATUS_SEARCH    = 2;
+     /**< The system is searching for this SV */
+    PB_GNSS_SV_SRCH_STATUS_TRACK     = 3;
+     /**< SV is being tracked */
+}
+
+enum PBSvInfoMask {
+    PB_GNSS_SVINFO_MASK_UNKNOWN         = 0;
+    PB_GNSS_SVINFO_MASK_HAS_EPHEMERIS   = 1;
+    /**< Ephemeris is available for this SV */
+    PB_GNSS_SVINFO_MASK_HAS_ALMANAC     = 2;
+    /**< Almanac is available for this SV */
+}
+
+enum PBLocSourceofFreqEnumType {
+    PB_GNSS_FREQ_SOURCE_INVALID = 0;
+    /**< Source of the frequency is invalid */
+    PB_GNSS_FREQ_SOURCE_EXTERNAL = 1;
+    /**< Source of the frequency is from external injection */
+    PB_GNSS_FREQ_SOURCE_PE_CLK_REPORT = 2;
+    /**< Source of the frequency is from Navigation engine */
+    PB_GNSS_FREQ_SOURCE_UNKNOWN = 3;
+    /**< Source of the frequency is unknown */
+}
+
+enum PBLocInterSystemBiasValidMaskType {
+   PB_GNSS_SYS_TIME_UNKNOWN                   = 0;
+   PB_GNSS_SYS_TIME_BIAS_VALID                = 1;
+   /**< System time bias valid */
+   PB_GNSS_SYS_TIME_BIAS_UNC_VALID            = 2;
+   /**< System time bias uncertainty valid */
+}
+
+enum PBGnssSystemTimeStructTypeFlags {
+    PB_GNSS_SYSTEM_TIME_FLAG_INVALID        = 0;
+    PB_GNSS_SYSTEM_TIME_WEEK_VALID          = 1;
+    PB_GNSS_SYSTEM_TIME_WEEK_MS_VALID       = 2;
+    PB_GNSS_SYSTEM_CLK_TIME_BIAS_VALID      = 4;
+    PB_GNSS_SYSTEM_CLK_TIME_BIAS_UNC_VALID  = 8;
+    PB_GNSS_SYSTEM_REF_FCOUNT_VALID         = 16;
+    PB_GNSS_SYSTEM_NUM_CLOCK_RESETS_VALID   = 32;
+}
+
+enum PBGnssGloTimeInfoBits {
+
+    PB_GNSS_CLO_TIME_UNKNOWN                   = 0;
+    PB_GNSS_CLO_DAYS_VALID                     = 1;
+    PB_GNSS_GLO_MSEC_VALID                     = 2;
+    PB_GNSS_GLO_CLK_TIME_BIAS_VALID            = 4;
+    PB_GNSS_GLO_CLK_TIME_BIAS_UNC_VALID        = 8;
+    PB_GNSS_GLO_REF_FCOUNT_VALID               = 16;
+    PB_GNSS_GLO_NUM_CLOCK_RESETS_VALID         = 32;
+    PB_GNSS_GLO_FOUR_YEAR_VALID                = 64;
+}
+
+enum PBLeverArmTypeMask {
+    PB_LEVER_ARM_TYPE_INVALID = 0;
+    // Lever arm regarding the VRP (Vehicle Reference Point) w.r.t
+    // the origin (at the GPS Antenna)
+    PB_LEVER_ARM_TYPE_GNSS_TO_VRP_BIT = 1;
+    // Lever arm regarding GNSS Antenna w.r.t the origin at the IMU
+    // e.g.: inertial measurement unit for DR (dead reckoning
+    // engine)
+    PB_LEVER_ARM_TYPE_DR_IMU_TO_GNSS_BIT = 2;
+    // Lever arm regarding GNSS Antenna w.r.t the origin at the
+    // IMU (inertial measurement unit) for VEPP (vision enhanced
+    // precise positioning engine)
+    PB_LEVER_ARM_TYPE_VEPP_IMU_TO_GNSS_BIT = 4;
+}
+
+// QDGNSS related enums and masks below.
+enum PBQDgnssDataType {
+    PB_QDGNSS_DATATYPE_INVALID                      = 0;
+    PB_QDGNSS_REFERENCE_STATION_MSG_ID              = 1;
+    PB_QDGNSS_OBSERVATIONS_MSG_ID                   = 2;
+    PB_QDGNSS_GLONASS_BIAS_MSG_ID                   = 3;
+    PB_QDGNSS_SSR_ORBIT_CORRECTIONS_MSG_ID          = 4;
+    PB_QDGNSS_SSR_CLOCK_CORRECTIONS_MSG_ID          = 5;
+    PB_QDGNSS_SSR_HIGHRATE_CLOCK_CORRECTIONS_MSG_ID = 6;
+    PB_QDGNSS_SSR_CODE_BIAS_MSG_ID                  = 7;
+    PB_QDGNSS_SSR_USER_RANGE_ACCURACY_MSG_ID        = 8;
+    PB_QDGNSS_SSR_ORBIT_AND_CLOCK_MSG_ID            = 9;
+    PB_QDGNSS_GPS_EPHEMERIS_MSG_ID                  = 10;
+    PB_QDGNSS_GLONASS_EPHEMERIS_MSG_ID              = 11;
+    PB_QDGNSS_GALILEO_EPHEMERIS_MSG_ID              = 12;
+    PB_QDGNSS_BDS_EPHEMERIS_MSG_ID                  = 13;
+    PB_QDGNSS_QZSS_EPHEMERIS_MSG_ID                 = 14;
+    PB_QDGNSS_SBAS_EPHEMERIS_MSG_ID                 = 15;
+}
+
+enum PBDGnssConstellationIdentifier {
+    /** GPS identifier */
+    PB_DGNSS_CONSTELLATION_IDENTIFIER_GPS     = 0;
+    /** SBAS identifier */
+    PB_DGNSS_CONSTELLATION_IDENTIFIER_SBAS    = 1;
+    /** QZSS identifier */
+    PB_DGNSS_CONSTELLATION_IDENTIFIER_QZSS    = 2;
+    /** GALILEO identifier */
+    PB_DGNSS_CONSTELLATION_IDENTIFIER_GALILEO = 3;
+    /** GLONASS identifier */
+    PB_DGNSS_CONSTELLATION_IDENTIFIER_GLONASS = 4;
+    /** BDS identifier */
+    PB_DGNSS_CONSTELLATION_IDENTIFIER_BDS     = 5;
+}
+
+enum PBDGnssConstellationBitMask {
+    PB_DGNSS_CONSTELLATION_BIT_INVALID = 0;
+    /** GPS constellation */
+    PB_DGNSS_CONSTELLATION_GPS_BIT     = 1;
+    /** SBAS constellation */
+    PB_DGNSS_CONSTELLATION_SBAS_BIT    = 2;
+    /** QZSS constellation */
+    PB_DGNSS_CONSTELLATION_QZSS_BIT    = 4;
+    /** GALILEO constellation */
+    PB_DGNSS_CONSTELLATION_GALILEO_BIT = 8;
+    /** GLONASS constellation */
+    PB_DGNSS_CONSTELLATION_GLONASS_BIT = 16;
+    /** BDS constellation */
+    PB_DGNSS_CONSTELLATION_BDS_BIT     = 32;
+}
+
+enum PBDGnssGpsSignalIdentifier {
+    /** GPS L1 C/A signal */
+    PB_DGNSS_SIGNAL_GPS_L1CA  = 0;
+    /** GPS L1 P signal */
+    PB_DGNSS_SIGNAL_GPS_L1P   = 1;
+    /** GPS L1 Z tracking or similar signal */
+    PB_DGNSS_SIGNAL_GPS_L1Z   = 2;
+    /** GPS L1 codeless signal */
+    PB_DGNSS_SIGNAL_GPS_L1N   = 3;
+    /** GPS L2 C/A signal */
+    PB_DGNSS_SIGNAL_GPS_L2CA  = 4;
+    /** GPS L2 P signal */
+    PB_DGNSS_SIGNAL_GPS_L2P   = 5;
+    /** GPS L2 Z tracking or similar signal */
+    PB_DGNSS_SIGNAL_GPS_L2Z   = 6;
+    /** GPS L2C (M) signal */
+    PB_DGNSS_SIGNAL_GPS_L2CM  = 7;
+    /** GPS L2C (L) signal */
+    PB_DGNSS_SIGNAL_GPS_L2CL  = 8;
+    /** GPS L2C (M+L) signal */
+    PB_DGNSS_SIGNAL_GPS_L2CML = 9;
+    /** GPS L2 semi-codeless signal */
+    PB_DGNSS_SIGNAL_GPS_L2D   = 10;
+    /** GPS L2 codeless signal */
+    PB_DGNSS_SIGNAL_GPS_L2N   = 11;
+    /** GPS L5 I signal */
+    PB_DGNSS_SIGNAL_GPS_L5I   = 12;
+    /** GPS L5 Q signal */
+    PB_DGNSS_SIGNAL_GPS_L5Q   = 13;
+    /** GPS L5 I+Q signal */
+    PB_DGNSS_SIGNAL_GPS_L5IQ  = 14;
+    /** GPS L1C-D signal */
+    PB_DGNSS_SIGNAL_GPS_L1CD  = 15;
+    /** GPS L1C-P signal */
+    PB_DGNSS_SIGNAL_GPS_L1CP  = 16;
+    /** GPS L1C-(D+P) signal */
+    PB_DGNSS_SIGNAL_GPS_L1CDP = 17;
+}
+
+enum PBDGnssGpsSignalBitMask {
+    PB_DGNSS_SIGNAL_BIT_GPS_INVALID = 0;
+    /** GPS L1 C/A signal */
+    PB_DGNSS_SIGNAL_GPS_L1CA_BIT  = 1;
+    /** GPS L1 P signal */
+    PB_DGNSS_SIGNAL_GPS_L1P_BIT   = 2;
+    /** GPS L1 Z tracking or similar signal */
+    PB_DGNSS_SIGNAL_GPS_L1Z_BIT   = 4;
+    /** GPS L1 codeless signal */
+    PB_DGNSS_SIGNAL_GPS_L1N_BIT   = 8;
+    /** GPS L2 C/A signal */
+    PB_DGNSS_SIGNAL_GPS_L2CA_BIT  = 16;
+    /** GPS L2 P signal */
+    PB_DGNSS_SIGNAL_GPS_L2P_BIT   = 32;
+    /** GPS L2 Z tracking or similar signal */
+    PB_DGNSS_SIGNAL_GPS_L2Z_BIT   = 64;
+    /** GPS L2C (M) signal */
+    PB_DGNSS_SIGNAL_GPS_L2CM_BIT  = 128;
+    /** GPS L2C (L) signal */
+    PB_DGNSS_SIGNAL_GPS_L2CL_BIT  = 256;
+    /** GPS L2C (M+L) signal */
+    PB_DGNSS_SIGNAL_GPS_L2CML_BIT = 512;
+    /** GPS L2 semi-codeless signal */
+    PB_DGNSS_SIGNAL_GPS_L2D_BIT   = 1024;
+    /** GPS L2 codeless signal */
+    PB_DGNSS_SIGNAL_GPS_L2N_BIT   = 2048;
+    /** GPS L5 I signal */
+    PB_DGNSS_SIGNAL_GPS_L5I_BIT   = 4096;
+    /** GPS L5 Q signal */
+    PB_DGNSS_SIGNAL_GPS_L5Q_BIT   = 8192;
+    /** GPS L5 I+Q signal */
+    PB_DGNSS_SIGNAL_GPS_L5IQ_BIT  = 16384;
+    /** GPS L1C-D signal */
+    PB_DGNSS_SIGNAL_GPS_L1CD_BIT  = 32768;
+    /** GPS L1C-P signal */
+    PB_DGNSS_SIGNAL_GPS_L1CP_BIT  = 65536;
+    /** GPS L1C-(D+P) signal */
+    PB_DGNSS_SIGNAL_GPS_L1CDP_BIT = 131072;
+}
+
+enum PBDGnssGlonassSignalIdentifier {
+    /** GLONASS G1 C/A signal */
+    PB_DGNSS_SIGNAL_GLONASS_G1CA  = 0;
+    /** GLONASS G1 P signal */
+    PB_DGNSS_SIGNAL_GLONASS_G1P   = 1;
+    /** GLONASS G2 C/A signal */
+    PB_DGNSS_SIGNAL_GLONASS_G2CA  = 2;
+    /** GLONASS G2 P signal */
+    PB_DGNSS_SIGNAL_GLONASS_G2P   = 3;
+    /** GLONASS G3-I signal */
+    PB_DGNSS_SIGNAL_GLONASS_G3I   = 4;
+    /** GLONASS G3-Q signal */
+    PB_DGNSS_SIGNAL_GLONASS_G3Q   = 5;
+    /** GLONASS G3-(I+Q) signal */
+    PB_DGNSS_SIGNAL_GLONASS_G3IQ  = 6;
+}
+
+enum PBDGnssGlonassSignalBitMask {
+    PB_DGNSS_SIGNAL_GLONASS_INVALID   = 0;
+    /** GLONASS G1 C/A signal */
+    PB_DGNSS_SIGNAL_GLONASS_G1CA_BIT  = 1;
+    /** GLONASS G1 P signal */
+    PB_DGNSS_SIGNAL_GLONASS_G1P_BIT   = 2;
+    /** GLONASS G2 C/A signal */
+    PB_DGNSS_SIGNAL_GLONASS_G2CA_BIT  = 4;
+    /** GLONASS G2 P signal */
+    PB_DGNSS_SIGNAL_GLONASS_G2P_BIT   = 8;
+    /** GLONASS G3-I signal */
+    PB_DGNSS_SIGNAL_GLONASS_G3I_BIT   = 16;
+    /** GLONASS G3-Q signal */
+    PB_DGNSS_SIGNAL_GLONASS_G3Q_BIT   = 32;
+    /** GLONASS G3-(I+Q) signal */
+    PB_DGNSS_SIGNAL_GLONASS_G3IQ_BIT  = 64;
+}
+
+enum PBDGnssGalileoSignalIdentifier {
+    /** Galileo E1 C signal */
+    PB_DGNSS_SIGNAL_GALILEO_E1C    = 0;
+    /** Galileo E1 A signal */
+    PB_DGNSS_SIGNAL_GALILEO_E1A    = 1;
+    /** Galileo E1 B (I/NAV OS/SC/SOL) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E1B    = 2;
+    /** Galileo E1 (B+C) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E1BC   = 3;
+    /** Galileo E1 (A+B+C) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E1ABC  = 4;
+    /** Galileo E6 C signal */
+    PB_DGNSS_SIGNAL_GALILEO_E6C    = 5;
+    /** Galileo E6 A signal */
+    PB_DGNSS_SIGNAL_GALILEO_E6A    = 6;
+    /** Galileo E6 B signal */
+    PB_DGNSS_SIGNAL_GALILEO_E6B    = 7;
+    /** Galileo E6 (B+C) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E6BC   = 8;
+    /** Galileo E6 (A+B+C) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E6ABC  = 9;
+    /** Galileo E5 B-I signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5BI   = 10;
+    /** Galileo E5 B-Q signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5BQ   = 11;
+    /** Galileo E5 B-(I+Q) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5BIQ  = 12;
+    /** Galileo E5 (A+B)-I signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5ABI  = 13;
+    /** Galileo E5 (A+B)-Q signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5ABQ  = 14;
+    /** Galileo E5 (A+B)-(I+Q) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5ABIQ = 15;
+    /** Galileo E5 A-I signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5AI   = 16;
+    /** Galileo E5 A-Q signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5AQ   = 17;
+    /** Galileo E5 A-(I+Q) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5AIQ  = 18;
+}
+
+enum PBDGnssGalileoSignalBitMask {
+    PB_DGNSS_SIGNAL_GALILEO_INVALID    = 0;
+    /** Galileo E1 C signal */
+    PB_DGNSS_SIGNAL_GALILEO_E1C_BIT    = 1;
+    /** Galileo E1 A signal */
+    PB_DGNSS_SIGNAL_GALILEO_E1A_BIT    = 2;
+    /** Galileo E1 B (I/NAV OS/SC/SOL) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E1B_BIT    = 4;
+    /** Galileo E1 (B+C) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E1BC_BIT   = 8;
+    /** Galileo E1 (A+B+C) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E1ABC_BIT  = 16;
+    /** Galileo E6 C signal */
+    PB_DGNSS_SIGNAL_GALILEO_E6C_BIT    = 32;
+    /** Galileo E6 A signal */
+    PB_DGNSS_SIGNAL_GALILEO_E6A_BIT    = 64;
+    /** Galileo E6 B signal */
+    PB_DGNSS_SIGNAL_GALILEO_E6B_BIT    = 128;
+    /** Galileo E6 (B+C) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E6BC_BIT   = 256;
+    /** Galileo E6 (A+B+C) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E6ABC_BIT  = 512;
+    /** Galileo E5 B-I signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5BI_BIT   = 1024;
+    /** Galileo E5 B-Q signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5BQ_BIT   = 2048;
+    /** Galileo E5 B-(I+Q) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5BIQ_BIT  = 4096;
+    /** Galileo E5 (A+B)-I signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5ABI_BIT  = 8192;
+    /** Galileo E5 (A+B)-Q signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5ABQ_BIT  = 16384;
+    /** Galileo E5 (A+B)-(I+Q) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5ABIQ_BIT = 32768;
+    /** Galileo E5 A-I signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5AI_BIT   = 65536;
+    /** Galileo E5 A-Q signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5AQ_BIT   = 131072;
+    /** Galileo E5 A-(I+Q) signal */
+    PB_DGNSS_SIGNAL_GALILEO_E5AIQ_BIT  = 262144;
+}
+
+enum PBDGnssQzssSignalIdentifier {
+    /** QZSS L1 C/A signal */
+    PB_DGNSS_SIGNAL_QZSS_L1CA  = 0;
+    /** QZSS LEX-S signal */
+    PB_DGNSS_SIGNAL_QZSS_LEXS  = 1;
+    /** QZSS LEX-L signal */
+    PB_DGNSS_SIGNAL_QZSS_LEXL  = 2;
+    /** QZSS LEX-(S+L) signal */
+    PB_DGNSS_SIGNAL_QZSS_LEXSL = 3;
+    /** QZSS L2C (M) signal */
+    PB_DGNSS_SIGNAL_QZSS_L2CM  = 4;
+    /** QZSS L2C (L) signal */
+    PB_DGNSS_SIGNAL_QZSS_L2CL  = 5;
+    /** QZSS L2C (M+L) signal */
+    PB_DGNSS_SIGNAL_QZSS_L2CML = 6;
+    /** QZSS L5 I signal */
+    PB_DGNSS_SIGNAL_QZSS_L5I   = 7;
+    /** QZSS L5 Q signal */
+    PB_DGNSS_SIGNAL_QZSS_L5Q   = 8;
+    /** QZSS L5 I+Q signal */
+    PB_DGNSS_SIGNAL_QZSS_L5IQ  = 9;
+    /** QZSS L1C-D signal */
+    PB_DGNSS_SIGNAL_QZSS_L1CD  = 10;
+    /** QZSS L1C-P signal */
+    PB_DGNSS_SIGNAL_QZSS_L1CP  = 11;
+    /** QZSS L1C-(D+P) signal */
+    PB_DGNSS_SIGNAL_QZSS_L1CDP = 12;
+    /** QZSS L1S/L1-SAIF signal */
+    PB_DGNSS_SIGNAL_QZSS_L1S   = 13;
+}
+
+enum PBDGnssQzssSignalBitMask {
+    PB_DGNSS_SIGNAL_QZSS_INVALID   = 0;
+    /** QZSS L1 C/A signal */
+    PB_DGNSS_SIGNAL_QZSS_L1CA_BIT  = 1;
+    /** QZSS LEX-S signal */
+    PB_DGNSS_SIGNAL_QZSS_LEXS_BIT  = 2;
+    /** QZSS LEX-L signal */
+    PB_DGNSS_SIGNAL_QZSS_LEXL_BIT  = 4;
+    /** QZSS LEX-(S+L) signal */
+    PB_DGNSS_SIGNAL_QZSS_LEXSL_BIT = 8;
+    /** QZSS L2C (M) signal */
+    PB_DGNSS_SIGNAL_QZSS_L2CM_BIT  = 16;
+    /** QZSS L2C (L) signal */
+    PB_DGNSS_SIGNAL_QZSS_L2CL_BIT  = 32;
+    /** QZSS L2C (M+L) signal */
+    PB_DGNSS_SIGNAL_QZSS_L2CML_BIT = 64;
+    /** QZSS L5 I signal */
+    PB_DGNSS_SIGNAL_QZSS_L5I_BIT   = 128;
+    /** QZSS L5 Q signal */
+    PB_DGNSS_SIGNAL_QZSS_L5Q_BIT   = 256;
+    /** QZSS L5 I+Q signal */
+    PB_DGNSS_SIGNAL_QZSS_L5IQ_BIT  = 512;
+    /** QZSS L1C-D signal */
+    PB_DGNSS_SIGNAL_QZSS_L1CD_BIT  = 1024;
+    /** QZSS L1C-P signal */
+    PB_DGNSS_SIGNAL_QZSS_L1CP_BIT  = 2048;
+    /** QZSS L1C-(D+P) signal */
+    PB_DGNSS_SIGNAL_QZSS_L1CDP_BIT = 4096;
+    /** QZSS L1S/L1-SAIF signal */
+    PB_DGNSS_SIGNAL_QZSS_L1S_BIT   = 8192;
+}
+
+enum PBDGnssBdsSignalIdentifier {
+    /** BDS B1-2 I signal */
+    PB_DGNSS_SIGNAL_BDS_B12I   = 0;
+    /** BDS B1-2 Q signal */
+    PB_DGNSS_SIGNAL_BDS_B12Q   = 1;
+    /** BDS B1-2 (I+Q) signal */
+    PB_DGNSS_SIGNAL_BDS_B12IQ  = 2;
+    /** BDS B3-I signal */
+    PB_DGNSS_SIGNAL_BDS_B3I    = 3;
+    /** BDS B3-Q signal */
+    PB_DGNSS_SIGNAL_BDS_B3Q    = 4;
+    /** BDS B3-(I+Q) signal */
+    PB_DGNSS_SIGNAL_BDS_B3IQ   = 5;
+    /** BDS B3A signal */
+    PB_DGNSS_SIGNAL_BDS_B3A    = 6;
+    /** BDS B2-I signal */
+    PB_DGNSS_SIGNAL_BDS_B2I    = 7;
+    /** BDS B2-Q signal */
+    PB_DGNSS_SIGNAL_BDS_B2Q    = 8;
+    /** BDS B2-(I+Q) signal */
+    PB_DGNSS_SIGNAL_BDS_B2IQ   = 9;
+    /** BDS B2a Data signal */
+    PB_DGNSS_SIGNAL_BDS_B2AD   = 10;
+    /** BDS B2a Pilot signal */
+    PB_DGNSS_SIGNAL_BDS_B2AP   = 11;
+    /** BDS B2a (Data+Pilot) signal */
+    PB_DGNSS_SIGNAL_BDS_B2ADP  = 12;
+    /** BDS B1C Data signal */
+    PB_DGNSS_SIGNAL_BDS_B1CD   = 13;
+    /** BDS B1C Pilot signal */
+    PB_DGNSS_SIGNAL_BDS_B1CP   = 14;
+    /** BDS B1C (Data+Pilot) signal */
+    PB_DGNSS_SIGNAL_BDS_B1CDP  = 15;
+    /** BDS B1A signal */
+    PB_DGNSS_SIGNAL_BDS_B1A    = 16;
+    /** BDS B1 Codeless signal */
+    PB_DGNSS_SIGNAL_BDS_B1N    = 17;
+    /** BDS B2b Data signal */
+    PB_DGNSS_SIGNAL_BDS_B2BD   = 18;
+    /** BDS B2b Pilot signal */
+    PB_DGNSS_SIGNAL_BDS_B2BP   = 19;
+    /** BDS B2b (Data+Pilot) signal */
+    PB_DGNSS_SIGNAL_BDS_B2BDP  = 20;
+    /** BDS B2(B2a+B2b)-D signal */
+    PB_DGNSS_SIGNAL_BDS_B2D    = 21;
+    /** BDS B2(B2a+B2b)-P signal */
+    PB_DGNSS_SIGNAL_BDS_B2P    = 22;
+    /** BDS B2(B2a+B2b)-(D+P) signal */
+    PB_DGNSS_SIGNAL_BDS_B2DP   = 23;
+}
+
+enum PBDGnssBdsSignalBitMask {
+    PB_DGNSS_SIGNAL_BDS_INVALID    = 0;
+    /** BDS B1-2 I signal */
+    PB_DGNSS_SIGNAL_BDS_B12I_BIT   = 1;
+    /** BDS B1-2 Q signal */
+    PB_DGNSS_SIGNAL_BDS_B12Q_BIT   = 2;
+    /** BDS B1-2 (I+Q) signal */
+    PB_DGNSS_SIGNAL_BDS_B12IQ_BIT  = 4;
+    /** BDS B3-I signal */
+    PB_DGNSS_SIGNAL_BDS_B3I_BIT    = 8;
+    /** BDS B3-Q signal */
+    PB_DGNSS_SIGNAL_BDS_B3Q_BIT    = 16;
+    /** BDS B3-(I+Q) signal */
+    PB_DGNSS_SIGNAL_BDS_B3IQ_BIT   = 32;
+    /** BDS B3A signal */
+    PB_DGNSS_SIGNAL_BDS_B3A_BIT    = 64;
+    /** BDS B2-I signal */
+    PB_DGNSS_SIGNAL_BDS_B2I_BIT    = 128;
+    /** BDS B2-Q signal */
+    PB_DGNSS_SIGNAL_BDS_B2Q_BIT    = 256;
+    /** BDS B2-(I+Q) signal */
+    PB_DGNSS_SIGNAL_BDS_B2IQ_BIT   = 512;
+    /** BDS B2a Data signal */
+    PB_DGNSS_SIGNAL_BDS_B2AD_BIT   = 1024;
+    /** BDS B2a Pilot signal */
+    PB_DGNSS_SIGNAL_BDS_B2AP_BIT   = 2048;
+    /** BDS B2a (Data+Pilot) signal */
+    PB_DGNSS_SIGNAL_BDS_B2ADP_BIT  = 4096;
+    /** BDS B1C Data signal */
+    PB_DGNSS_SIGNAL_BDS_B1CD_BIT   = 8192;
+    /** BDS B1C Pilot signal */
+    PB_DGNSS_SIGNAL_BDS_B1CP_BIT   = 16384;
+    /** BDS B1C (Data+Pilot) signal */
+    PB_DGNSS_SIGNAL_BDS_B1CDP_BIT  = 32768;
+    /** BDS B1A signal */
+    PB_DGNSS_SIGNAL_BDS_B1A_BIT    = 65536;
+    /** BDS B1 Codeless signal */
+    PB_DGNSS_SIGNAL_BDS_B1N_BIT    = 131072;
+    /** BDS B2b Data signal */
+    PB_DGNSS_SIGNAL_BDS_B2BD_BIT   = 262144;
+    /** BDS B2b Pilot signal */
+    PB_DGNSS_SIGNAL_BDS_B2BP_BIT   = 524288;
+    /** BDS B2b (Data+Pilot) signal */
+    PB_DGNSS_SIGNAL_BDS_B2BDP_BIT  = 1048576;
+    /** BDS B2(B2a+B2b)-D signal */
+    PB_DGNSS_SIGNAL_BDS_B2D_BIT    = 2097152;
+    /** BDS B2(B2a+B2b)-P signal */
+    PB_DGNSS_SIGNAL_BDS_B2P_BIT    = 4194304;
+    /** BDS B2(B2a+B2b)-(D+P) signal */
+    PB_DGNSS_SIGNAL_BDS_B2DP_BIT   = 8388608;
+}
+
+enum PBDGnssSbasSignalIdentifier {
+    /** SBAS L1 C/A signal */
+    PB_DGNSS_SIGNAL_SBAS_L1CA  = 0;
+    /** SBAS L5 I signal */
+    PB_DGNSS_SIGNAL_SBAS_L5I   = 1;
+    /** SBAS L5 Q signal */
+    PB_DGNSS_SIGNAL_SBAS_L5Q   = 2;
+    /** SBAS L5 I+Q signal */
+    PB_DGNSS_SIGNAL_SBAS_L5IQ  = 3;
+}
+
+enum PBDGnssSbasSignalBitMask {
+    PB_DGNSS_SIGNAL_SBAS_INVALID   = 0;
+    /** SBAS L1 C/A signal */
+    PB_DGNSS_SIGNAL_SBAS_L1CA_BIT  = 1;
+    /** SBAS L5 I signal */
+    PB_DGNSS_SIGNAL_SBAS_L5I_BIT   = 2;
+    /** SBAS L5 Q signal */
+    PB_DGNSS_SIGNAL_SBAS_L5Q_BIT   = 4;
+    /** SBAS L5 I+Q signal */
+    PB_DGNSS_SIGNAL_SBAS_L5IQ_BIT  = 8;
+}
+
+enum PBDGnssSignalStatusFlags {
+    PB_DGNSS_SIGNAL_STATUS_INVALID  = 0;
+    /** bit0: 1: fully reconstructed measurements available including integer-milliseconds
+     *        0: modulo 1-ms measurements */
+    PB_MEASUREMENT_COMPLETE         = 1;
+    /** bit1: 1: pseudorange measurements valid
+     *        0: pseudorange measurements invalid */
+    PB_PSEUDORANGE_VALID            = 2;
+    /** bit2: 1: Carrier phase measurements valid
+              0: Carrier phase messurements invalid */
+    PB_CARRIER_PHASE_VALID          = 4;
+    /** bit3: 1: Phase range rate measurements valid
+              0: Phase ragne rate measurements invalid */
+    PB_PHASE_RANGE_RATE_VALID       = 8;
+    /** Half-cycle ambiguity indicator, valid only if carrier phase measurements are set to valid
+     *  bit5 bit4: Half cycle ambiguity
+     *  00 - No Half-cycle ambiguity
+     *  01 - Half-cycle ambiguity
+     *  1x - Unknown */
+    PB_HALF_CYCLE_AMBIGUITY_VALID   = 16;
+    /** Half cycle ambiguity unknown */
+    PB_HALF_CYCLE_AMBIGUITY_UNKNOWN = 32;
+}
+
+enum PBExtendedSatelliteInformation {
+    /** nominal value of frequency: L1 1602.0 MHz, L2 1246.0 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_0        = 0;
+    /** nominal value of frequency: L1 1598.0625 MHz, L2 1242.9375 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_MINUS_7  = -7;
+    /** nominal value of frequency: L1 1598.6250 MHz, L2 1243.3750 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_MINUS_6  = -6;
+    /** nominal value of frequency: L1 1599.1875 MHz, L2 1243.8125 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_MINUS_5  = -5;
+    /** nominal value of frequency: L1 1599.7500 MHz, L2 1244.2500 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_MINUS_4  = -4;
+    /** nominal value of frequency: L1 1600.3125 MHz, L2 1244.6875 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_MINUS_3  = -3;
+    /** nominal value of frequency: L1 1600.8750 MHz, L2 1245.1250 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_MINUS_2  = -2;
+    /** nominal value of frequency: L1 1601.4375 MHz, L2 1245.5625 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_MINUS_1  = -1;
+    /** nominal value of frequency: L1 1602.5625 MHz, L2 1246.4375 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_1        = 1;
+    /** nominal value of frequency: L1 1603.125 MHz, L2 1246.875 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_2        = 2;
+    /** nominal value of frequency: L1 1603.6875 MHz, L2 1247.3125 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_3        = 3;
+    /** nominal value of frequency: L1 1604.25 MHz, L2 1247.75 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_4        = 4;
+    /** nominal value of frequency: L1 1604.8125 MHz, L2 1248.1875 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_5        = 5;
+    /** nominal value of frequency: L1 1605.375 MHz, L2 1248.625 MHz*/
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_NUMBER_6        = 6;
+    /** reserved */
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_RESERVED        = 14;
+    /** frequency channel number is not known or not available */
+    PB_DGNSS_GLONASS_FREQUENCY_CHANNEL_UNKNOWN         = 15;
+}
+
+// ============================================================================
+// Messages
+// ============================================================================
+
+// Location Position Mode structure.
+message PBLocPosMode {
+    PBLocPositionMode mode  = 1;
+    PBLocGpsPositionRecurrence recurrence = 2;
+    uint32 min_interval = 3;
+    uint32 preferred_accuracy = 4;
+    uint32 preferred_time = 5;
+    bool share_position = 6;
+    string credentials = 7;
+    string provider = 8;
+    PBGnssPowerMode powerMode = 9;
+    uint32 timeBetweenMeasurements = 10;
+}
+
+message PBUlpLocation {
+    PBLocGpsLocation    gpsLocation = 1;
+    /* Provider indicator for HYBRID or GPS */
+    uint32       position_source    = 2;
+    /* PBLocPosTechMask */
+    uint32  tech_mask    = 3;
+    bool    unpropagatedPosition    = 4;
+}
+
+/** Represents a location. */
+message PBLocGpsLocation {
+    /** Contains PBLocGpsLocationFlags bits. */
+    uint32         flags = 1;
+    /** PBLocGpsSpoofMask - spoof mask */
+    uint32         spoof_mask = 2;
+    /** Represents latitude in degrees. */
+    float          latitude = 3;
+    /** Represents longitude in degrees. */
+    float          longitude = 4;
+    /** Represents altitude in meters above the WGS 84
+    reference ellipsoid. */
+    float          altitude = 5;
+    /** Represents horizontal speed in meters per second. */
+    float           speed = 6;
+    /** Represents heading in degrees. */
+    float           bearing = 7;
+    /** Represents expected accuracy in meters. */
+    float           accuracy = 8;
+    /** Represents the expected vertical uncertainity in meters*/
+    float           vertUncertainity = 9;
+    /** Timestamp for the location fix. */
+    /** Milliseconds since January 1, 1970 */
+    uint64      timestamp = 10;
+}
+
+message PBGnssSv {
+    uint32 svId = 1;     // Unique Identifier
+    PBGnssSvType type = 2;   // type of SV (GPS, SBAS, GLONASS, QZSS, BEIDOU, GALILEO)
+    float cN0Dbhz = 3;     // signal strength
+    float elevation = 4;   // elevation of SV (in degrees)
+    float azimuth = 5;     // azimuth of SV (in degrees)
+    uint32 gnssSvOptionsMask = 6; // Bitwise OR of PBGnssSvOptionsMask
+    float carrierFrequencyHz = 7; // carrier frequency of the signal tracked
+    uint32 gnssSignalTypeMask = 8; // Specifies GNSS signal type - PBGnssSignalInfoMask
+}
+
+message PBGnssSvNotification {
+    bool gnssSignalTypeMaskValid = 1;
+    // information on a number of SVs
+    repeated PBGnssSv gnssSvs = 2;
+}
+
+/** Represents gps location extended. */
+message PBGpsLocationExtended {
+    /** Contains PBGpsLocationExtendedFlags bits. */
+    /** See PBGpsLocationExtendedFlagsUpper32 and
+        PBGpsLocationExtendedFlagsLower32 */
+    uint64        flags = 1;
+    /** Contains the Altitude wrt mean sea level */
+    float           altitudeMeanSeaLevel = 2;
+    /** Contains Position Dilusion of Precision. */
+    float           pdop = 3;
+    /** Contains Horizontal Dilusion of Precision. */
+    float           hdop = 4;
+    /** Contains Vertical Dilusion of Precision. */
+    float           vdop = 5;
+    /** Contains Magnetic Deviation. */
+    float           magneticDeviation = 6;
+    /** vertical uncertainty in meters */
+    float           vert_unc = 7;
+    /** speed uncertainty in m/s */
+    float           speed_unc = 8;
+    /** heading uncertainty in degrees (0 to 359.999) */
+    float           bearing_unc = 9;
+    /** horizontal reliability. */
+    PBLocReliability  horizontal_reliability = 10;
+    /** vertical reliability. */
+    PBLocReliability  vertical_reliability = 11;
+    /*  Horizontal Elliptical Uncertainty (Semi-Major Axis) */
+    float           horUncEllipseSemiMajor = 12;
+    /*  Horizontal Elliptical Uncertainty (Semi-Minor Axis) */
+    float           horUncEllipseSemiMinor = 13;
+    /*    Elliptical Horizontal Uncertainty Azimuth */
+    float           horUncEllipseOrientAzimuth = 14;
+
+    PBApTimeStampStructType         timeStamp = 15;
+    /** Gnss sv used in position data */
+    PBGnssSvUsedInPosition gnss_sv_used_ids = 16;
+    /** Gnss sv used in position data for multiband */
+    PBGnssSvMbUsedInPosition gnss_mb_sv_used_ids = 17;
+    /** PBLocNavSolutionMask - Nav solution mask to indicate sbas corrections */
+    uint32  navSolutionMask = 18;
+    /** PBLocPosTechMask - Position technology used in computing this fix */
+    uint32 tech_mask = 19;
+    /** SV Info source used in computing this fix */
+    PBLocSvInfoSource sv_source = 20;
+    /** Body Frame Dynamics: 4wayAcceleration and pitch set with validity */
+    PBGnssLocationPositionDynamics bodyFrameData = 21;
+    /** GPS Time */
+    PBGPSTimeStruct gpsTime = 22;
+    PBGnssSystemTime gnssSystemTime = 23;
+    /** Dilution of precision associated with this position*/
+    PBLocExtDOP extDOP = 24;
+    /** North standard deviation.
+        Unit: Meters */
+    float northStdDeviation = 25;
+    /** East standard deviation.
+        Unit: Meters */
+    float eastStdDeviation = 26;
+    /** North Velocity.
+        Unit: Meters/sec */
+    float northVelocity = 27;
+    /** East Velocity.
+        Unit: Meters/sec */
+    float eastVelocity = 28;
+    /** Up Velocity.
+        Unit: Meters/sec */
+    float upVelocity = 29;
+    /** North Velocity standard deviation.
+        Unit: Meters/sec */
+    float northVelocityStdDeviation = 30;
+    /** East Velocity standard deviation.
+        Unit: Meters/sec */
+    float eastVelocityStdDeviation = 31;
+    /** Up Velocity standard deviation
+        Unit: Meters/sec */
+    float upVelocityStdDeviation = 32;
+    /** Estimated clock bias. Unit: Nano seconds */
+    float clockbiasMeter = 33;
+    /** Estimated clock bias std deviation. Unit: Nano seconds */
+    float clockBiasStdDeviationMeter = 34;
+    /** Estimated clock drift. Unit: Meters/sec */
+    float clockDrift = 35;
+    /** Estimated clock drift std deviation. Unit: Meters/sec */
+    float clockDriftStdDeviation = 36;
+    /** Number of valid reference stations. Range:[0-4] */
+    uint32 numValidRefStations = 37;
+    /** Reference station(s) number - Max count of 4*/
+    repeated uint32 referenceStation = 38;
+    /** Number of measurements received for use in fix.
+        Shall be used as maximum index in-to svUsageInfo[].
+        Set to 0, if svUsageInfo reporting is not supported.
+        Range: 0-EP_GNSS_MAX_MEAS */
+    uint32 numOfMeasReceived = 39;
+    /** Measurement Usage Information */
+    repeated PBGpsMeasUsageInfo measUsageInfo = 40;
+    /** Leap Seconds */
+    uint32 leapSeconds = 41;
+    /** Time uncertainty in milliseconds   */
+    float timeUncMs = 42;
+    /** Heading Rate is in NED frame.
+        Range: 0 to 359.999. 946
+        Unit: Degrees per Seconds */
+    float headingRateDeg = 43;
+    /** Sensor calibration confidence percent. Range: 0 - 100 */
+    uint32 calibrationConfidence = 44;
+    /** PBDrCalibrationStatusMask */
+    uint32 calibrationStatus = 45;
+    /* location engine type. When the fix. when the type is set to
+        LOC_ENGINE_SRC_FUSED, the fix is the propagated/aggregated
+        reports from all engines running on the system (e.g.:
+        DR/SPE/PPE) based proprietary algorithm. To check which
+        location engine contributes to the fused output, check for
+        locOutputEngMask. */
+    PBLocOutputEngineType locOutputEngType = 46;
+    /* when loc output eng type is set to fused, this field
+        indicates the set of engines contribute to the fix.
+        PBPositioningEngineMask */
+    uint32 locOutputEngMask = 47;
+    /**  DGNSS Correction Source for position report: RTCM, 3GPP
+     *   etc. */
+    PBLocDgnssCorrectionSourceType dgnssCorrectionSourceType = 48;
+    /**  If DGNSS is used, the SourceID is a 32bit number identifying
+     *   the DGNSS source ID */
+    uint32 dgnssCorrectionSourceID = 49;
+    /** If DGNSS is used, which constellation was DGNSS used for to
+     *  produce the pos report - PBGnssConstellationInfoMask*/
+    uint32 dgnssConstellationUsageMask = 50;
+    /** If DGNSS is used, DGNSS Reference station ID used for
+     *  position report */
+    uint32 dgnssRefStationId = 51;
+    /**  If DGNSS is used, DGNSS data age in milli-seconds  */
+    uint32 dgnssDataAgeMsec = 52;
+    /** PBSolutionStatusMask */
+    uint32 solutionStatusMask = 53;
+}
+
+message PBGnssAidingData {
+    // if true, delete all aiding data and ignore other params
+    bool deleteAll  = 1;
+    // SV specific aiding data
+    PBGnssAidingDataSv sv = 2;
+    // common aiding data
+    PBGnssAidingDataCommon common = 3;
+    // engines to perform the delete operation on
+    // Masks from - PBPositioningEngineMask
+    uint32 posEngineMask = 4;
+}
+
+message PBGnssAidingDataSv {
+    // bitwise OR of PBGnssAidingDataSvMask
+    uint32 svMask = 1;
+    // bitwise OR of PBGnssAidingDataSvTypeMask
+    uint32 svTypeMask = 2;
+}
+
+message PBGnssAidingDataCommon {
+    // bitwise OR of PBGnssAidingDataCommonMask
+    uint32 mask = 1;
+}
+
+message PBGnssSvMeasurementSet {
+    bool                                isNhz = 1;
+    uint64                              ptpTimeNs = 2;
+    PBGnssSvMeasurementHeader           svMeasSetHeader = 3;
+    uint32                              svMeasCount = 4;
+    repeated PBSVMeasurementStructType  svMeas = 5;
+}
+
+message PBGnssLocDgnssSVMeasurement {
+    uint32 dgnssMeasStatus = 1;
+    /**<   Bitmask indicating the DGNSS SV measurement status - PBLocSvDgnssMeasStatusMask */
+
+    uint32 diffDataEpochTimeMsec = 2;
+    /**<   Age of differential data in Milli Seconds with respect to the Measurement time. */
+
+    float prCorrMeters = 3;
+    /**<   Pseudo Range correction in meters. */
+
+    float prrCorrMetersPerSec = 4;
+    /**<  Pseudo Range rate correction in meters per second. */
+}
+
+message PBSVMeasurementStructType {
+    PBGnss_LocSvSystemEnumType    gnssSystem = 1;
+    // 0 signal type mask indicates invalid value
+    fixed32                       gnssSignalTypeMask = 2;
+    uint32                        gnssSvId = 3;
+    /**< GNSS SV ID.
+         \begin{itemize1}
+         \item Range:  \begin{itemize1}
+           \item For GPS:      1 to 32
+           \item For GLONASS:  1 to 32
+           \item For SBAS:     120 to 151
+           \item For BDS:      201 to 237
+         \end{itemize1} \end{itemize1}
+        The GPS and GLONASS SVs can be disambiguated using the system field.
+    */
+    uint32                         gloFrequency = 4;
+    /**< GLONASS frequency number + 7 \n
+         Valid only for GLONASS System \n
+         Shall be ignored for all other systems \n
+          - Range: 1 to 14 \n
+    */
+    PBSvSearchStatus                 svStatus = 5;
+    /**< Satellite search state \n
+        @ENUM()
+    */
+    bool                         healthStatusValid = 6;
+    /**< SV Health Status validity flag\n
+        - 0: Not valid \n
+        - 1: Valid \n
+    */
+    bool                         healthStatus = 7;
+    /**< Health status.
+         \begin{itemize1}
+         \item    Range: 0 to 1; 0 = unhealthy, \n 1 = healthy, 2 = unknown
+         \vspace{-0.18in} \end{itemize1}
+    */
+    uint32                 svInfoMask = 8;
+    /**< Indicates whether almanac and ephemeris information is available. \n
+        @MASK() PBSvInfoMask
+    */
+    uint64                  measurementStatus = 9;
+    /**< Bitmask indicating SV measurement status.
+        Valid bitmasks: \n
+        If any MSB bit in 0xFFC0000000000000 DONT_USE is set, the measurement
+        must not be used by the client.
+        @MASK() PBGnssLocSvMeasStatusMaskType
+    */
+    uint32                        CNo = 10;
+    /**< Carrier to Noise ratio  \n
+        - Units: 0.1 dBHz \n
+    */
+    uint32                          gloRfLoss = 11;
+    /**< GLONASS Rf loss reference to Antenna. \n
+         - Units: dB, Scale: 0.1 \n
+    */
+    bool                         lossOfLock = 12;
+    /**< Loss of signal lock indicator  \n
+         - 0: Signal in continuous track \n
+         - 1: Signal not in track \n
+    */
+    int32                         measLatency = 13;
+    /**< Age of the measurement. Positive value means measurement precedes ref time. \n
+         - Units: msec \n
+    */
+    PBSVTimeSpeedInfo      svTimeSpeed = 14;
+    /**< Unfiltered SV Time and Speed information
+    */
+    float                           dopplerAccel = 15;
+    /**< Satellite Doppler Accelertion\n
+         - Units: Hz/s \n
+    */
+    bool                         multipathEstValid = 16;
+    /**< Multipath estimate validity flag\n
+        - 0: Multipath estimate not valid \n
+        - 1: Multipath estimate valid \n
+    */
+    float                           multipathEstimate = 17;
+    /**< Estimate of multipath in measurement\n
+         - Units: Meters \n
+    */
+    bool                         fineSpeedValid = 18;
+    /**< Fine speed validity flag\n
+         - 0: Fine speed not valid \n
+         - 1: Fine speed valid \n
+    */
+    float                           fineSpeed = 19;
+    /**< Carrier phase derived speed \n
+         - Units: m/s \n
+    */
+    bool                         fineSpeedUncValid = 20;
+    /**< Fine speed uncertainty validity flag\n
+         - 0: Fine speed uncertainty not valid \n
+         - 1: Fine speed uncertainty valid \n
+    */
+    float                           fineSpeedUnc = 21;
+    /**< Carrier phase derived speed \n
+        - Units: m/s \n
+    */
+    bool                         carrierPhaseValid = 22;
+    /**< Carrier Phase measurement validity flag\n
+         - 0: Carrier Phase not valid \n
+         - 1: Carrier Phase valid \n
+    */
+    double                          carrierPhase = 23;
+    /**< Carrier phase measurement [L1 cycles] \n
+    */
+    bool                         cycleSlipCountValid = 24;
+     /**< Cycle slup count validity flag\n
+         - 0: Not valid \n
+         - 1: Valid \n
+    */
+    uint32                         cycleSlipCount = 25;
+    /**< Increments when a CSlip is detected */
+
+    bool                         svDirectionValid = 26;
+    /**< Validity flag for SV direction */
+
+    float                           svAzimuth = 27;
+    /**< Satellite Azimuth
+        - Units: radians \n
+    */
+    float                           svElevation = 28;
+    /**< Satellite Elevation
+        - Units: radians \n
+    */
+    uint64                        validMeasStatusMask = 29;
+    /**< Bitmask indicating SV measurement status Validity.
+        Valid bitmasks: \n
+        If any MSB bit in 0xFFC0000000000000 DONT_USE is set, the measurement
+        must not be used by the client.
+        @MASK()
+    */
+    bool                          carrierPhaseUncValid = 30;
+    /**< Validity flag for SV direction */
+
+    float                           carrierPhaseUnc = 31;
+
+    PBGnssLocDgnssSVMeasurement     dgnssSvMeas = 32;
+    /** < DGNSS Measurements Report for SVs */
+}
+
+message PBGnssSvPolynomial {
+    uint32     gnssSvId = 1;
+    /* GPS: 1-32, GLO: 65-96, 0: Invalid,
+       SBAS: 120-151, BDS:201-237,GAL:301 to 336
+       NAVIC: 401-414
+       All others are reserved
+    */
+    uint32      freqNum = 2;
+    /* Freq index, only valid if u_SysInd is GLO */
+
+
+    uint32    svPolyStatusMaskValidity = 3;
+    /* PBGnssSvPolyStatusMaskValidity */
+    uint32    svPolyStatusMask = 4;
+    /* PBGnssSvPolyStatusMask */
+
+    uint32      is_valid = 5;
+    /* PBUlpGnssSvPolyValidFlags */
+
+    uint32     iode = 6;
+    /* Ephemeris reference time
+       GPS:Issue of Data Ephemeris used [unitless].
+       GLO: Tb 7-bit, refer to ICD02
+    */
+    float      T0 = 7;
+    /* Reference time for polynominal calculations
+       GPS: Secs in week.
+       GLO: Full secs since Jan/01/96
+    */
+    repeated float      polyCoeffXYZ0 = 8;
+    /* C0X, C0Y, C0Z */
+    repeated float      polyCoefXYZN = 9;
+    /* C1X, C2X ... C2Z, C3Z */
+    repeated float       polyCoefOther = 10;
+    /* C0T, C1T, C2T, C3T */
+    float       svPosUnc = 11;       /* SV position uncertainty [m]. */
+    float       ionoDelay = 12;    /* Ionospheric delay at d_T0 [m]. */
+    float       ionoDot = 13;      /* Iono delay rate [m/s].  */
+    float       sbasIonoDelay = 14;/* SBAS Ionospheric delay at d_T0 [m]. */
+    float       sbasIonoDot = 15;  /* SBAS Iono delay rate [m/s].  */
+    float       tropoDelay = 16;   /* Tropospheric delay [m]. */
+    float       elevation = 17;    /* Elevation [rad] at d_T0 */
+    float       elevationDot = 18;      /* Elevation rate [rad/s] */
+    float       elevationUnc = 19;      /* SV elevation [rad] uncertainty */
+    repeated float      velCoef = 20;
+    /* Coefficients of velocity poly. */
+    uint32    enhancedIOD = 21;    /*  Enhanced Reference Time */
+    float gpsIscL1ca = 22;
+    float gpsIscL2c = 23;
+    float gpsIscL5I5 = 24;
+    float gpsIscL5Q5 = 25;
+    float gpsTgd = 26;
+    float gloTgdG1G2 = 27;
+    float bdsTgdB1 = 28;
+    float bdsTgdB2 = 29;
+    float bdsTgdB2a = 30;
+    float bdsIscB2a = 31;
+    float galBgdE1E5a = 32;
+    float galBgdE1E5b = 33;
+    float navicTgdL5 = 34;
+    uint32 polyOrder = 35;
+    uint32 validDuration = 36;
+    repeated double polyCoeffXYZ = 37;
+    repeated double polyClockBias = 38;
+}
+
+message PBGnssSvEphemerisReport {
+    /** Indicates GNSS Constellation Type
+        Mandatory field */
+    PBGnss_LocSvSystemEnumType gnssConstellation = 1;
+
+    /** GPS System Time of the ephemeris report */
+    bool isSystemTimeValid = 2;
+    PBGnssSystemTimeStructType systemTime = 3;
+
+    oneof ephInfo {
+       /** GPS Ephemeris */
+       PBGpsEphemerisResponse gpsEphemeris = 4;
+       /** GLONASS Ephemeris */
+       PBGlonassEphemerisResponse glonassEphemeris = 5;
+       /** BDS Ephemeris */
+       PBBdsEphemerisResponse bdsEphemeris = 6;
+       /** GALILEO Ephemeris */
+       PBGalileoEphemerisResponse galileoEphemeris = 7;
+       /** QZSS Ephemeris */
+       PBQzssEphemerisResponse qzssEphemeris = 8;
+    }
+}
+
+/** GPS Navigation model for each SV */
+message PBGpsEphemerisResponse {
+    uint32 numOfEphemeris = 1;
+    repeated PBGpsEphemeris gpsEphemerisData = 2;
+}
+
+/** GLONASS Navigation model for each SV */
+message PBGlonassEphemerisResponse {
+    uint32 numOfEphemeris = 1;
+    repeated PBGlonassEphemeris gloEphemerisData = 2;
+}
+
+/** BDS Navigation model for each SV */
+message PBBdsEphemerisResponse {
+    uint32 numOfEphemeris = 1;
+    repeated PBBdsEphemeris bdsEphemerisData = 2;
+}
+
+/** GALILEO Navigation model for each SV */
+message PBGalileoEphemerisResponse {
+    uint32 numOfEphemeris = 1;
+    repeated PBGalileoEphemeris galEphemerisData = 2;
+}
+
+/** QZSS Navigation model for each SV */
+message PBQzssEphemerisResponse {
+    uint32 numOfEphemeris = 1;
+    repeated PBGpsEphemeris qzssEphemerisData = 2;
+}
+
+message PBGnssEphCommon {
+    uint32 gnssSvId = 1;
+    /**<   GNSS SV ID.
+      - Type: uint16
+      \begin{itemize1}
+      \item    Range:    \begin{itemize1}
+        \item    For GPS:     1 to 32
+        \item    For QZSS:    193 to 197
+        \item    For BDS:     201 to 237
+        \item    For GAL:     301 to 336
+        \item    For NAVIC:   401 to 414
+      \vspace{-0.18in} \end{itemize1} \end{itemize1} */
+
+    PBGnssEphAction updateAction = 2;
+    /**<   Specifies the action and source of ephemeris. \n
+    - Type: int32 enum */
+
+    uint32 IODE = 3;
+    /**<   Issue of data ephemeris used (unit-less). \n
+        GPS: IODE 8 bits.\n
+        BDS: AODE 5 bits. \n
+        GAL: SIS IOD 10 bits. \n
+        - Type: uint16
+        - Units: Unit-less */
+
+    float aSqrt = 4;
+    /**<   Square root of semi-major axis. \n
+      - Type: double
+      - Units: Square Root of Meters */
+
+    float deltaN = 5;
+    /**<   Mean motion difference from computed value. \n
+      - Type: double
+      - Units: Radians/Second */
+
+    float m0 = 6;
+    /**<   Mean anomaly at reference time. \n
+      - Type: double
+      - Units: Radians */
+
+    float eccentricity = 7;
+    /**<   Eccentricity . \n
+      - Type: double
+      - Units: Unit-less */
+
+    float omega0 = 8;
+    /**<   Longitude of ascending node of orbital plane at the weekly epoch. \n
+      - Type: double
+      - Units: Radians */
+
+    float i0 = 9;
+    /**<   Inclination angle at reference time. \n
+      - Type: double
+      - Units: Radians */
+
+    float omega = 10;
+    /**<   Argument of Perigee. \n
+      - Type: double
+      - Units: Radians */
+
+    float omegaDot = 11;
+    /**<   Rate of change of right ascension. \n
+      - Type: double
+      - Units: Radians/Second */
+
+    float iDot = 12;
+    /**<   Rate of change of inclination angle. \n
+      - Type: double
+      - Units: Radians/Second */
+
+    float cUc = 13;
+    /**<   Amplitude of the cosine harmonic correction term to the argument of latitude. \n
+      - Type: double
+      - Units: Radians */
+
+    float cUs = 14;
+    /**<   Amplitude of the sine harmonic correction term to the argument of latitude. \n
+      - Type: double
+      - Units: Radians */
+
+    float cRc = 15;
+    /**<   Amplitude of the cosine harmonic correction term to the orbit radius. \n
+      - Type: double
+      - Units: Meters */
+
+    float cRs = 16;
+    /**<   Amplitude of the sine harmonic correction term to the orbit radius. \n
+      - Type: double
+      - Units: Meters */
+
+    float cIc = 17;
+    /**<   Amplitude of the cosine harmonic correction term to the angle of inclination. \n
+      - Type: double
+      - Units: Radians */
+
+    float cIs = 18;
+    /**<   Amplitude of the sine harmonic correction term to the angle of inclination. \n
+      - Type: double
+      - Units: Radians */
+
+    uint32 toe = 19;
+    /**<   Reference time of ephemeris. \n
+      - Type: uint32
+      - Units: Seconds */
+
+    uint32 toc = 20;
+    /**<   Clock data reference time of week.  \n
+      - Type: uint32
+      - Units: Seconds */
+
+    float af0 = 21;
+    /**<   Clock bias correction coefficient. \n
+      - Type: double
+      - Units: Seconds */
+
+    float af1 = 22;
+    /**<   Clock drift coefficient. \n
+      - Type: double
+      - Units: Seconds/Second */
+
+    float af2 = 23;
+    /**<   Clock drift rate correction coefficient. \n
+      - Type: double
+      - Units: Seconds/Seconds^2 */
+}
+
+/* GPS Navigation Model Info */
+message PBGpsEphemeris {
+    PBGnssEphCommon commonEphemerisData = 1;
+    /**<   Common ephemeris data.   */
+
+    uint32 signalHealth = 2;
+    /**<   Signal health. \n
+         Bit 0 : L5 Signal Health. \n
+         Bit 1 : L2 Signal Health. \n
+         Bit 2 : L1 Signal Health. \n
+         - Type: uint8
+         - Values: 3 bit mask of signal health, where set bit indicates unhealthy signal */
+
+    uint32 URAI = 3;
+    /**<   User Range Accuracy Index. \n
+         - Type: uint8
+         - Units: Unit-less */
+
+    uint32 codeL2 = 4;
+    /**<   Indicates which codes are commanded ON for the L2 channel (2-bits). \n
+         - Type: uint8
+         Valid Values: \n
+         - 00 : Reserved
+         - 01 : P code ON
+         - 10 : C/A code ON */
+
+    uint32 dataFlagL2P = 5;
+    /**<   L2 P-code indication flag. \n
+         - Type: uint8
+         - Value 1 indicates that the Nav data stream was commanded OFF on the P-code of the L2 channel. */
+
+    float tgd = 6;
+    /**<   Time of group delay. \n
+         - Type: double
+         - Units: Seconds */
+
+    uint32 fitInterval = 7;
+    /**<   Indicates the curve-fit interval used by the CS. \n
+         - Type: uint8
+         Valid Values:
+         - 0 : Four hours
+         - 1 : Greater than four hours */
+
+    uint32 IODC = 8;
+    /**<   Issue of Data, Clock. \n
+         - Type: uint16
+         - Units: Unit-less */
+}
+
+/* GLONASS Navigation Model Info */
+message PBGlonassEphemeris {
+    uint32 gnssSvId = 1;
+    /**<   GNSS SV ID.
+       - Type: uint16
+       - Range: 65 to 96 if known. When the slot number to SV ID mapping is unknown, set to 255 */
+
+    PBGnssEphAction updateAction = 2;
+    /**<   Specifies the action and source of ephemeris. \n
+    - Type: int32 enum */
+
+    uint32 bnHealth = 3;
+    /**<   SV health flags. \n
+       - Type: uint8
+       Valid Values: \n
+    - 0 : Healthy
+    - 1 : Unhealthy */
+
+    uint32 lnHealth = 4;
+    /**<   Ln SV health flags. GLONASS-M. \n
+       - Type: uint8
+       Valid Values: \n
+    - 0 : Healthy
+    - 1 : Unhealthy */
+
+    uint32 tb = 5;
+    /**<   Index of a time interval within current day according to UTC(SU) + 03 hours 00 min. \n
+       - Type: uint8
+       - Units: Unit-less */
+
+    uint32 ft = 6;
+    /**<   SV accuracy index. \n
+       - Type: uint8
+       - Units: Unit-less */
+
+    uint32 gloM = 7;
+    /**<   GLONASS-M flag. \n
+       - Type: uint8
+       Valid Values: \n
+    - 0 : GLONASS
+    - 1 : GLONASS-M */
+
+    uint32 enAge = 8;
+    /**<   Characterizes "Age" of current information. \n
+       - Type: uint8
+       - Units: Days */
+
+    uint32 gloFrequency = 9;
+    /**<   GLONASS frequency number + 8. \n
+       - Type: uint8
+       - Range: 1 to 14
+    */
+
+    uint32 p1 = 10;
+    /**<   Time interval between two adjacent values of tb parameter. \n
+       - Type: uint8
+       - Units: Minutes */
+
+    uint32 p2 = 11;
+    /**<   Flag of oddness ("1") or evenness ("0") of the value of tb \n
+       for intervals 30 or 60 minutes. \n
+       - Type: uint8 */
+
+    float deltaTau = 12;
+    /**<   Time difference between navigation RF signal transmitted in L2 sub-band \n
+       and aviation RF signal transmitted in L1 sub-band. \n
+       - Type: floating point
+       - Units: Seconds */
+
+    repeated float position = 13;
+    /**<   Satellite XYZ position. \n
+       - Type: array of doubles (max items - 3)
+       - Units: Meters */
+
+    repeated float velocity = 14;
+    /**<   Satellite XYZ velocity. \n
+       - Type: array of doubles (max items - 3)
+       - Units: Meters/Second */
+
+    repeated float acceleration = 15;
+    /**<   Satellite XYZ sola-luni acceleration. \n
+       - Type: array of doubles (max items - 3)
+       - Units: Meters/Second^2 */
+
+    float tauN = 16;
+    /**<   Satellite clock correction relative to GLONASS time. \n
+       - Type: floating point
+       - Units: Seconds */
+
+    float gamma = 17;
+    /**<   Relative deviation of predicted carrier frequency value \n
+       from nominal value at the instant tb. \n
+       - Type: floating point
+       - Units: Unit-less */
+
+    float toe = 18;
+    /**<   Complete ephemeris time, including N4, NT and Tb. \n
+       [(N4-1)*1461 + (NT-1)]*86400 + tb*900 \n
+       - Type: double
+       - Units: Seconds */
+
+    uint32 nt = 19;
+    /**<   Current date, calendar number of day within four-year interval. \n
+       Starting from the 1-st of January in a leap year. \n
+       - Type: uint16
+       - Units: Days */
+}
+
+/* BDS Navigation Model Info */
+message PBBdsEphemeris {
+
+    PBGnssEphCommon commonEphemerisData = 1;
+    /**<   Common ephemeris data.   */
+
+    uint32 svHealth = 2;
+    /**<   Satellite health information applied to both B1 and B2 (SatH1). \n
+       - Type: uint8
+       Valid Values: \n
+       - 0 : Healthy
+       - 1 : Unhealthy */
+
+    uint32 AODC = 3;
+    /**<   Age of data clock. \n
+       - Type: uint8
+       - Units: Hours */
+
+    float tgd1 = 4;
+    /**<   Equipment group delay differential on B1 signal. \n
+       - Type: double
+       - Units: Nano-Seconds */
+
+    float tgd2 = 5;
+    /**<   Equipment group delay differential on B2 signal. \n
+       - Type: double
+       - Units: Nano-Seconds */
+
+    uint32 URAI = 6;
+    /**<   User range accuracy index (4-bits). \n
+       - Type: uint8
+       - Units: Unit-less */
+}
+
+/* GALIELO Navigation Model Info */
+message PBGalileoEphemeris {
+
+    PBGnssEphCommon commonEphemerisData = 1;
+    /**<   Common ephemeris data.   */
+
+    PBGalEphSignalSource dataSourceSignal = 2;
+    /**<   Galileo Signal Source. \n
+    Valid Values: \n
+      - GAL_EPH_SIGNAL_SRC_UNKNOWN (0) --  GALILEO signal is unknown
+      - GAL_EPH_SIGNAL_SRC_E1B (1) --  GALILEO signal is E1B
+      - GAL_EPH_SIGNAL_SRC_E5A (2) --  GALILEO signal is E5A
+      - GAL_EPH_SIGNAL_SRC_E5B (3) --  GALILEO signal is E5B  */
+
+    uint32 sisIndex = 3;
+    /**<   Signal-in-space index for dual frequency E1-E5b/E5a depending on dataSignalSource. \n
+       - Type: uint8
+       - Units: Unit-less */
+
+    float bgdE1E5a = 4;
+    /**<   E1-E5a Broadcast group delay from F/Nav (E5A). \n
+       - Type: double
+       - Units: Seconds */
+
+    float bgdE1E5b = 5;
+    /**<   E1-E5b Broadcast group delay from I/Nav (E1B or E5B). \n
+       For E1B or E5B signal, both bgdE1E5a and bgdE1E5b are valid. \n
+       For E5A signal, only bgdE1E5a is valid. \n
+       Signal source identified using dataSignalSource. \n
+       - Type: double
+       - Units: Seconds */
+
+    uint32 svHealth = 6;
+    /**<   SV health status of signal identified by dataSourceSignal. \n
+       - Type: uint8
+       Valid Values: \n
+       - 0 : Healthy
+       - 1 : Unhealthy */
+}
+
+message PBGnssKlobucharIonoModel {
+    /** GPS System Time of the iono model report */
+    bool isSystemTimeValid = 1;
+    PBGnssSystemTimeStructType systemTime = 2;
+
+    /** Indicates GNSS Constellation Type */
+    PBGnss_LocSvSystemEnumType gnssConstellation = 3;
+
+    float alpha0 = 4;
+    /**<   Klobuchar Model Parameter Alpha 0.
+         - Type: float
+         - Unit: Seconds
+    */
+
+    float alpha1 = 5;
+    /**<   Klobuchar Model Parameter Alpha 1.
+         - Type: float
+         - Unit: Seconds / Semi-Circle
+    */
+
+    float alpha2 = 6;
+    /**<   Klobuchar Model Parameter Alpha 2.
+         - Type: float
+         - Unit: Seconds / Semi-Circle^2
+    */
+
+    float alpha3 = 7;
+    /**<   Klobuchar Model Parameter Alpha 3.
+         - Type: float
+         - Unit: Seconds / Semi-Circle^3
+    */
+
+    float beta0 = 8;
+    /**<   Klobuchar Model Parameter Beta 0.
+         - Type: float
+         - Unit: Seconds
+    */
+
+    float beta1 = 9;
+    /**<   Klobuchar Model Parameter Beta 1.
+         - Type: float
+         - Unit: Seconds / Semi-Circle
+    */
+
+    float beta2 = 10;
+    /**<   Klobuchar Model Parameter Beta 2.
+         - Type: float
+         - Unit: Seconds / Semi-Circle^2
+    */
+
+    float beta3 = 11;
+    /**<   Klobuchar Model Parameter Beta 3.
+         - Type: float
+         - Unit: Seconds / Semi-Circle^3
+    */
+}
+
+message PBGnssAdditionalSystemInfo {
+    /** GPS System Time of the report */
+    bool isSystemTimeValid = 1;
+    PBGnssSystemTimeStructType systemTime = 2;
+
+    // PBGnssAdditionalSystemInfoMask
+    uint32 validityMask = 3;
+    float tauC = 4;
+    uint32 leapSec = 5;
+}
+
+message PBGpsMeasUsageInfo {
+    /** Specifies GNSS signal type
+        Mandatory Field - PBGnssSignalInfoMask*/
+    uint32 gnssSignalType = 1;
+    /** Specifies GNSS Constellation Type
+        Mandatory Field*/
+    PBGnss_LocSvSystemEnumType gnssConstellation = 2;
+    /**  GNSS SV ID.
+         For GPS:      1 to 32
+         For GLONASS:  65 to 96. When slot-number to SV ID mapping is unknown, set as 255.
+         For SBAS:     120 to 151
+         For QZSS-L1CA:193 to 197
+         For BDS:      201 to 237
+         For GAL:      301 to 336
+         For NAVIC:    401 to 414 */
+    uint32 gnssSvId = 3;
+    /** GLONASS frequency number + 7.
+        Valid only for a GLONASS system and
+        is to be ignored for all other systems.
+        Range: 1 to 14 */
+    uint32 gloFrequency = 4;
+    /** Carrier phase ambiguity type. */
+    PBCarrierPhaseAmbiguityType carrierPhaseAmbiguityType = 5;
+    /** Validity mask PBGnssMeasUsageStatusBitMask */
+    uint32 measUsageStatusMask = 6;
+    /** Specifies measurement usage status
+        Mandatory Field - PBGnssMeasUsageInfoValidityMask*/
+    uint32 validityMask = 7;
+    /** Computed pseudorange residual.
+        Unit: Meters */
+    float pseudorangeResidual = 8;
+    /** Computed doppler residual.
+        Unit: Meters/sec*/
+    float dopplerResidual = 9;
+    /** Computed carrier phase residual.
+        Unit: Cycles*/
+    float carrierPhaseResidual = 10;
+    /** Carrier phase ambiguity value.
+        Unit: Cycles*/
+    float carrierPhasAmbiguity = 11;
+}
+
+message PBLocExtDOP {
+    /**  Position dilution of precision.
+       Range: 1 (highest accuracy) to 50 (lowest accuracy) */
+    float PDOP = 1;
+
+    /**  Horizontal dilution of precision.
+       Range: 1 (highest accuracy) to 50 (lowest accuracy) */
+    float HDOP = 2;
+
+    /**  Vertical dilution of precision.
+       Range: 1 (highest accuracy) to 50 (lowest accuracy) */
+    float VDOP = 3;
+
+    /**  geometric  dilution of precision.
+       Range: 1 (highest accuracy) to 50 (lowest accuracy) */
+    float GDOP = 4;
+
+    /**  time dilution of precision.
+       Range: 1 (highest accuracy) to 50 (lowest accuracy) */
+    float TDOP = 5;
+}
+
+message PBSystemTimeStructUnion {
+    oneof sysTimeUnion {
+        PBGnssSystemTimeStructType gpsSystemTime   = 1;
+        PBGnssSystemTimeStructType galSystemTime   = 2;
+        PBGnssSystemTimeStructType bdsSystemTime   = 3;
+        PBGnssSystemTimeStructType qzssSystemTime  = 4;
+        PBGnssGloTimeStructType    gloSystemTime   = 5;
+        PBGnssSystemTimeStructType navicSystemTime = 6;
+    }
+}
+
+/** Time applicability of PVT report */
+message PBGnssSystemTime {
+    /** Specifies GNSS system time reported. Mandatory field */
+    PBGnss_LocSvSystemEnumType gnssSystemTimeSrc = 1;
+    /** Reporting of GPS system time is recommended.
+      If GPS time is unknown & other satellite system time is known,
+      it should be reported.
+      Mandatory field
+     */
+    PBSystemTimeStructUnion u = 2;
+}
+
+/* GPS Time structure */
+message PBGPSTimeStruct {
+
+  /**<   Current GPS week as calculated from midnight, Jan. 6, 1980. \n
+       - Units: Weeks */
+  uint32 gpsWeek = 1;
+
+  /**<   Amount of time into the current GPS week. \n
+       - Units: Milliseconds */
+  uint32 gpsTimeOfWeekMs = 2;
+}
+
+message PBGnssLocationPositionDynamics {
+    /* PBGnssLocationPosDataMask */
+    uint32 bodyFrameDataMask = 1; // Contains Body frame LocPosDataMask bits
+    float longAccel = 2;                           // Forward Acceleration in body frame (m/s2)
+    float latAccel = 3;                            // Sideward Acceleration in body frame (m/s2)
+    float vertAccel = 4;                           // Vertical Acceleration in body frame (m/s2)
+    float yawRate = 5;                             // Heading Rate (Radians/second)
+    float pitch = 6;                               // Body pitch (Radians)
+    float longAccelUnc = 7;   // Uncertainty of Forward Acceleration in body frame
+    float latAccelUnc = 8;    // Uncertainty of Side-ward Acceleration in body frame
+    float vertAccelUnc = 9;   // Uncertainty of Vertical Acceleration in body frame
+    float yawRateUnc = 10;    // Uncertainty of Heading Rate
+    float pitchUnc = 11;      // Uncertainty of Body pitch
+    float pitchRate = 12;      // Body pitch rate (Radians/second)
+    float pitchRateUnc = 13;   // Uncertainty of pitch rate (Radians/second)
+    float roll = 14;           // Roll of body frame. Clockwise positive. (radian
+    float rollUnc = 15;        // Uncertainty of Roll, 68% confidence level (radian)
+    float rollRate = 16;       // Roll rate of body frame. Clockwise positive. (radian/second)
+    float rollRateUnc = 17;    // Uncertainty of Roll rate, 68% confidence level (radian/second)
+    float yaw = 18;            // Yaw of body frame. Clockwise positive (radian)
+    float yawUnc = 19;         // Uncertainty of Yaw, 68% confidence level (radian)
+
+}
+
+message PBGnssSvUsedInPosition {
+    uint64 gps_sv_used_ids_mask   = 1;
+    uint64 glo_sv_used_ids_mask   = 2;
+    uint64 gal_sv_used_ids_mask   = 3;
+    uint64 bds_sv_used_ids_mask   = 4;
+    uint64 qzss_sv_used_ids_mask  = 5;
+    uint64 navic_sv_used_ids_mask = 6;
+}
+
+message PBGnssSvMbUsedInPosition {
+    uint64 gps_l1ca_sv_used_ids_mask = 1;     // GPS L1CA
+    uint64 gps_l1c_sv_used_ids_mask = 2;      // GPS L1C
+    uint64 gps_l2_sv_used_ids_mask = 3;       // GPS L2
+    uint64 gps_l5_sv_used_ids_mask = 4;       // GPS L5
+    uint64 glo_g1_sv_used_ids_mask = 5;       // GLO G1
+    uint64 glo_g2_sv_used_ids_mask = 6;       // GLO G2
+    uint64 gal_e1_sv_used_ids_mask = 7;       // GAL E1
+    uint64 gal_e5a_sv_used_ids_mask = 8;      // GAL E5A
+    uint64 gal_e5b_sv_used_ids_mask = 9;      // GAL E5B
+    uint64 bds_b1i_sv_used_ids_mask = 10;     // BDS B1I
+    uint64 bds_b1c_sv_used_ids_mask = 11;     // BDS B1C
+    uint64 bds_b2i_sv_used_ids_mask = 12;     // BDS B2I
+    uint64 bds_b2ai_sv_used_ids_mask = 13;    // BDS B2AI
+    uint64 qzss_l1ca_sv_used_ids_mask = 14;   // QZSS L1CA
+    uint64 qzss_l1s_sv_used_ids_mask = 15;    // QZSS L1S
+    uint64 qzss_l2_sv_used_ids_mask = 16;     // QZSS L2
+    uint64 qzss_l5_sv_used_ids_mask = 17;     // QZSS L5
+    uint64 sbas_l1_sv_used_ids_mask = 18;     // SBAS L1
+    uint64 bds_b2aq_sv_used_ids_mask = 19;    // BDS B2AQ
+    uint64 navic_l5_sv_used_ids_mask = 20;    // NAVIC L5
+}
+
+/** Y2038- Compliant */
+message PBTimespec {
+
+    uint64  tv_sec = 1;   /* seconds */
+    uint64  tv_nsec = 2;  /* and nanoseconds */
+}
+
+message PBLeapSecondInfo {
+
+    uint32     leapSec = 1;
+    /**< GPS time leap second delta to UTC time  \n
+         - Units: sec \n
+       */
+    uint32     leapSecUnc = 2;
+    /**< Uncertainty for GPS leap second \n
+         - Units: sec \n
+       */
+}
+
+message PBApTimeStampStructType {
+
+    PBTimespec      apTimeStamp = 1;
+    /*boottime received from pps-ktimer*/
+    float apTimeStampUncMs = 2;
+    /* timestamp uncertainty in milli seconds */
+}
+
+message PBLocRcvrClockFreqInfo {
+
+    float                           clockDrift = 1;
+    /**< Receiver clock Drift \n
+         - Units: meter per sec \n
+    */
+    float                           clockDriftUnc = 2;
+    /**< Receiver clock Drift uncertainty \n
+         - Units: meter per sec \n
+    */
+    PBLocSourceofFreqEnumType         sourceOfFreq = 3;
+}
+
+message PBGnssInterSystemBias {
+
+    uint32         validMask = 1;
+    /* Validity mask as per PBLocInterSystemBiasValidMaskType */
+
+    float           timeBias = 2;
+    /**< System-1 to System-2 Time Bias  \n
+        - Units: msec \n
+    */
+    float           timeBiasUnc = 3;
+    /**< System-1 to System-2 Time Bias uncertainty  \n
+        - Units: msec \n
+    */
+}
+
+message PBGnssSystemTimeStructType {
+    /** Validity mask for below fields PBGnssSystemTimeStructTypeFlags */
+    uint32 validityMask = 1;
+    /** Extended week number at reference tick.
+    Unit: Week.
+    Set to 65535 if week number is unknown.
+    For GPS:
+      Calculated from midnight, Jan. 6, 1980.
+      OTA decoded 10 bit GPS week is extended to map between:
+      [NV6264 to (NV6264 + 1023)].
+      NV6264: Minimum GPS week number configuration.
+      Default value of NV6264: 1738
+    For BDS:
+      Calculated from 00:00:00 on January 1, 2006 of Coordinated Universal Time (UTC).
+    For GAL:
+      Calculated from 00:00 UT on Sunday August 22, 1999 (midnight between August 21 and August 22).
+   */
+    uint32 systemWeek = 2;
+    /** Time in to the current week at reference tick.
+       Unit: Millisecond. Range: 0 to 604799999.
+       Check for systemClkTimeUncMs before use */
+    uint32 systemMsec = 3;
+    /** System clock time bias (sub-millisecond)
+        Units: Millisecond
+        Note: System time (TOW Millisecond) = systemMsec - systemClkTimeBias.
+        Check for systemClkTimeUncMs before use. */
+    float systemClkTimeBias = 4;
+    /** Single sided maximum time bias uncertainty
+        Units: Millisecond */
+    float systemClkTimeUncMs = 5;
+    /** FCount (free running HW timer) value. Don't use for relative time purpose
+        due to possible discontinuities.
+        Unit: Millisecond */
+    uint32 refFCount = 6;
+    /** Number of clock resets/discontinuities detected,
+        affecting the local hardware counter value. */
+    uint32 numClockResets = 7;
+}
+
+message PBGnssGloTimeStructType {
+    /** GLONASS day number in four years. Refer to GLONASS ICD.
+        Applicable only for GLONASS and shall be ignored for other constellations.
+        If unknown shall be set to 65535 */
+    uint32 gloDays = 1;
+    /** Validity mask for below fields PBGnssGloTimeInfoBits*/
+    uint32 validityMask = 2;
+    /** GLONASS time of day in Millisecond. Refer to GLONASS ICD.
+        Units: Millisecond
+        Check for gloClkTimeUncMs before use */
+    uint32 gloMsec = 3;
+    /** GLONASS clock time bias (sub-millisecond)
+        Units: Millisecond
+        Note: GLO time (TOD Millisecond) = gloMsec - gloClkTimeBias.
+        Check for gloClkTimeUncMs before use. */
+    float gloClkTimeBias = 4;
+    /** Single sided maximum time bias uncertainty
+        Units: Millisecond */
+    float gloClkTimeUncMs = 5;
+    /** FCount (free running HW timer) value. Don't use for relative time purpose
+        due to possible discontinuities.
+        Unit: Millisecond */
+    uint32  refFCount = 6;
+    /** Number of clock resets/discontinuities detected,
+        affecting the local hardware counter value. */
+    uint32 numClockResets = 7;
+    /** GLONASS four year number from 1996. Refer to GLONASS ICD.
+        Applicable only for GLONASS and shall be ignored for other constellations.
+        If unknown shall be set to 255 */
+    uint32 gloFourYear = 8;
+}
+
+message PBLocGnssTimeExtInfo {
+    bool   systemRtcValid = 1;
+    /**<   Validity indicator for System RTC */
+
+    uint64  systemRtcMs = 2;
+    /**<   Platform system RTC value \n
+        - Units: msec \n
+        */
+}
+
+message PBGnssSvMeasurementHeader {
+    // PBGpsSvMeasHeaderFlags - see defines in PB_GNSS_SV_MEAS_HEADER_HAS_XXX_XXX
+    uint64                              flags = 1;
+    PBLeapSecondInfo                   leapSec = 2;
+    PBLocRcvrClockFreqInfo             clockFreq = 3;   /* Freq */
+    PBApTimeStampStructType          apBootTimeStamp = 4;
+
+    PBGnssInterSystemBias              gpsGloInterSystemBias = 5;
+    PBGnssInterSystemBias              gpsBdsInterSystemBias = 6;
+    PBGnssInterSystemBias              gpsGalInterSystemBias = 7;
+    PBGnssInterSystemBias              bdsGloInterSystemBias = 8;
+    PBGnssInterSystemBias              galGloInterSystemBias = 9;
+    PBGnssInterSystemBias              galBdsInterSystemBias = 10;
+    PBGnssInterSystemBias              gpsL1L5TimeBias = 11;
+    PBGnssInterSystemBias              galE1E5aTimeBias = 12;
+    PBGnssInterSystemBias              bdsb1ib2atimebias = 13;
+
+    PBGnssSystemTimeStructType       gpsSystemTime = 14;
+    PBGnssSystemTimeStructType       galSystemTime = 15;
+    PBGnssSystemTimeStructType       bdsSystemTime = 16;
+    PBGnssSystemTimeStructType       qzssSystemTime = 17;
+    PBGnssGloTimeStructType          gloSystemTime = 18;
+
+    /** GPS system RTC time information. */
+    PBLocGnssTimeExtInfo               gpsSystemTimeExt = 19;
+    /** GAL system RTC time information. */
+    PBLocGnssTimeExtInfo               galSystemTimeExt = 20;
+    /** BDS system RTC time information. */
+    PBLocGnssTimeExtInfo               bdsSystemTimeExt = 21;
+    /** QZSS system RTC time information. */
+    PBLocGnssTimeExtInfo               qzssSystemTimeExt = 22;
+    /** GLONASS system RTC time information. */
+    PBLocGnssTimeExtInfo               gloSystemTimeExt = 23;
+
+    /* Receiver tick at frame count */
+    uint64                             refCountTicks = 24;
+
+    /** DGNSS corrections source type RTCM, 3GPP etc, if DGNSS was
+     *  used for these measurements. */
+    PBLocDgnssCorrectionSourceType  dgnssCorrectionSourceType = 25;
+    /** DGNSS SourceID: 32bit number identifying the DGNSS source
+     *  ID, if DGNSS was used for these measurements. */
+    uint32                          dgnssCorrectionSourceID = 26;
+    /** DGNSS Ref station ID: 32bit number identifying the DGNSS
+     *  ref station ID, if DGNSS was used for these measurements. */
+    uint32                          dgnssRefStationId = 27;
+
+    PBGnssInterSystemBias              gpsL1L2cTimeBias = 28;
+    PBGnssInterSystemBias              gloG1G2TimeBias = 29;
+    PBGnssInterSystemBias              bdsB1iB1ctimebias = 30;
+    PBGnssInterSystemBias              galE1E5bTimeBias = 31;
+    PBGnssInterSystemBias              gpsNavicInterSystemBias = 32;
+    PBGnssInterSystemBias              galNavicInterSystemBias = 33;
+    PBGnssInterSystemBias              gloNavicInterSystemBias = 34;
+    PBGnssInterSystemBias              bdssNavicInterSystemBias = 35;
+
+    PBGnssSystemTimeStructType       navicSystemTime = 36;
+}
+
+message PBSVTimeSpeedInfo {
+    uint32            svMs = 1;
+
+    /**<  Satellite time milisecond.\n
+          For GPS, BDS, GAL range of 0 thru (604800000-1) \n
+          For GLONASS range of 0 thru (86400000-1) \n
+          Valid when PD_LOC_MEAS_STATUS_MS_VALID bit is set in measurement status \n
+          Note: All SV times in the current measurement block are alredy propagated to common reference time epoch. \n
+            - Units: msec \n
+       */
+    float               svSubMs = 2;
+    /**<Satellite time sub-millisecond. \n
+        Total SV Time = svMs + svSubMs \n
+        - Units: msec \n
+       */
+    float               svTimeUncMs = 3;
+    /**<  Satellite Time uncertainty \n
+          - Units: msec \n
+       */
+    float               dopplerShift = 4;
+    /**< Satellite Doppler \n
+            - Units: meter per sec \n
+       */
+    float               dopplerShiftUnc = 5;
+    /**< Satellite Doppler uncertainty\n
+            - Units: meter per sec \n
+       */
+}
+
+message PBLeverArmParams {
+    // Offset along the vehicle forward axis
+    float forwardOffsetMeters = 1;
+    // Offset along the vehicle starboard axis
+    float sidewaysOffsetMeters = 2;
+    // Offset along the vehicle up axis
+    float upOffsetMeters = 3;
+}
+
+message PBLeverArmConfigInfo {
+    // Valid mask for the types of lever arm parameters provided
+    // PBLeverArmTypeMask
+    uint32 leverArmValidMask = 1;
+    // Lever arm regarding the VRP (Vehicle Reference Point) w.r.t the origin
+    // (at the GPS Antenna)
+    PBLeverArmParams   gnssToVRP = 2;
+    // Lever arm parameters regarding GNSS Antenna w.r.t the origin at the IMU
+    // (inertial measurement unit) for DR (dead reckoning engine)
+    PBLeverArmParams   drImuToGnss = 3;
+    // Lever arm regarding GNSS Antenna w.r.t the origin at the IMU
+    // (inertial measurement unit) for VEPP (vision enhanced precise position engine)
+    PBLeverArmParams   veppImuToGnss = 4;
+}
+
+message PBBodyToSensorMountParams {
+    // The misalignment of the sensor board along the
+    // horizontal plane of the vehicle chassis measured looking
+    // from the vehicle to forward direction. In unit of degree.
+    float rollOffset = 1;
+    // The misalignment along the horizontal plane of the vehicle
+    // chassis measured looking from the vehicle to the right
+    // side. Positive pitch indicates vehicle is inclined such
+    // that forward wheels are at higher elevation than rear
+    // wheels. In unit of degree.
+    float yawOffset = 2;
+    // The angle between the vehicle forward direction and the
+    // sensor axis as seen from the top of the vehicle, and
+    // measured in counterclockwise direction. In unit of degree.
+    float pitchOffset = 3;
+    // Single uncertainty number that may be the largest of the
+    // roll, pitch and yaw offset uncertainties.
+    float offsetUnc = 4;
+};
+
+// ----------------------------
+// QDGNSS related structs below
+// ----------------------------
+/** Reference Station */
+message PBStationStatusIndicatorMask {
+    /** 0 - Real, physical reference station
+     *  1 - Non-physical or computed reference station */
+    uint32  stationIndicator = 1;
+    /** 11 - all raw observations are measured at the same instant
+     *  10 - all raw observations may be measured at different instants
+     *  00 - unknown / not available */
+    uint32  oscillatorIndicator = 2;
+    /** 00 - correction status unspecified or not available
+     *  01 - phase observations are corrected for quarter cycle bias
+     *  10 - phase observation are not corrected for qualter cycle bias
+     *  11 - reserved */
+    uint32  quarterCycleIndicator = 3;
+    /** antenna height available
+     *  0 - not availiable
+     *  1 - availiable */
+    uint32  heightAvailability = 4;
+    /** antenna reference point uncertainty avilable
+     *  0 - not availiable
+     *  1 - availiable */
+    uint32  referencePointUncertainty = 5;
+}
+
+message PBReferenceStation {
+    /** reference station ID, valid range: 0-4095 */
+    uint32 stationID = 1;
+    /** reference station status indicators */
+    PBStationStatusIndicatorMask  statusIndicator = 2;
+    /** linked reference station ID, valid range: 0-4095 */
+    uint32 linkedStationID = 3;
+    /** ITRF realization year, valid range: 0-63 */
+    uint32  ITRFYear = 4;
+    /** DGnss constellation bit mask - PBDGnssConstellationBitMask*/
+    uint32 constellationBitMask = 5;
+    /** antenna reference point: ECEF-X, valid range: -13743895.3472m ~ 13743895.3472m */
+    double   ecefX = 6;
+    /** antenna reference point: ECEF-Y, valid range: -13743895.3472m ~ 13743895.3472m */
+    double   ecefY = 7;
+    /** antenna reference point: ECEF-Z, valid range: -13743895.3472m ~ 13743895.3472m */
+    double   ecefZ = 8;
+    /** antenna height, valid range: 0-6.5535m */
+    float    antennaHeight = 9;
+    /** antenna reference point: uncertainty-X */
+    float    uncertaintyX = 10;
+    /** antenna reference point: uncertainty-Y */
+    float    uncertaintyY = 11;
+    /** antenna reference point: uncertainty-Z */
+    float    uncertaintyZ = 12;
+    /** antenna reference point: uncertainty confidence-X, valid range: 0-100 */
+    uint32  uncertaintyConfidenceX = 13;
+    /** antenna reference point: uncertainty confidence-Y, valid range: 0-100 */
+    uint32  uncertaintyConfidenceY = 14;
+    /** antenna reference point: uncertainty confidence-Z, valid range: 0-100 */
+    uint32  uncertaintyConfidenceZ = 15;
+}
+
+/** Gnss Time */
+message PBGnssEpochTime {
+    message glonassEpochTime {
+        /** glonass time of day, valid range: 0 - 86400999 ms */
+        uint32 timeOfDay = 1;
+        /** glonass day of week, valid range: 0 - 6, set to 7 if unknown or not available */
+        uint32 dayOfWeek = 2;
+    }
+    oneof gnssEpochTime {
+        /** gps time of week, valid range: 0 - 604799999 ms */
+        uint32  timeOfWeek = 1;
+        glonassEpochTime gloEpochTime = 2;
+    }
+}
+
+/*RTK Observations*/
+message PBDGnssObservationStatusFlags {
+    /** 0 - no further observations are expected for this reference station ID and epoch time
+     *  1 - more observations are expected for this reference station ID and epoch time */
+    uint32  synchronousFlag                  = 1;
+    /** 0 - Divergence-Free smoothing not used
+     *  1 - Divergence-Free smoothing used */
+    uint32  smoothingIndicator               = 2;
+    /** 000 - no smoothing is used
+     *  001 - less than 30 seconds
+     *  010 - 30-60 seconds
+     *  011 - 1 to 2 minutes
+     *  100 - 2 to 4 minutes
+     *  101 - 4 to 8 minutes
+     *  110 - more than 8 minutes
+     *  111 - unlimited smoothing interval */
+    uint32  smoothingInterval                = 3;
+    /** 00 - clock steering not applied
+     *  01 - clock steering has been applied
+     *  10 - unknown clock steering status
+     *  11 - reserved */
+    uint32  clockSteeringIndicator           = 4;
+    /** 00 - internal clock is used
+     *  01 - external clock is used, status is locked
+     *  10 - external clock is used, status is not locked
+     *  11 - unknown clock is used */
+    uint32  externalClockIndicator           = 5;
+}
+
+message PBDGnssMeasurement {
+    /** GPS SV ID, range: 1-64, 1-63: GPS PRN, 64:reserved
+     *  GLONASS SV slot number, range: 1-64, 1-24: glonass slot number, 25-64:reserved
+     *  GALILEO SV ID, range: 1-64, 1-52: GALILEO PRN, 53-64: reserved
+     *  SBAS SV ID, range:120-158
+     *  QZSS SV ID, range:193-202
+     *  BDS SV ID, range:1-64, 1-37: BDS PRN, 38-64:reserved */
+    uint32 svId = 1;
+    /** Extended satellite information */
+    PBExtendedSatelliteInformation extendedSatelliteInformation = 2;
+    /** GNSS signal identifier */
+    oneof gnssSignalIdentifier {
+        PBDGnssGpsSignalIdentifier     gpsSignalIdentifier = 3;
+        PBDGnssGlonassSignalIdentifier glonassSignalIdentifier = 4;
+        PBDGnssGalileoSignalIdentifier galileoSignalIdentifier = 5;
+        PBDGnssQzssSignalIdentifier    qzssSignalIdentifier = 6;
+        PBDGnssBdsSignalIdentifier     bdsSignalIdentifier = 7;
+        PBDGnssSbasSignalIdentifier    sbasSignalIdentifier = 8;
+    }
+    /** GNSS signal specific observation status - PBDGnssSignalStatusFlags*/
+    uint32 signalObservationStatus = 9;
+    /** valid range: 0-76447076.7894m, full pseudorange, represented in meters with
+     *               a precision of 0.0006m
+     *               0-299792.4574m, modulo 1-ms pseudorange, represented in meters
+     *               with a precision of 0.0006m*/
+    double  pseudorange = 10;
+    /** valid range: 0-76447976.16723m, full phase range, represented in meters with
+     *               a precision of 0.00014m
+     *               0-299792.45786m, modulo 1-ms phase range, represented in meters
+     *               with a precision of 0.00014m*/
+    double  phaseRange = 11;
+    /** Phaserange-Rate, valid range: -8192.6383 ~ 8192.6383 m */
+    double  phaseRangeRate = 12;
+    /** Phase range lock time indicator, valid range: 0-1023 */
+    uint32 phaseRangeLockTimeIndicator = 13;
+    /** GNSS signal CNR, valid range: 0.0625-63.9375 dB-Hz */
+    float signalCNR = 14;
+}
+
+message PBDGnssObservation {
+    /** Reference station ID, valid range: 0-4095 */
+    uint32                      stationID = 1;
+    /** GNSS epoch time */
+    PBGnssEpochTime             epochTime = 2;
+    /** common observation status flags */
+    PBDGnssObservationStatusFlags   statusFlags = 3;
+    /** issue of Data Station, valid range: 0-7 */
+    uint32                       issueOfDataStation = 4;
+    /** DGNSS constellaton identifier */
+    PBDGnssConstellationIdentifier  constellationIdentifier = 5;
+    /** number of measurements, valid range: 1-64 */
+    uint32                       numberOfMeasurements = 6;
+    repeated PBDGnssMeasurement dGnssMeasurement = 7;
+}

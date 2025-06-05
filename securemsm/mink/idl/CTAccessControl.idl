@@ -1,0 +1,18 @@
+// Copyright (c) 2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+* @addtogroup CTAccessControl
+* @{
+  Class CTAccessControl implements \link ITAccessControl \endlink interface.
+
+  The class ID `TAccessControl` is not included in the default privilege set..
+*/
+
+// This class provides an interface to do access control.
+//
+
+const uint32 CTAccessControl_UID = 330;
+
+/** @} */

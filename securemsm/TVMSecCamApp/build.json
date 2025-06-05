@@ -1,0 +1,25 @@
+{
+    "idl_dir" : [
+        "./idl"
+    ],
+    "includes": [
+        "./inc"
+    ],
+    "sources": [
+        "src/main.cpp",
+        "src/CSecureCamera2App.cpp",
+        "src/seccam.c",
+        "src/Metadata.json"
+    ],
+    "customizedCFlags": [
+        "-DDEBUG"
+    ],
+    "staticLibsWholeArchive": [
+
+    ],
+    "staticLibsNoWholeArchive": [
+
+    ],
+    "dynamicLibs": [
+    ]
+}

@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: GNSS Location Power Handler
+Description: GNSS Location Power Handler
+Version: @VERSION
+Libs: -L${libdir} -lgnsspowerhandler
+Cflags: -I${includedir}/gnss-powerhandler

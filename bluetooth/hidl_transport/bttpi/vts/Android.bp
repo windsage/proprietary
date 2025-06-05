@@ -1,0 +1,22 @@
+cc_test {
+    name: "VtsHalBtTpiTargetTest",
+    defaults: [
+        "VtsHalTargetTestDefaults",
+        "use_libaidlvintf_gtest_helper_static",
+    ],
+    srcs: ["VtsHalBtTpiTargetTest.cpp"],
+    shared_libs: [
+        "libbinder",
+        "libbinder_ndk",
+    ],
+    static_libs: [
+       "vendor.qti.hardware.bttpi-V3-ndk",
+       "VtsHalHidlTargetTestBase",
+    ],
+    test_suites: [
+        "general-tests",
+        "vts",
+    ],
+}
+
+

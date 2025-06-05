@@ -1,0 +1,8 @@
+android_app_import {
+
+    name: "QCC-TR-UI",
+    owner: "qti",
+    proprietary: true,
+    apk: "QCC-TR-UI.apk",
+    certificate: "platform",
+}

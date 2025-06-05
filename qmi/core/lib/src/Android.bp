@@ -1,0 +1,17 @@
+
+
+cc_library_shared {
+    name: "libidl",
+
+    local_include_dirs: ["."],
+    header_libs: [
+            "vendor_common_inc",
+            "libqmi_legacy_headers",
+    ],
+
+    srcs: ["qmi_idl_lib.c","qmi_idl_accessor.c"],
+
+    owner: "qti",
+    proprietary: true,
+
+}

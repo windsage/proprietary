@@ -1,0 +1,24 @@
+/*===================================================================================
+  Copyright (c) 2022 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+
+/**
+* @addtogroup CTUICoreService
+* @{
+  Class CTUICoreService implements \link ITUICoreService \endlink interface.
+
+  The class ID `CTUICoreService` is an embedded service in QTVM.
+*/
+
+/*===================================================================================
+FILE:  CTUICoreService.idl
+
+DESCRIPTION:  This file specifies the UID that is used to expose
+TUICoreService service in QTVM. This can be used by other TA and
+service to get display and touch support in QTVM.
+
+=====================================================================================*/
+
+const uint32 CTUICoreService_UID = 288;

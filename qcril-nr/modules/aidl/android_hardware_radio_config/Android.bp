@@ -1,0 +1,44 @@
+cc_library {
+    name: "qcrilNr_aidl_IRadioConfig",
+    defaults: ["qtiril_common_defaults"],
+    srcs: [
+        "src/*.cpp",
+    ],
+    header_libs: [
+        "qtiril-utils-headers",
+        "libril-db-headers",
+        "libqcrilNrLogger-headers",
+        "qtiRilHalUtil-headers",
+        "libril-legacy-headers",
+        "qcrilInterfaces-headers",
+        "qcrilDataInterfaces_headers",
+        "libril-qc-qmi-services-headers",
+        "libqmi_legacy_headers",
+        "vendor_common_inc",
+    ],
+    shared_libs: [
+        "libcutils",
+        "liblog",
+        "qtiril-utils",
+        "android.hardware.radio.config-V2-ndk",
+        "android.hardware.radio.sim-V2-ndk",
+        "libbinder_ndk",
+        "libbase",
+        "libbinder",
+        "libqcrilNrFramework",
+        "libqcrilNrLogger",
+        "libqcrilNrQtiMutex",
+        "qcrilNr_aidl_common",
+    ],
+    static_libs: [
+        "libqcrilNRDataInterfaces",
+    ],
+    cflags: [
+        "-Wno-unused-parameter",
+    ],
+    cppflags: [
+        "-Wno-unused-parameter",
+    ],
+    owner: "qti",
+    proprietary: true,
+}

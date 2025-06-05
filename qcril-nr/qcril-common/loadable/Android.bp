@@ -1,0 +1,27 @@
+cc_library_headers {
+    name: "libQtiRilLoadable-headers",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_include_dirs: [
+        "inc",
+    ],
+}
+
+cc_library {
+    name: "libQtiRilLoadable",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    header_libs: [
+        "libQtiRilLoadable-headers",
+    ],
+    shared_libs: [
+        "libqcrilNrLogger",
+    ],
+    export_header_lib_headers: [
+        "libQtiRilLoadable-headers",
+    ],
+    srcs: [
+        "src/linux.cpp",
+        "src/PluginManager.cpp",
+    ],
+}

@@ -1,0 +1,14 @@
+// Copyright (c) 2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+ * @addtogroup CTCDriverCBService
+ * @{
+   Class CTCDriverCBService implements \link ITCDriverCBService \endlink interface.
+
+   This class provides an interface to protect camera PHY lanes in QSEE
+*/
+const uint32  CTCDriverCBService_UID = 360;
+
+/** @} */

@@ -1,0 +1,42 @@
+// The format of the name is audio.<type>.<hardware/etc>.so
+
+cc_library_shared {
+    name: "audio.bluetooth_qti.default",
+    vendor: true,
+    relative_install_path: "hw",
+    proprietary: true,
+    srcs: [
+        "audio_bluetooth_hw.cc",
+        "aidl/audio_bluetooth_hw.cc",
+        "aidl/stream_apis.cc",
+        "aidl/device_port_proxy.cc",
+        "aidl/utils.cc",
+    ],
+    header_libs: ["libhardware_headers"],
+    include_dirs: [
+        "vendor/qcom/proprietary/bluetooth/bluetooth_audio/aidl/1.0/default/",
+        "vendor/qcom/proprietary/bluetooth/bluetooth_audio/utils/aidl_session/",
+        "vendor/qcom/proprietary/bluetooth/bluetooth_audio/2.0/default/session/hw/",
+        "vendor/qcom/proprietary/bluetooth/bluetooth_audio/2.1/default/session/hw/"
+    ],
+    shared_libs: [
+        "libbluetooth_audio_session_qti_2_1",
+        "libbluetooth_audio_session_qti",
+        "android.hardware.bluetooth.audio-V3-ndk",
+        "libbluetooth_audio_session_aidl_qti",
+        "android.hardware.bluetooth.audio-impl-qti",
+        "libaudioutils",
+        "libbinder_ndk",
+        "libbase",
+        "libcutils",
+        "libfmq",
+        "libhidlbase",
+        "liblog",
+        "libutils",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+}

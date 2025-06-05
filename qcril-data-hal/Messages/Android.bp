@@ -1,0 +1,182 @@
+soong_config_module_type {
+    name: "qcrildatamsg_cc_defaults",
+    module_type: "cc_defaults",
+    config_namespace: "qcrildatanamespace",
+    variables: [
+        "targetraminfo",
+    ],
+    properties: [
+        "cflags",
+        "srcs",
+        "shared_libs",
+    ],
+}
+
+soong_config_string_variable {
+    name: "targetraminfo",
+    values: ["lowram", "highram"],
+}
+
+qcrildatamsg_cc_defaults {
+    name: "qcrildatamsglowram_defaults",
+    soong_config_variables: {
+        targetraminfo: {
+            lowram : {
+               cflags : ["-DRIL_FOR_LOW_RAM"],
+            },
+        }
+    }
+}
+
+qcrildatamsg_cc_defaults {
+    name: "qcrildatainternalmsg_defaults",
+    soong_config_variables: {
+        targetraminfo: {
+            lowram : {
+                cflags : ["-DRIL_FOR_LOW_RAM"],
+            },
+        },
+    },
+}
+
+cc_library_headers {
+    name: "qcrilDataInternal_headers",
+    sanitize:{
+          integer_overflow: true,
+    },
+    defaults : ["qcrildatamsglowram_defaults"],
+    vendor: true,
+    host_supported : true,
+    export_include_dirs: [
+          "inc/Internal/DataInternal",
+          "inc/Internal/DataInternal/event",
+          "inc/Internal/DataInternal/request",
+          "inc/Internal/DataInternal/sync",
+          "inc/Internal/DataInternal/UnSolMessages",
+          "inc/Internal/InterModule",
+          "inc/Internal/InterModule/request",
+          "inc/Internal/InterModule/UnSolMessages",
+    ],
+    cppflags: ["-std=c++17"],
+    cflags: ["-Wall",
+             "-Werror",
+             "-Wno-macro-redefined",
+             "-Wno-unused-parameter",
+             "-Wno-reorder-ctor",
+            ],
+}
+
+cc_library_headers {
+    name: "qcrilDataInterfaces_headers",
+    sanitize:{
+          integer_overflow: true,
+    },
+    defaults : ["qcrildatamsglowram_defaults"],
+    vendor: true,
+    host_supported : true,
+    export_include_dirs: [
+          "inc/Interfaces",
+          "inc/Interfaces/request",
+          "inc/Interfaces/UnSolMessages",
+    ],
+    cppflags: ["-std=c++17"],
+    cflags: ["-Wall",
+             "-Werror",
+             "-Wno-macro-redefined",
+             "-Wno-unused-parameter",
+             "-Wno-reorder-ctor",
+            ],
+}
+
+cc_library_static {
+   name: "libqcrilNRDataInterfaces",
+   sanitize:{
+    integer_overflow: true,
+   },
+   defaults : ["qcrildatamsglowram_defaults"],
+   vendor: true,
+   owner: "qti",
+   cflags: [
+    "-Wall",
+    "-Wno-macro-redefined",
+    "-Werror",
+    "-Wno-unused-parameter",
+    "-Wno-reorder-ctor",
+   ],
+   cppflags: ["-std=c++17"],
+   srcs: [
+    "src/Interfaces/request/*.cpp",
+    "src/Interfaces/UnSolMessages/*.cpp",
+   ],
+   header_libs: [
+    "qcrilDataInterfaces_headers",
+    "qcrilIntermodulemsgs-headers",
+    "libqcrilNrFramework-headers",
+    "libqcrilNrLogger-headers",
+    "libril-qc-qmi-services-headers",
+    "qcrilInterfaces-headers",
+    "libqcrilNrQtiMutex-headers",
+    "libqcrilNrQtiBus-headers",
+    "vendor_common_inc",
+    "libqmi_common_headers",
+    "libqmi_legacy_headers",
+   ],
+   shared_libs: [
+    "liblog",
+    "libcutils",
+    "libdl",
+    "libbase",
+    "libutils",
+   ],
+}
+
+cc_library_static {
+   name: "libqcrilNRDataInternal",
+   sanitize:{
+    integer_overflow: true,
+   },
+   defaults : ["qcrildatainternalmsg_defaults"],
+   vendor: true,
+   owner: "qti",
+   cflags: [
+    "-Wall",
+    "-Wno-macro-redefined",
+    "-Werror",
+    "-Wno-unused-parameter",
+    "-Wno-reorder-ctor",
+   ],
+   cppflags: ["-std=c++17"],
+   srcs: [
+    "src/Internal/DataInternal/event/*.cpp",
+    "src/Internal/DataInternal/request/*.cpp",
+    "src/Internal/DataInternal/sync/*.cpp",
+    "src/Internal/DataInternal/UnSolMessages/*.cpp",
+    "src/Internal/InterModule/request/*.cpp",
+    "src/Internal/InterModule/sync/*.cpp",
+    "src/Internal/InterModule/UnSolMessages/*.cpp",
+   ],
+   header_libs: [
+    "qcrilDataInterfaces_headers",
+    "qcrilDataInternal_headers",
+    "qcrilIntermodulemsgs-headers",
+    "libqcrilNrFramework-headers",
+    "libqcrilNrLogger-headers",
+    "libril-qc-qmi-services-headers",
+    "qcrilInterfaces-headers",
+    "libqcrilNrQtiMutex-headers",
+    "libqcrilNrQtiBus-headers",
+    "vendor_common_inc",
+    "libqmi_common_headers",
+    "libqmi_legacy_headers",
+    "libdsi_netctrl_headers",
+    "libdsutils_headers",
+    "libdataqmiservices_headers",
+   ],
+   shared_libs: [
+    "liblog",
+    "libcutils",
+    "libdl",
+    "libbase",
+    "libutils",
+   ],
+}

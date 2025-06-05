@@ -1,0 +1,6 @@
+cc_library_headers {
+    name: "qms_sdk_common_headers",
+    export_include_dirs: ["."],
+    vendor: true,
+    host_supported: true,
+}

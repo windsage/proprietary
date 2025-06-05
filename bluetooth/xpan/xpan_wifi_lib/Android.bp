@@ -1,0 +1,40 @@
+cc_library_shared {
+    name: "libxpan_wifi_hal",
+    vendor: true,
+    owner: "qti",
+    proprietary: true,
+    compile_multilib: "both",
+    srcs: ["xpan_wifi_hal.cpp",
+           "nl_command.cpp",
+           "xpan_event_handler.cpp",
+           "xpancommand.cpp"],
+    local_include_dirs: ["inc"],
+    shared_libs: [
+        "libbase",
+        "libnl" ,
+        "libhardware_legacy" ,
+        "libhardware" ,
+        "liblog" ,
+        "libutils" ,
+        "libcutils" ,
+    ],
+}
+
+cc_test {
+    name: "xpan_cli",
+    vendor: true,
+    owner: "qti",
+    proprietary: true,
+    compile_multilib: "both",
+    srcs: ["xpan_cli.cpp"],
+    local_include_dirs: ["inc"],
+    shared_libs: [
+        "libxpan_wifi_hal",
+        "libc",
+        "libutils",
+        "liblog",
+        "libnl",
+        "libhardware_legacy" ,
+        "libcutils" ,
+    ],
+}

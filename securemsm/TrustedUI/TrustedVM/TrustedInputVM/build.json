@@ -1,0 +1,22 @@
+{
+    "includes": [
+        "./inc",
+        "../../../mink/inc/interface"
+    ],
+    "sources": [
+        "src/TouchDevice.cpp",
+        "src/TouchInput.cpp",
+        "src/TrustedInputMain.cpp",
+        "src/Metadata.json"
+    ],
+    "customizedCXXFlags": [
+        "-std=c++17",
+        "-DTEST_ON_LEVM"
+    ],
+    "dynamicLibs": [
+        "cutils",
+        "pthread",
+        "commonlib"
+    ]
+}
+

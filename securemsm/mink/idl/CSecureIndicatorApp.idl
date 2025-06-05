@@ -1,0 +1,7 @@
+/*===================================================================================
+  Copyright (c) 2020 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+
+const uint32 CSecureIndicatorApp_UID = 201;

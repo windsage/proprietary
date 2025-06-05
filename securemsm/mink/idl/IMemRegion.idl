@@ -1,0 +1,74 @@
+// Copyright (c) 2019 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/** @cond */
+interface IMemRegion {
+/** @endcond */
+
+  /**
+   * @addtogroup IMemRegion
+   * @{
+   */
+
+  /** @cond */
+  /*
+   * The memory cannot be mapped as specified because the provided memory
+   * region object did not confer the required memory access permissions.
+   */
+  error ERROR_PERM;
+
+  /*
+   * Permissions are designated by a field of bits.
+   *
+   * When a region is constructed, its PERM_R and PERM_W permissions dictate
+   * how the memory can be used.
+   *
+   * PERM_X properties:
+   * - Only meaningful when mapping memory
+   * - Allows execution of instructions directly from memory
+   * - Applicable to a mapping only when the region confers PERM_R permission
+   */
+  const uint32 PERM_X    =  1;
+  const uint32 PERM_W    =  2;
+  const uint32 PERM_R    =  4;
+
+  const uint32 PERM_RW   =  6;  /* PERM_R | PERM_W */
+  const uint32 PERM_RX   =  5;  /* PERM_R | PERM_X */
+  /** @endcond */
+
+  /**
+    Reads bytes present at <tt>offset</tt> within the region.
+
+    @param[in]  offset  Offset location of data to be read.
+    @param[out] data    Buffer to contain data to be read.
+
+    @return
+    Object_OK if successful.
+  */
+  method getData(in uint64 offset, out buffer data);
+
+  /**
+    Writes bytes at <tt>offset</tt> within the region.
+
+    @param[in] offset  Offset position to write data bytes at.
+    @param[in] data    Data buffer to be written.
+
+    @return
+    Object_OK on success.
+  */
+  method setData(in uint64 offset, in buffer data);
+
+  /**
+    Creates a region that identifies the same memory as this region but
+    confers a subset of the permissions.
+
+    @param[in]  perms   Permissions to be given to created region.
+    @param[out] region  Created region.
+
+    @return
+    Object_OK on success.
+  */
+  method createRestrictedRegion(in uint32 perms, out interface region);
+  /* @} */ /* end_addtogroup IMemRegion */
+};

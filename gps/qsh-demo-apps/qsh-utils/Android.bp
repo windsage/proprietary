@@ -1,0 +1,45 @@
+cc_library_shared {
+    name: "libqshutils",
+    owner: "qti",
+    proprietary: true,
+    vendor: true,
+
+    srcs: [
+        "src/qsh_utils_interface_reference.cpp",
+        "src/qsh_utils_qmi_reference.cpp",
+        "src/qsh_utils_glink_reference.cpp",
+        "src/qsh_utils_suid_util.cpp"
+    ],
+    local_include_dirs: ["./inc"],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-missing-field-initializers",
+        "-Wno-maybe-uninitialized",
+        "-Wunused-private-field",
+    ] + GNSS_CFLAGS,
+    cppflags: ["-fexceptions"],
+    header_libs: [
+        "libqmi_common_headers",
+        "libgps.utils_headers",
+        "libloc_pla_headers",
+    ],
+
+    shared_libs: [
+        "libutils",
+        "libcutils",
+        "liblog",
+        "libgps.utils",
+        "libsnsapi",
+        "libqmi_encdec",
+        "libqmi_cci",
+        "libprotobuf-cpp-lite"
+    ],
+}
+
+cc_library_headers {
+    name: "libqshutils_headers",
+    vendor: true,
+    export_include_dirs: ["./inc"],
+}

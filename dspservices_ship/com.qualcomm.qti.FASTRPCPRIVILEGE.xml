@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---/******************************************************************************
+* @file       com.qualcomm.qti.FASTRPCPRIVILEGE.xml
+* @brief
+*  Copyright (c) 2020 Qualcomm Technologies, Inc.
+*  All Rights Reserved.
+*  Confidential and Proprietary - Qualcomm Technologies, Inc.
+*  *****************************************************************************-->
+
+<permissions>
+    <permission name="com.qualcomm.permission.qti.FASTRPCPRIVILEGE" >
+        <group gid="oem_2908" />
+    </permission>
+</permissions>

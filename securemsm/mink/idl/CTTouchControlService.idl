@@ -1,0 +1,19 @@
+/*===================================================================================
+  Copyright (c) 2023 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+
+/**
+* @addtogroup CTTouchControlService
+* @{
+  Class CTTouchControlService implements \link ITTouchControlService \endlink interface.
+
+  The class ID `TTouchControlService` is a platform service in Mink daemon.
+*/
+
+// This class provides an interface to acquire and release touch control in QTVM.
+
+const uint32 CTTouchControlService_UID = 304;
+
+/** @} */

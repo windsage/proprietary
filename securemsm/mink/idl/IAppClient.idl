@@ -1,0 +1,42 @@
+// Copyright (c) 2020 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/** @cond */
+interface IAppClient {
+/** @endcond */
+
+  /**
+   * @addtogroup IAppClient
+   * @{
+   */
+
+  /*
+   * Error codes
+   */
+  /** @cond */
+  error ERROR_APP_NOT_FOUND;                 /**< No loaded application with distinguished name */
+  error ERROR_APP_RESTART_FAILED;            /**< Failed to restart application */
+  error ERROR_APP_UNTRUSTED_CLIENT;          /**< Untrusted client not allowed */
+  error ERROR_CLIENT_CRED_PARSING_FAILURE;   /**< Failed parsing the client Credentials */
+  error ERROR_APP_LOAD_FAILED;               /**< Failed to load application */
+  /** @endcond */
+
+  /**
+    Gets the object implementing app-provided functionalities.
+
+    @param[in]  appDistName   Application distinguished name.
+    @param[out] obj           Returned object.
+
+    @return
+    Object_OK - Successful. \n
+    IAppClient_ERROR_APP_LOAD_FAILED - Failed to load application. \n
+    IAppClient_ERROR_APP_NOT_FOUND - No loaded application with distinguished name. \n
+    IAppClient_ERROR_APP_RESTART_FAILED - Failed to restart application. \n
+    IAppClient_ERROR_APP_UNTRUSTED_CLIENT - Untrusted client not allowed. \n
+    IAppClient_ERROR_CLIENT_CRED_PARSING_FAILURE - Failed to parse the client Credentials. \n
+   */
+  method getAppObject(in buffer appDistName, out interface obj);
+
+  /** @} */ /* end_addtogroup IAppClient */
+};

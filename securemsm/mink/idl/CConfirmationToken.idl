@@ -1,0 +1,9 @@
+/*===================================================================================
+  Copyright (c) 2021-2022 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+
+/** @file CConfirmationToken.idl  */
+
+const uint32 CConfirmationToken_UID = 1150;

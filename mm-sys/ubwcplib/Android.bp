@@ -1,0 +1,29 @@
+cc_library_headers {
+	name: "libubwcp_headers",
+	vendor_available: true,
+	export_include_dirs: ["inc"],
+}
+cc_library_shared {
+    name: "libubwcp",
+
+    header_libs: [
+        "libubwcp_headers",
+	"qti_ubwcp_kernel_headers",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-missing-field-initializers",
+        "-Wunused",
+    ] + ["-DOS_UBWCPLIB_EXPORT"],
+
+    srcs: [
+        "src/UBWCPLib.cpp",
+    ],
+
+    shared_libs: [
+        "liblog"],
+
+    proprietary: true,
+}

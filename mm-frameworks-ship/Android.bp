@@ -1,0 +1,7 @@
+
+cc_library_headers {
+    name: "libsynx_headers",
+    export_include_dirs: ["api"],
+    proprietary: true,
+    owner: "qti",
+}

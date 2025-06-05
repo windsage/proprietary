@@ -1,0 +1,52 @@
+cc_library {
+    name: "libqcrilNrFramework",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_header_lib_headers: [
+        "libqcrilNrQtiMutex-headers",
+        "libqcrilNrFramework-headers",
+        "vendor_common_inc",
+    ],
+    srcs: [
+        "src/*.cpp",
+    ],
+    cppflags: [ "-fexceptions" ],
+    header_libs: [
+        "libqcrilNrFramework-headers",
+        "libqcrilNrLogger-headers",
+        "libcutils_headers",
+        "libutils_headers",
+        "libqcrilNrQtiMutex-headers",
+        "qcrilInterfaces-headers",
+        "libqcrilNrLogger-headers",
+        "vendor_common_inc",
+    ],
+    shared_libs: [
+        "libqcrilNrLogger",
+        "libqcrilNrQtiMutex",
+    ],
+
+    cpp_std: "c++17",
+    owner: "qti",
+    proprietary: true,
+}
+
+cc_library_headers {
+    name: "libqcrilNrFramework-headers",
+    host_supported: true,
+    vendor: true,
+    proprietary: true,
+    export_include_dirs: [
+        "inc",
+    ],
+    header_libs: [
+        "qcrilnr-toplevel-headers",
+        "vendor_common_inc",
+        "libqcrilNrQtiMutex-headers",
+    ],
+    export_header_lib_headers: [
+        "qcrilnr-toplevel-headers",
+        "libqcrilNrQtiMutex-headers",
+        "vendor_common_inc",
+    ],
+}

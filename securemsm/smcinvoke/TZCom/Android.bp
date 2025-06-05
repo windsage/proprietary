@@ -1,0 +1,43 @@
+
+
+cc_library_shared {
+    name: "libminkdescriptor",
+
+    cflags: ["-D_ANDROID_"] + ["-fexceptions"],
+
+    srcs: [
+        "src/TZCom.cpp",
+        "src/MinkDescriptor.cpp",
+        "src/CIO.cpp",
+        "src/fdwrapper.c",
+        "src/TimedRetryForwarder.cpp",
+    ],
+
+    local_include_dirs: [
+        "inc",
+    ],
+
+    header_libs: [
+        "qti_kernel_headers",
+        "device_kernel_headers",
+        "smcinvoke_headers",
+        "mink_headers",
+        "smcinvoke_kernel_headers",
+        "qcbor_headers",
+        "minksocket_headers",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libutils",
+        "libqcbor",
+    ],
+
+    sanitize: {
+        integer_overflow: true,
+    },
+
+    owner: "qti",
+    proprietary: true,
+
+}

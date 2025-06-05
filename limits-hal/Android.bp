@@ -1,0 +1,37 @@
+cc_binary {
+	name: "vendor.qti.hardware.limits@1.2-service",
+	vendor: true,
+	relative_install_path: "hw",
+	init_rc: ["vendor.qti.hardware.limits-service.rc"],
+	vintf_fragments: ["vendor.qti.hardware.limits-service.xml"],
+	srcs: [
+		"service.cpp",
+		"Limits.cpp",
+		"LimitsEstimate.cpp",
+		"temperatureQ.cpp",
+		"LimitsCommon.cpp",
+		"LimitsNetlink.cpp"
+	],
+	shared_libs: [
+		"libbase",
+		"libcutils",
+		"libhidlbase",
+		"libutils",
+		"liblog",
+		"libnl",
+		"android.hardware.thermal@2.0",
+		"vendor.qti.hardware.limits@1.0",
+		"vendor.qti.hardware.limits@1.1",
+		"vendor.qti.hardware.limits@1.2"
+	],
+	header_libs: [
+		"liblog_headers",
+		"libcutils_headers",
+		"qti_kernel_headers"
+	],
+	cflags: [
+		"-Wno-unused-parameter",
+		"-Wno-unused-variable",
+		"-fexceptions",
+	],
+}

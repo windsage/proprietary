@@ -1,0 +1,27 @@
+
+cc_library_headers {
+
+   name: "libslimclient_headers",
+   vendor: true,
+   export_include_dirs: [
+       "client/inc",
+       "utils/inc",
+   ],
+}
+
+cc_library_headers {
+
+    name: "libslimcommon_headers",
+    vendor: true,
+    export_include_dirs: [
+        "common/core/inc",
+        "common/client/inc",
+        "common/osal/inc",
+        "qmimsgs/slim/api",
+        "provider/qmislim/inc",
+        "qmislim/common/inc",
+        "qmislim/qmiclient/inc",
+        "qmislim/qmiservice/inc",
+        "qmislim/monitor/inc",
+    ],
+}

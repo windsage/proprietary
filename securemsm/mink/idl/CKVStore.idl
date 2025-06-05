@@ -1,0 +1,13 @@
+// Copyright (c) 2021,2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+* @addtogroup CKVStore
+* @{
+  Class CKVStore implements \link IKVStore \endlink interface.
+*/
+
+const uint32 CKVStore_UID = 9;
+
+/** @} */

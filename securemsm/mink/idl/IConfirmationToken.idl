@@ -1,0 +1,21 @@
+/*===================================================================================
+  Copyright (c) 2021-2022 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+
+/** @file IConfirmationToken.idl  */
+
+/**
+ * @addtogroup IConfirmationToken
+ * @{
+ */
+interface IConfirmationToken {
+
+  /**
+   * Sign the passed token with HMAC key
+   * and return the mac.
+   */
+  method signConfirmationToken(in buffer token, out buffer mac);
+   /** @} */ /* end_addtogroup IConfirmationToken */
+};

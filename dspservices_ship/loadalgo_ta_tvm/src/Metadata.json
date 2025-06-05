@@ -1,0 +1,6 @@
+{
+    "appName": "Loadalgo_TA",
+    "neverUnload": "false",
+    "privileges": ["SecureDSPService"],
+    "services": ["LoadAlgoTA"]
+}

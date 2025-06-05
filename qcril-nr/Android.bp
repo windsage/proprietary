@@ -1,0 +1,62 @@
+cc_defaults {
+    name: "qtiril_common_defaults",
+    //Uncomment the following line to enable ASAN
+    //defaults: ["qcril_asan_defaults"],
+    //(And uncomment "QCRIL_BUILD_WITH_ASAN=true" in Android.mk)
+    vendor: true,
+    proprietary: true,
+    cflags: [
+        "-Oz",
+        "-g",
+        "-Wall",
+        "-Werror",
+        "-Wno-error=#warnings",
+    ],
+    cppflags: [
+        "-Oz",
+        "-g",
+        "-Wall",
+        "-Werror",
+        "-Wno-error=#warnings",
+    ],
+    ldflags: [
+        "-Wl,--no-allow-shlib-undefined,--unresolved-symbols=report-all",
+    ],
+}
+
+cc_defaults {
+    name: "qcril_asan_defaults",
+    target: {
+        host: {
+            sanitize: {
+                never: true,
+            },
+        },
+
+        android: {
+            sanitize: {
+                cfi: false,
+                address: true,
+            },
+            cflags: ["-DRIL_ASAN_ENABLED"],
+            cppflags: ["-DRIL_ASAN_ENABLED"],
+        },
+    },
+}
+
+cc_library_headers {
+    name: "qcrilnr-toplevel-headers",
+    host_supported: true,
+    defaults: ["qtiril_common_defaults"],
+    export_include_dirs: [
+        "include",
+        "qcril_qmi/",
+        "qcrild/include",
+    ],
+}
+
+cc_library_headers {
+    name: "qcrilnr_qcril_qmi_headers",
+    vendor_available: true,
+    export_include_dirs: ["qcril_qmi"],
+}

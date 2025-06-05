@@ -1,0 +1,507 @@
+/*
+ * EHMsg.proto
+ * Engine Hub messages definition - structs, enums etc
+ *
+ * Copyright (c) 2019 Qualcomm Technologies, Inc.
+ * All Rights Reserved.
+ * Confidential and Proprietary - Qualcomm Technologies, Inc.
+ */
+
+syntax = "proto3";
+
+import "LocationDataTypes.proto";
+
+option optimize_for = LITE_RUNTIME;
+
+// ============================================================================
+// Proto file versioning
+// ============================================================================
+enum EHMsgVersion {
+
+    EHMSG_VER_INVALID = 0;
+    // Major changes - compatibility breakage. Bump the first byte of version i.e. 1.x to 2.0
+    EHMSG_VER_MAJOR = 1;
+    // Minor - New features / API addition. Bump the middle byte of version i.e. x.8 to x.9
+    // Minor version 1: Add option for using protobuf-lite at runtime
+    EHMSG_VER_MINOR = 2;
+}
+
+// ============================================================================
+// Enumerations
+// ============================================================================
+
+// Messages IDs for messages to be exchanged between engine hub and
+// engine plugins, and between plugins directly without going through
+// engine hub.
+enum EHMsgId {
+    EH_MSG_ID_PROTOCOL_UNKNOWN = 0;
+    // ##############################################################
+    // Msg ID from 1 to 99 are reserved between engine hub and
+    // engine plugin control messages, e.g.: handshake.
+    // ##############################################################
+    //
+    // EH_MSG_ID_PROTOCOL_ENGINE_HUB_UP is used to inform
+    // engine plugin that engine hub is now up running.
+    // Msg will be broadcasted when either engine hub starts from
+    // boot up or when the process that runs engine hub crashes and
+    // subsequently restarts. When engine plugin receives this message,
+    // it shall send out registration request message to the engine hub.
+    EH_MSG_ID_PROTOCOL_ENGINE_HUB_UP = 1;
+    // msg from engine plugin to register with engine hub
+    EH_MSG_ID_PROTOCOL_REGISTRATION_REQ = 2;
+    // msg from engine hub to engine plugin regarding the latest routing table.
+    // engine hub will send out an updated routing table upon receving every
+    // engine plugin registration message.
+    EH_MSG_ID_PROTOCOL_ROUTING_TABLE_UPDATE = 3;
+
+    EH_MSG_ID_PROTOCOL_MAX = 99;
+
+    // ###############################################################
+    // Msg ID from 100 to 199 are reserved for session messages that
+    // will be broadcasted to every engine plugin. Those messages do
+    // not need to be subscribed individually.
+    // ###############################################################
+    // session start for the engine: e.g.: GNSS
+    EH_MSG_ID_SESSION_START = 100;
+    // session stop: e.g.: GNSS
+    EH_MSG_ID_SESSION_STOP = 101;
+    // fix mode info of the engine, e.g.: GNSS
+    EH_MSG_ID_SESSION_SET_FIX_MODE = 102;
+    // delete aiding data of the engine, e.g.: GNSS
+    EH_MSG_ID_SESSION_DELETE_AIDING_DATA = 103;
+    EH_MSG_ID_SESSION_MAX = 199;
+
+    // ###############################################################
+    // Msg ID from 200 and onwards are reserved for those messages that
+    // requires engine plugin to subscribe in order to receive them.
+    // ###############################################################
+
+    // position report of the eigine, e.g.: GNSS or DR, or PDE
+    EH_MSG_ID_REPORT_POSITION = 200;
+    EH_MSG_ID_REPORT_SV = 201;
+    // sv polynomial report of the engine, e.g.: GNSS
+    EH_MSG_ID_REPORT_SV_POLYNOMIAL = 202;
+    // sv measurement report of the engine, e.g.: GNSS
+    EH_MSG_ID_REPORT_SV_MEAS = 203;
+    // sv ephemeris report of the engine, eg : GNSS
+    EH_MSG_ID_REPORT_SV_EPHEMERIS = 204;
+    // Klobuchar Iono Model report
+    EH_MSG_ID_REPORT_KLOBUCHAR_IONO_MODEL = 205;
+    //Glonass Additional Params
+    EH_MSG_ID_REPORT_GLONASS_ADDITIONAL_PARAMS = 206;
+
+    // ###############################################################
+    // Msg ID from 300 and onwards are reserved for status messages,
+    // e.g.: system status update that requires engine plugin to subscribe
+    // in order to receive them.
+    // ###############################################################
+    // connectivity status update
+    EH_MSG_ID_STATUS_CONNECTIVITY = 300;
+    // pass lever ARM info to QDR engine
+    EH_MSG_ID_STATUS_LEVER_ARM_CONFIG = 301;
+    // pass body to sensor mount parameters to QDR engine
+    EH_MSG_ID_STATUS_BODY_TO_SENSOR_MOUNT_PARAMS = 302;
+
+    // ###############################################################
+    // Msg ID from 400 and onwards are reserved for cdfw report messages.
+    // e.g.: CDFW report information like reference station, observation
+    // messages, glonass boas etc.
+    // ###############################################################
+    // QC DGNSS data - Reference station
+    EH_MSG_ID_REPORT_CDFW_QDGNSS_REF_STATION = 400;
+    // QC DGNSS data - DGnss Observation
+    EH_MSG_ID_REPORT_CDFW_QDGNSS_OBSERVATION = 401;
+
+    // ###############################################################
+    // Msg ID from 500 and onwards are reserved for QWES feature status reporting.
+    // e.g.: PPE/DRE/VPE feature status reporting to EHUB
+    // ###############################################################
+    EH_MSG_ID_REPORT_QWES_FEATURE_STATUS = 501;
+    // Engine plugin request attestation statement to Engine hub
+    EH_MSG_ID_REQUEST_ATTESTATION_STATEMENT = 502;
+    // Engine hub provide attestation statement to Engine plugin
+    EH_MSG_ID_PROVIDE_ATTESTATION_STATEMENT = 503;
+    // Engine plugin deliver QWES license to Engine hub
+    EH_MSG_ID_REQUEST_INSTALL_LICENSE = 504;
+    // Engine hub provide license installation status to Engine plugin
+    EH_MSG_ID_PROVIDE_INSTALL_LICENSE_STATUS = 505;
+    // Engine hub send QWES force sync cb notify to Engine plugin
+    EH_MSG_ID_QWES_FORCE_SYNC_NOTIFY = 506;
+
+}
+
+// Common integer defines added as enum for reference'ing
+enum EHMsgCommon {
+    // Allow multiple enum items to use the same enum value
+    // Note: Enable when same value is required for more than one item
+    // option allow_alias = true;
+
+    EH_MSG_COMMON = 0;
+    // Engine hub-plugin version
+    EH_ENGINE_HUB_MSG_VERSION = 1;
+
+    // Number of entities participating in the engine hub-plugin message exchange
+    EH_MAX_E_HUB_ENTITY_COUNT = 3;
+
+    // Maximum length of ip address (accomodate both ipv4 and ipv6 addresses)
+    EH_ENGINE_HUB_MAX_IP_ADDRESS_LENGTH = 40;
+
+    // Maximum fully qualified path(including the file name)
+    // for the engine hub and engine plugin socket name
+    EH_ENGINE_HUB_MAX_SOCKET_PATHNAME_LENGTH = 128;
+
+    //Feature IDs
+    EH_FEATURE_ID_PPE = 800;
+    EH_FEATURE_ID_DRE_VER2 = 810;
+    EH_FEATURE_ID_DRE_VER3 = 811;
+    EH_FEATURE_ID_QPPE = 814;
+    EH_FEATURE_ID_VPE = -1;
+
+    // Maximum length of attestation statement buffer size
+    EH_ENGINE_HUB_MAX_ATTESTATION_STATEMENT_BUF_SIZE = 1024;
+
+    // Maximum length of nonce buffer size
+    EH_ENGINE_HUB_MAX_NONCE_BUFF_SIZE = 2048;
+
+    // Maximum length of QWES license buffer
+    EH_ENGINE_HUB_MAX_LICENSE_LENGTH = 8192;
+
+}
+
+// enum as to denote the technology source that generates
+// the reports that entities can subscribe: e.g.: location
+// report and SV related info
+enum EHTechId {
+    EH_NODE_GNSS = 0;
+    EH_NODE_PPE = 1;
+    EH_NODE_DR = 2;
+    EH_NODE_VPE = 3;
+    EH_NODE_COUNT = 4;
+}
+
+// Engine Connection Type enum
+enum EHConnectionType {
+    EH_ENGINE_CONNECT_TYPE_LOCAL = 0;
+    EH_ENGINE_CONNECT_TYPE_INET = 1;
+}
+
+//EHub RegReportMask
+enum EHRegReportMask {
+    EH_REG_REPORT_MASK_UNKNOWN       = 0;
+    // Valid for all positon engines.
+    // For SPE fix reports, only SPE fixes aligned with GPS
+    // integer second will be sent to the registered client.
+    EH_REG_REPORT_MASK_POSITION      = 1;
+    // Only valid for registering with SPE position report.
+    // It is used to receive all SPE position reports.
+    EH_REG_REPORT_MASK_NHZ_POSITION  = 2;
+    // Only valid for registering with SPE position report.
+    // It is used to receive all unpropagated SPE position reports.
+    EH_REG_REPORT_MASK_UNPROPAGATED_POSITION = 4;
+    EH_REG_REPORT_MASK_SV                    = 8;
+    EH_REG_REPORT_MASK_SV_POLYNOMIAL         = 16;
+    EH_REG_REPORT_MASK_SV_MEAS               = 32;
+    EH_REG_REPORT_MASK_SV_EPHEMERIS          = 64;
+    EH_REG_REPORT_MASK_NHZ_SV_MEAS           = 128;
+    EH_REG_REPORT_MASK_KLOBUCHARIONO_MODEL   = 256;
+    EH_REG_REPORT_MASK_GLONASS_ADDITIONAL_PARAMS = 512;
+}
+
+// EHub RegStatusMask
+enum EHRegStatusMask {
+    EH_REG_STATUS_MASK_UNKNOWN      = 0;
+    EH_REG_STATUS_MASK_CONNECTIVITY = 1;
+    EH_REG_STATUS_MASK_LEVER_ARM_CONFIG = 2;
+    EH_REG_STATUS_MASK_BODY_TO_SENSOR_MOUNT_PARAMS = 3;
+}
+
+// EHub CorrectionMask
+// Masks for reports from CDFW service
+enum EHRegReportCorrectionMask {
+    EH_REG_REPORT_MASK_CDFW_QDGNSS_UNKNOWN          = 0;
+    EH_REG_REPORT_MASK_CDFW_QDGNSS_REF_STATION      = 1;
+    EH_REG_REPORT_MASK_CDFW_QDGNSS_OBSERVATION      = 2;
+}
+
+enum EHLicenseType {
+   /** License type is unknown */
+   EHUB_LICENSE_UNDEFINED = 0;
+   /** License type is Evaluation license */
+   EHUB_LICENSE_EVALUATION = 1;
+   /** License type is Commercial Production license */
+   EHUB_LICENSE_PRODUCTION = 2;
+}
+
+enum EHAttestationStatus {
+    /** Attestation token is created successfully */
+    EHUB_ATTESTATION_STATUS_OK = 0;
+    /** The security has been compromised
+        Rehort this error to license server */
+    EHUB_ATTESTATION_INVAILD_STATUS = 1;
+    /** Error no memory
+        Retry after reboot */
+    EHUB_ATTESTATION_NO_MEMORY = 2;
+}
+
+enum EHInstallLicenseStatus {
+    /** No license found */
+    EHUB_INSTALL_LICENSE_STATUS_NONE = 0;
+    /** Valid license found */
+    EHUB_INSTALL_LICENSE_STATUS_OK = 1;
+    /** Invalid license Parameter
+        Rehort this error to license server */
+    EHUB_ERROR_LICENSE_INVAILD_PARAMS = 2;
+    /** Invalid license Status
+        Retry after reboot */
+    EHUB_ERROR_LICENSE_INVAILD_STATUS = 3;
+    /** Invalid license No Memory
+        Retry after reboot */
+    EHUB_ERROR_LICENSE_NO_MEMORY = 4;
+    /** Expired license found
+        Rehort this error to license server */
+    EHUB_ERROR_LICENSE_CERTIFICATE_EXPIRED = 5;
+    /** Incorrect OEM ID for License certificate
+        Rehort this error to license server */
+    EHUB_ERROR_LICENSE_CERTIFICATE_OEM = 6;
+    /** Incorrect HW version for License certificate
+        Rehort this error to license server */
+    EHUB_ERROR_LICENSE_CERTIFICATE_HWVERSION = 7;
+    /** Incorrect Device ID for License certificate
+        Rehort this error to license server */
+    EHUB_ERROR_LICENSE_CERTIFICATE_DEVICEID = 8;
+    /** Incorrect PFM for License certificate
+        Rehort this error to license server */
+    EHUB_ERROR_INVALID_PFM_EXTENSION = 9;
+    /** Incorrect PFMFILER for License certificate
+        Retry after reboot */
+    EHUB_ERROR_PFMFILER_FAILD = 10;
+}
+
+/** Feature status */
+enum EHFeatureStatus {
+    /** Feature status unknown */
+    EHUB_FEATURE_STATUS_UNKNOWN = 0;
+    /** No license found */
+    EHUB_FEATURE_STATUS_NONE = 1;
+    /** Valid license found */
+    EHUB_FEATURE_STATUS_OK = 2;
+    /** Expired license found */
+    EHUB_FEATURE_STATUS_EXPIRED = 3;
+}
+
+
+// ============================================================================
+// Messages
+// ============================================================================
+
+// Engine Connection IpAddrInfo
+message EHEngineConnectionIpAddrInfo {
+    string pluginIpAddress = 1;
+    uint32 pluginPort = 2;
+}
+
+// Engine Connection Info
+message EHEngineConnectionInfo {
+    oneof values {
+        string socketName = 1;
+        EHEngineConnectionIpAddrInfo pluginIpAddrInfo = 2;
+    }
+}
+
+// Subscription modifier parameters
+message EHSubscriptionModifier {
+    // Constellation Mask to subscribe - PBGnssConstellationInfoMask
+    uint32 constellationMask = 1;
+    // GNSS signal type to subscribe - PBGnssSignalInfoMask
+    uint32 gnssSignalMask = 2;
+}
+
+message EHSubModifiers {
+    EHSubscriptionModifier  svMeasSubModifier = 1;
+    EHSubscriptionModifier  nHzSvMeasSubModifier = 2;
+    EHSubscriptionModifier  svPolySubModifier = 3;
+    EHSubscriptionModifier  svEphSubModifier = 4;
+    EHSubscriptionModifier  ionoModelSubModifier = 5;
+}
+
+message EHRoutingTableEntry {
+    // Local plugin must provide a local unix socket name to send data to
+    // Plugin accessible via ip address must provide a engineConnectionIpAddrInfo
+    EHConnectionType engConnectionType = 1;
+    EHEngineConnectionInfo engConnectInfo = 2;
+
+    // mask of the data that the registering plugin is interested in
+    // To specify that the PPE entity is entity is interested
+    // in GNSS position and SV report, and DR position report, do the following:
+    // memset(eHubRegReportMask, 0, sizeof(eHubRegReportMask));
+    // eHubregReportMask[E_HUB_TECH_GNSS] = LOC_ENG_PLUGIN_REG_MASK_REPORT_POSITION |
+    //                                    LOC_ENG_PLUGIN_REG_MASK_REPORT_SV;
+    // eHubregReportMask[E_HUB_TECH_DR] = LOC_ENG_PLUGIN_REG_MASK_REPORT_POSITION;
+    // eHubregReportMask[E_HUB_TECH_PPE] = 0;
+    // eHubRegReportMask - Max of EH_NODE_COUNT
+    // Masks from EHRegReportMask
+    repeated uint32 regReportMask = 3;
+
+    // Masks from EHRegStatusMask
+    uint32 regStatusMask = 4;
+    EHSubModifiers  subModifiers = 5;
+    // Masks from EHRegReportCorrectionMask
+    uint32 regCdfwCorrnMask = 6;
+    // boolean to register for session control messages
+    uint32 regSessionMsgs = 7;
+
+    //QWES feature status
+    int32 featureId = 8;
+    EHFeatureStatus featureStatus = 9;
+    EHLicenseType featureType = 10;
+}
+
+// The following message with msg id, struct doesn't carry any payload
+// - EH_MSG_ID_PROTOCOL_ENGINE_HUB_UP
+// - EH_MSG_ID_PROTOCOL_REG_REQ
+// - EH_MSG_ID_SESSION_START
+// - EH_MSG_ID_SESSION_STOP
+
+// definition for message with msg id of EH_MSG_ID_PROTOCOL_ROUTING_TABLE_UPDATE
+message EHMessageProtocolRoutingTableUpdate {
+    // If only PPE registers, then the eHubNumEntries will be 2, one for HUB, one for PPE.
+    // If both PPE and DR registers, then the eHubNumEntries will be 3,
+    //     one for HUB, one for PPE, and one for DR.
+    uint32 eHubNumEntries = 1;
+
+    // Max of EH_MAX_E_HUB_ENTITY_COUNT
+    repeated EHRoutingTableEntry eHubRoutingTable = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_SESSION_SET_FIX_MODE
+message EHMessageSessionSetFixMode {
+    PBLocPosMode fixMode = 1;
+}
+
+// definition for message with msg id of EH_MSG_ID_SESSION_DELETE_AIDING_DATA
+message EHMessageSessionDeleteAidingData {
+    PBGnssAidingData gpsAidingData = 1;
+}
+
+// definition for message with msg id of EH_MSG_ID_REPORT_POSITION
+message EHMessageReportPosition {
+    EHTechId sourceTechId = 1;
+    PBUlpLocation location = 2;
+    PBGpsLocationExtended locationExtended = 3;
+    PBLocSessionStatus status = 4;
+}
+
+// definition for message with msg id of EH_MSG_ID_REPORT_SV
+message EHMessageReportSv {
+    EHTechId sourceTechId = 1;
+    PBGnssSvNotification svNotification = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_REPORT_SV_POLYNOMIAL
+message EHMessageReportSvPolynomial {
+    EHTechId sourceTechId = 1;
+    PBGnssSvPolynomial svPolynomial = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_REPORT_SV_EPHEMERIS
+message EHMessageReportSvEphemeris {
+    EHTechId sourceTechId = 1;
+    PBGnssSvEphemerisReport svEphemeris = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_REPORT_SV_MEAS
+message EHMessageReportSvMeas {
+    EHTechId sourceTechId = 1;
+    PBGnssSvMeasurementSet svMeasSet = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_STATUS_CONNECTIVITY
+message EHMessageStatusConnectivity {
+    bool isConnected = 1;
+}
+
+// definition for message with msg id of EH_MSG_ID_REPORT_KLOBUCHAR_IONO_MODEL
+message EHMessageReportKlobucharIonoModel {
+    EHTechId sourceTechId = 1;
+    PBGnssKlobucharIonoModel klobucharIonoModel = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_REPORT_GLONASS_ADDITIONAL_PARAMS
+message EHMessageReportGlonassAdditionalParams {
+    EHTechId sourceTechId = 1;
+    PBGnssAdditionalSystemInfo additionalSystemInfo = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_REPORT_CDFW_QDGNSS_REF_STATION
+message EHMessageReportCdfwQDgnssReferenceStation {
+    EHTechId sourceTechId = 1;
+    PBReferenceStation qDgnssRefStation = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_REPORT_CDFW_QDGNSS_OBSERVATION
+message EHMessageReportCdfwQDgnssObservation {
+    EHTechId sourceTechId = 1;
+    PBDGnssObservation qDgnssObserv = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_STATUS_LEVER_ARM_CONFIG
+message EHMessageStatusLeverArmConfig {
+    PBLeverArmConfigInfo leverArmInfo = 1;
+}
+
+// defintion for message with msg id of E_HUB_MSG_ID_STATUS_BODY_TO_SENSOR_MOUNT_PARAMS
+message EHMessageStatusB2sMountParams {
+    PBBodyToSensorMountParams b2sMountParams = 1;
+}
+
+// Main Engine Hub message to send between EP/EH or EP-EP
+message EngineHubMessage {
+    EHMsgId     msgId = 1;
+    bytes       payload = 2;
+}
+
+// Main Engine Hub message to send between EH to EP with message counter
+// message counter is separate for each EP.
+message EngineHubMessageWithMsgCounter {
+    uint32      msgCounter = 1;
+    string      msgSenderName = 2;
+    bytes       ehMsgPayload = 3;
+}
+
+//QWES related message
+// definition for message with msg id of EH_MSG_ID_REPORT_QWES_FEATURE_STATUS
+message EHMessageQWESFeatureStatusInfo {
+    EHFeatureStatus featureStatus = 1;
+    EHLicenseType   featureType = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_REQUEST_INSTALL_LICENSE
+message EHMessageQWESInstallLicenseReq {
+    bytes  licenseBuffer = 1;
+    uint32 licenseLength = 2;
+}
+
+// definition for message with msg id of EH_MSG_ID_PROVIDE_INSTALL_LICENSE_STATUS
+message EHMessageQWESInstallLicenseResp {
+    EHInstallLicenseStatus status = 1;
+}
+
+// definition for message with msg id of EH_MSG_ID_REQUEST_ATTESTATION_STATEMENT
+message EHMessageQWESReqAttestationStatement {
+    bytes  nonce = 1;
+    uint32 nonceLength = 2;
+    bytes  data = 3;
+    uint32 dataLength = 4;
+}
+
+// definition for message with msg id of EH_MSG_ID_PROVIDE_ATTESTATION_STATEMENT
+message EHMessageQWESProvideAttestationStatement {
+    bytes                outBuff = 1;
+    uint32               bufLength = 2;
+    EHAttestationStatus  status = 3;
+}
+
+// definition for message with msg id of EH_MSG_ID_QWES_FORCE_SYNC_NOTIFY
+message EHMessageQWESForceSyncNotify {
+    int32 status = 1;
+}

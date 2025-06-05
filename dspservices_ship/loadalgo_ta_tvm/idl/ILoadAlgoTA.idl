@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2023 Qualcomm Technologies, Inc.
+ * All Rights Reserved.
+ * Confidential and Proprietary - Qualcomm Technologies, Inc.
+ */
+
+/** @file ILoadAlgoTA.idl */
+
+/**
+ * @brief
+ * ILoadAlgoTA.idl provides a Mink IDL interface to setup and communicate with loadalgo_TA on TVM
+ */
+include "IMemObject.idl"
+
+interface Loadalgo_TA {
+    method run_algo(in interface soFile, in uint32 soFileSize, in uint8[] moduleName, in uint32 heapSize, in uint32 poolSize);
+    method enable_runtime_farf(in IMemObject farfMask);
+};

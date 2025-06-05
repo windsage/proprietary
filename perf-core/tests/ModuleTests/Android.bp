@@ -1,0 +1,163 @@
+
+cc_library_shared {
+
+    srcs: [
+        "mp-ctl/PerfSysNodeTest.cpp",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "libcutils_headers",
+        "perf_hal_headers",
+        "perf_mpctl_headers",
+        "perf_util_headers",
+        "perf_rf_headers",
+    ],
+
+    shared_libs: [
+        "libqti-perfd",
+        "libcutils",
+        "libutils",
+        "liblog",
+        "libxml2",
+        "libqti-util",
+    ],
+
+    cflags: [
+        "-DCLIENT",
+        "-g0",
+        "-Wall",
+        "-Wno-unused-variable",
+        "-Wno-unused-parameter",
+        "-Wno-unused-function",
+        "-DVENDOR_DIR=\"/vendor/etc\"",
+        "-DQC_DEBUG=0",
+        "-Wextra",
+        "-Werror",
+    ],
+
+    cppflags: [
+        "-fexceptions",
+    ],
+
+    name: "libqti-perfd-tests",
+    owner: "qti",
+    proprietary: true,
+
+}
+
+cc_binary {
+    name: "perflock_native_test",
+
+    srcs: ["mp-ctl/perflock_native_test.cpp"],
+
+    shared_libs: [
+        "libcutils",
+        "libdl",
+        "libutils",
+        "liblog",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "libcutils_headers",
+        "perf_hal_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_rf_headers"
+    ],
+
+    cflags: [
+        "-Wall",
+        "-DQC_DEBUG=0",
+    ],
+
+    proprietary: true,
+}
+
+cc_binary {
+    name: "perflock_native_stress_test",
+
+    srcs: ["mp-ctl/perflock_native_stress_test.cpp"],
+
+    shared_libs: [
+        "libcutils",
+        "libdl",
+        "libutils",
+        "liblog",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "libcutils_headers",
+        "perf_hal_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_rf_headers"
+    ],
+
+    cflags: [
+        "-Wall",
+        "-DQC_DEBUG=0",
+    ],
+
+    proprietary: true,
+}
+
+cc_binary {
+    name: "perflock_native_test_server",
+
+    srcs: ["mp-ctl/pseudoclient/perflock_native_test_server.cpp"],
+
+    shared_libs: [
+        "libcutils",
+        "libdl",
+        "libutils",
+        "liblog",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "libcutils_headers",
+        "perf_hal_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_rf_headers"
+    ],
+
+    cflags: [
+        "-Wall",
+        "-DQC_DEBUG=0",
+    ],
+
+    proprietary: true,
+}
+
+cc_binary {
+    name: "perflock_native_test_client",
+
+    srcs: ["mp-ctl/pseudoclient/perflock_native_test_client.cpp"],
+
+    shared_libs: [
+        "libcutils",
+        "libdl",
+        "libutils",
+        "liblog",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "libcutils_headers",
+        "perf_hal_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_rf_headers"
+    ],
+
+    cflags: [
+        "-Wall",
+        "-DQC_DEBUG=0",
+    ],
+
+    proprietary: true,
+}

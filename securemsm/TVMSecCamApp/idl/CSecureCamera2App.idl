@@ -1,0 +1,15 @@
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+* @addtogroup CSecureCamera2App
+* @{
+  Class CSecureCamera2App implements \link ISecureCamera2App \endlink interface.
+
+  The class ID `SecureCamera2App` is a platform service in Mink daemon.
+*/
+
+const uint32 CSecureCamera2App_UID = 293;
+
+/** @} */

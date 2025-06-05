@@ -1,0 +1,25 @@
+cc_binary {
+    name: "qrtr_test_client",
+    cflags: common_cflags,
+    srcs: [
+        "qrtr_test_client.c",
+    ],
+    shared_libs: [
+        "libqrtr",
+    ],
+    owner: "qti",
+    proprietary: true,
+}
+
+cc_binary {
+    name: "qrtr_test_server",
+    cflags: common_cflags,
+    srcs: [
+        "qrtr_test_server.c"
+    ],
+    shared_libs: [
+        "libqrtr",
+    ],
+    owner: "qti",
+    proprietary: true,
+}

@@ -1,0 +1,70 @@
+/*===================================================================================
+  Copyright (c) 2020, 2023 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+
+/** @cond */
+interface ISecureIndicatorApp {
+/** @endcond */
+
+    /**
+     @addtogroup ISecureIndicatorApp
+     @{
+    */
+
+    /** @cond */
+
+    /* ISecureIndicatorApp Error Codes */
+    error ERROR_INVALID_PARAM;
+    error ERROR_PROVISION;
+    error ERROR_STORE;
+
+    /** @endcond */
+
+    /**
+      Store a new Secure Indicator image
+
+      @param[in]   indicator    Indicator image
+
+      @detdesc
+      This method allowes storing a new indicator image in SFS. It also validates the
+      image to be png format before storing.
+
+      @return
+      Object_OK if successful.
+    */
+    method storeIndicator(in buffer indicator);
+
+    /**
+      Get maximum resolution of the indicator
+
+      @param[out]  maxWidth   Maximum allowed image width
+      @param[out]  maxHeight  Maximum allowed image height
+
+      @detdesc
+      This method returns maximum allowed width and height of the indicator
+      that can be provisioned.
+
+      @return
+      Object_OK if successful.
+    */
+    method getMaxIndicatorResolution(out uint32 maxWidth, out uint32 maxHeight);
+
+    /**
+      Set maximum resolution of the indicator
+
+      @param[in]  maxWidth   Maximum allowed image width
+      @param[in]  maxHeight  Maximum allowed image height
+
+      @detdesc
+      This method set maximum allowed width and height of the indicator
+      that can be provisioned.
+
+      @return
+      Object_OK if successful.
+    */
+    method setMaxIndicatorResolution(in uint32 maxWidth, in uint32 maxHeight);
+
+    /** @} */ /* end_addtogroup ISecureIndicatorApp */
+};

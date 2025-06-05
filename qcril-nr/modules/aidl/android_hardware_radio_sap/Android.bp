@@ -1,0 +1,33 @@
+cc_library {
+    name: "qcrilNr_aidl_IRadioSap",
+    defaults: ["qtiril_common_defaults"],
+    srcs: [
+        "src/*.cpp",
+    ],
+    header_libs: [
+        "qtiril-utils-headers",
+        "libqcrilNrLogger-headers",
+        "qtiRilHalUtil-headers",
+        "qcrilInterfaces-headers",
+    ],
+    shared_libs: [
+        "liblog",
+        "qtiril-utils",
+        "android.hardware.radio.sap-V1-ndk",
+        "libbinder_ndk",
+        "libbase",
+        "libbinder",
+        "libqcrilNrFramework",
+        "libqcrilNrLogger",
+        "libqcrilNrQtiMutex",
+        "qcrilNr_aidl_common",
+    ],
+    cflags: [
+        "-Wno-unused-parameter",
+    ],
+    cppflags: [
+        "-Wno-unused-parameter",
+    ],
+    owner: "qti",
+    proprietary: true,
+}

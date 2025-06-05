@@ -1,0 +1,6 @@
+cc_library_headers {
+    name: "libqmi_ext_noship_headers",
+    export_include_dirs: ["services"],
+    vendor_available: true,
+    host_supported: true
+}

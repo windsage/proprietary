@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<QVSDK>
+	<!--========================================================================
+        Copyright (c) 2021-2022 Qualcomm Technologies, Inc.
+        All Rights Reserved.
+        Confidential and Proprietary - Qualcomm Technologies, Inc.
+    ========================================================================
+-->
+	<Version ID="vsdk_pkg_ver"/>
+</QVSDK>

@@ -1,0 +1,63 @@
+/**============================================================================
+ * Copyright (c) 2020, 2022 Qualcomm Technologies, Inc.
+ * All Rights Reserved.
+ * Confidential and Proprietary - Qualcomm Technologies, Inc.
+ ============================================================================*/
+
+/** @file  ITUICoreService.idl */
+
+/**
+ * @brief
+ * TUICoreService interface provides methods to create Trusted UI Session and to
+ * register input service
+ * VM-APP/Input service are the client interfaces
+ */
+include "ITrustedInputCallBack.idl"
+include "ITUISessionCallBack.idl"
+include "ITUISystemSession.idl"
+include "ITUITypes.idl"
+
+    /** @cond */
+interface TUICoreService
+{
+    /** @endcond */
+
+    /**
+     * @addtogroup TUICoreService
+     * @{
+     */
+
+    /**
+      Initialize/Create a new session. Creates a new session with the
+      configuration
+      details specified.
+
+      @param [in] TUICreateConfig cfg     Configuration parameters needed for
+      session
+
+      @param [in] TrustedInputCallBack InputCBO  Input callback object to be invoked on
+      input data request
+
+      @param [in] TUISessionCallBack TUISessionCBO  Callback Object to be registered by app with
+      CoreService for asynchronous notification of fatal errors
+
+      @param [out] TUISystemSession TUIsessionObj Unique Session object returned to APP
+
+      @return
+      Object_OK on success. Any other error code on failure.
+    */
+    method createSession(in TUICreateConfig cfg, in TrustedInputCallBack InputCBO,
+                         in TUISessionCallBack TUISessionCBO, out TUISystemSession TUIsessionObj);
+
+    /**
+      Terminates this session and releases the references
+
+      @param [in] TUISystemSession TUIsessionObj Unique Session object returned by
+      create session
+
+      @return
+      Object_OK on success. Any other error code on failure.
+    */
+    method deleteSession(in TUISystemSession TUIsessionObj);
+    /** @} */ /* end_addtogroup TUICoreService */
+};

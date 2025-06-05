@@ -1,0 +1,68 @@
+cc_library_headers {
+    name: "libqcrilNrQtiMutex-headers",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_include_dirs: [
+        "include",
+    ],
+}
+
+cc_library {
+    name: "libqcrilNrQtiMutex",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_header_lib_headers: [
+        "libqcrilNrQtiMutex-headers",
+    ],
+    srcs: [
+        "src/QtiMutexDefaults.cpp",
+        "src/QtiMutexHolder.cpp",
+        "src/QtiRecursiveMutex.cpp",
+        "src/QtiSharedMutex.cpp",
+        "src/QtiShmConditionVariable.cpp",
+        "src/QtiShmMutex.cpp",
+    ],
+    header_libs: [
+        "libqcrilNrQtiMutex-headers",
+    ],
+
+    arch: {
+        arm64: {
+            srcs: [
+                "src/Backtrace_arm64.cpp",
+            ],
+        },
+        arm: {
+            srcs: [
+                "src/Backtrace_others.cpp",
+            ],
+        },
+        x86_64: {
+            srcs: [
+                "src/Backtrace_others.cpp",
+            ],
+        },
+        x86: {
+            srcs: [
+                "src/Backtrace_others.cpp",
+            ],
+        },
+    },
+
+    target: {
+        android: {
+            shared_libs: [
+                "libcutils",
+            ],
+        },
+        host: {
+            cflags: [
+                "-DQTIMUTEX_HOST_BUILD",
+            ],
+        },
+    },
+    local_include_dirs: ["include"],
+    cpp_std: "c++17",
+    owner: "qti",
+    proprietary: true,
+}

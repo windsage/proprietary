@@ -1,0 +1,18 @@
+// Copyright (c) 2022-2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+* @addtogroup CTMemoryService
+* @{
+  Class CTMemoryService implements \link ITMemoryService \endlink interface.
+
+  The class ID `TMemoryService` is a platform service in Mink daemon.
+*/
+
+// This class provides an interface to get DMA buffers in Mink daemon.
+//
+
+const uint32 CTMemPoolFactory_UID = 325;
+
+/** @} */

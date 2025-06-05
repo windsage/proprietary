@@ -1,0 +1,32 @@
+cc_library_headers {
+    name: "qcrilNr_aidl_common-headers",
+    vendor: true,
+    proprietary: true,
+    export_include_dirs: [
+        "inc",
+    ],
+}
+
+cc_library {
+    name: "qcrilNr_aidl_common",
+    defaults: ["qtiril_common_defaults"],
+    srcs: [
+        "src/*.cpp",
+    ],
+    export_header_lib_headers: [
+        "qcrilNr_aidl_common-headers",
+    ],
+    header_libs: [
+        "qcrilNr_aidl_common-headers",
+        //"libqcrilNrQtiMutex-headers",
+        "qtiwakelock-headers",
+        //"libqcrilNrFramework-headers",
+    ],
+    shared_libs: [
+        "qtiwakelock",
+        "libqcrilNrQtiMutex",
+        "libqcrilNrFramework",
+    ],
+    owner: "qti",
+    proprietary: true,
+}

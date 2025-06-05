@@ -1,0 +1,10 @@
+
+prebuilt_etc {
+    name: "bootanimation_xr",
+
+    src: "bootanimation.zip",
+
+    vendor: true,
+
+    filename_from_src: true,
+}

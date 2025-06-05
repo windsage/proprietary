@@ -1,0 +1,31 @@
+/** @file ITProcessController.idl */
+
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+  ITProcessController manages TProcess structures in root container.
+*/
+/** @cond */
+interface ITProcessController {
+/** @endcond */
+
+  /**
+   * @addtogroup ITProcessController
+   * @{
+   */
+
+  /** @cond */
+  /** @endcond */
+
+  /**
+    Unloads a trusted process forcibly.
+
+    @return  Object_OK if successful.
+  */
+  method forceClose();
+
+  /** @} */ /* end_addtogroup ITProcessController */
+};
+

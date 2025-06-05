@@ -1,0 +1,87 @@
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+include "IMemObject.idl"
+
+/** @cond */
+struct ISecureCamera2App_FrameInfo{
+  int64 camId;
+  int64 frameNumber;
+  int64 timeStamp;
+};
+
+struct ISecureCamera2App_PlaneInfo {
+  uint32 offset;
+  uint32 rowStride;
+  uint32 pixelStride;
+};
+
+struct ISecureCamera2App_PlaneData {
+  uint32 numOfInPlanes;
+  ISecureCamera2App_PlaneInfo[4] inPlanes;
+  uint32 numOfOutPlanes;
+  ISecureCamera2App_PlaneInfo[4] outPlanes;
+};
+
+struct ISecureCamera2App_BufInfo {
+  ISecureCamera2App_FrameInfo frameInfo;
+  ISecureCamera2App_PlaneData[2] planeData;
+};
+/** @endcond */
+
+/** @cond */
+ interface ISecureCamera2App {
+/** @endcond */
+
+  /**
+   * @addtogroup ISecureCamera2App
+   * @{
+   */
+
+  /**
+   * Error Codes
+   */
+  /** Camera HW is unprotected */
+  error ERROR_CAMERA_NOT_PROTECTED;
+  /** Map object to TA's address space failed */
+  error ERROR_MAP_FAILURE;
+  /** Call secure camera kernel service failed */
+  error ERROR_KERNEL_FAILURE;
+
+  /**
+   Initialize a secure camera session.
+   Set the number of sensors required for the session
+   Set the haven certificate for using the secure camera service
+   @param[in] numSensors - number of sensors
+   @param[in] havenLicense - pointer to haven certificate
+   @return
+   Object_OK on success. Any other error code on failure
+  */
+  method initialize(in uint32 numSensors, in uint8[] havenLicense);
+
+  /**
+   Process the camera frame buffers
+   @param[in] bufInfo - camera buffer information
+   @param[in] buf - memory object containing camera buffer frame data
+   @return
+   Object_OK on success. Any other error code on failure
+  */
+  method processFrame(in ISecureCamera2App_BufInfo bufInfo, in IMemObject buf);
+
+  /**
+   Reset Camera HW and clear all secure memory.
+   @return
+   Object_OK on success. Any other error code on failure
+  */
+  method resetCamera();
+
+  /**
+   Teardown all the objects created for the secure session
+   @return
+   Object_OK on success. Any other error code on failure
+  */
+  method shutdown();
+
+  /** @} */ /* end_addtogroup ISecureCamera2App */
+};

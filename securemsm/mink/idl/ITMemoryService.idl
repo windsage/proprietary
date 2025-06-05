@@ -1,0 +1,105 @@
+/** @file ITMemoryService.idl */
+
+// Copyright (c) 2022-2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+include "IMemObject.idl"
+include "ITAccessPermissions.idl"
+
+/**
+  ITMemoryService provides interface for processes to allocate and share dmaBufs.
+*/
+
+/** @cond */
+interface ITMemPool {
+/** @endcond */
+
+  /**
+   * @addtogroup ITMemPool
+   * @{
+   */
+
+  /*
+   * Error codes
+   */
+  /** @cond */
+  error ERROR_SETUP;                     /**< When preparing basic setup for allocation */
+  error ERROR_ALLOC;                     /**< When allocating buffer */
+  /** @endcond */
+
+  /**
+    .
+
+    @param[in]  .
+
+    @return  Object_OK if successful.
+   */
+  method allocateBuffer(in uint32 size, out interface memObj);
+
+  /** @} */ /* end_addtogroup ITMemPool */
+
+};
+/** @cond */
+interface ITMemPoolFactory {
+/** @endcond */
+
+  /**
+   * @addtogroup ITMemPoolFactory
+   * @{
+   */
+
+  /*
+   * Error codes
+   */
+  /** @cond */
+  error ERROR_INVALID_CONFINEMENT;     /**< Invalid confinement rules */
+  error ERROR_NO_AVAILABLE_HEAP;       /**< No available heap */
+  error ERROR_HEAP_SETUP;              /**< When preparing basic setup for remote alloc */
+  error ERROR_REMOTE_ALLOC;            /**< Remote alloc failure */
+  /** @endcond */
+
+  /**
+
+
+    @param[in]  .
+
+    @return  Object_OK if successful.
+   */
+
+  method createPool(in ITAccessPermissions_rules confRules, in uint32 size, out
+        ITMemPool poolObj);
+
+  /** @} */ /* end_addtogroup ITMemoryService */
+
+};
+
+/** @cond */
+interface ITAccessControl {
+/** @endcond */
+
+  /**
+   * @addtogroup ITAccessControl
+   * @{
+   */
+
+  /*
+   * Error codes
+   */
+  /** @cond */
+  error ERROR_ACQUIRE_LOCK;                     /**< Failed to acquire lock for the buffer */
+  error ERROR_INVALID_CONFINEMENT;              /**< Invalid confinement rules */
+  /** @endcond */
+
+  /**
+
+    @param[in]  .
+    Note that only 1st element of uidPermsList in confRules will be checked for now.
+
+    @return  Object_OK if successful.
+   */
+   method acquireLock(in ITAccessPermissions_rules confRules, in IMemObject memObj, out interface lockObj);
+
+  /** @} */ /* end_addtogroup ITAccessControl */
+
+};

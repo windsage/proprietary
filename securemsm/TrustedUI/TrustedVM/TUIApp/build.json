@@ -1,0 +1,55 @@
+{
+    "includes": [
+        "./inc",
+        "../Composer/LayoutManager/SecureTouch/inc",
+        "../Composer/LayoutManager/inc",
+        "../Composer/TUIComposer/inc",
+        "../Composer/DialogComposer/inc",
+        "../libTrustedUI/inc",
+        "../../../mink/inc/uid",
+        "../../../mink/inc/interface",
+        "../../../smcinvoke/minksocket/sock",
+        "../../../smcinvoke/TZCom/inc",
+        "../../../smcinvoke/inc"
+    ],
+    "sources": [
+        "src/main.cpp",
+        "src/CTUISampleApp.cpp",
+        "src/Metadata.json",
+        "../LayoutSamples/layout_1080x2340.c",
+        "../LayoutSamples/layout_1440x2560.c",
+        "../Composer/CustomComposer/src/TuiCustomComposer.c",
+        "../Composer/TUIComposer/src/TuiComposer.c",
+        "../Composer/DialogComposer/src/TuiDialogComposer.c",
+        "../Composer/DialogComposer/src/pinDialog.c",
+        "../Composer/DialogComposer/src/loginDialog.c",
+        "../Composer/DialogComposer/src/msgDialog.c",
+        "../Composer/DialogComposer/src/customDialog.c",
+        "../Composer/DialogComposer/src/utils.c"
+    ],
+    "dynamicLibs": [
+        "TrustedUILib",
+        "layout",
+        "gd",
+        "tuipng",
+        "sklayout",
+        "zlib",
+        "crypto",
+        "dl",
+        "commonlib",
+        "dmabufheap",
+        "ion",
+        "cutils",
+        "pthread",
+        "gthread-2.0",
+        "glib-2.0",
+        "pcre"
+    ],
+    "customizedCFlags": [
+        "-D strlcpy=g_strlcpy",
+        "-D strlcat=g_strlcat"
+    ],
+    "customizedCXXFlags": [
+        "-D strlcpy=g_strlcpy"
+    ]
+}

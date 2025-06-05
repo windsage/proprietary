@@ -1,0 +1,19 @@
+//java_library {
+//    name: "libdiagwrapper",
+//
+//    manifest: "com.qualcomm.qti.diagservice.libdiagwrapper.xml",
+//    srcs: ["com/qualcomm/qti/diagservice/*"],
+//    installable: true,
+//
+//    sdk_version: "current",
+//    owner: "qti",
+//    proprietary: true,
+//}
+
+java_import {
+    name: "libdiagwrapper",
+    jars: ["lib/libdiagwrapper.jar"],
+    sdk_version: "current",
+    owner: "qti",
+    proprietary: true,
+}

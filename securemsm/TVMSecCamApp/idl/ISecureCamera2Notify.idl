@@ -1,0 +1,30 @@
+/* Copyright (c) 2022 Qualcomm Technologies, Inc.
+   All Rights Reserved.
+   Confidential and Proprietary - Qualcomm Technologies, Inc. */
+
+/** @cond */
+interface ISecureCamera2Notify
+{
+/** @endcond */
+
+  /**
+   * @addtogroup ISecureCamera2Notify
+   * @{
+   */
+
+  const uint32 EVENT_PROTECTED = 1;             /** Sensor(s) now operating in secure streaming mode */
+  const uint32 EVENT_UNPROTECTED = 2;           /** Sensor(s) will transition into non-secure streaming mode after this notification */
+  /**
+    This method is called by the secure camera driver after an event has occured. A TrustedApp
+    should implement this if it wants to receive notifications when sensors
+    are protected/unprotected.
+
+    @param[in]  state    Indicates the camera streaming state
+
+    @return
+    Error code \n
+  */
+  method event(in uint32 state);
+
+  /* @} */ /* end_addtogroup ISecureCamera2Notify */
+};

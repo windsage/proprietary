@@ -1,0 +1,15 @@
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+* @addtogroup CTrustedUIApp
+* @{
+  Class CTrustedUIApp implements \link ITrustedUIApp \endlink interface.
+
+  The class ID `CTrustedUIApp` is a downloadable TA in QTVM.
+*/
+
+const uint32 CTrustedUIApp_UID = 292;
+
+/** @} */

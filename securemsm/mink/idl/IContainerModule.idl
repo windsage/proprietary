@@ -1,0 +1,30 @@
+/** @file IContainerModule.idl */
+
+// Copyright (c) 2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+include "IModule.idl"
+
+/** @cond */
+interface IContainerModule : IModule {
+/** @endcond */
+
+  /**
+   * @addtogroup IContainerModule
+   * @{
+   */
+
+  /** @cond */
+  /** @endcond */
+
+  /**
+    Gets the object implementing app-provided functionalities.
+
+    @return
+    Object_OK - Successful. \n
+   */
+  method enable();
+
+  /** @} */ /* end_addtogroup IContainerModule */
+};

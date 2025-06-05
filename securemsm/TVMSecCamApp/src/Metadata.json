@@ -1,0 +1,5 @@
+{
+    "appName": "TVMSecCamApp",
+    "privileges": ["SecureCamera2", "TAccessControl"],
+    "services": ["SecureCamera2App"]
+}

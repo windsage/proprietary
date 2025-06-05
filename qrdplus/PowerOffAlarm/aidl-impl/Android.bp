@@ -1,0 +1,70 @@
+
+cc_library_shared {
+    name: "vendor.qti.hardware.alarm-impl",
+    proprietary: true,
+    relative_install_path: "hw",
+    owner: "qti",
+    srcs: ["Alarm.cpp"],
+
+    shared_libs: [
+        "libutils",
+        "liblog",
+        "libcutils",
+        "libhardware",
+        "libbase",
+        "vendor.qti.hardware.alarm-V1-ndk",
+        "libdl",
+        "libbinder",
+        "libbinder_ndk"
+    ],
+}
+
+cc_binary {
+    name: "vendor.qti.hardware.alarm-service",
+    init_rc: ["vendor.qti.hardware.alarm-service.rc"],
+    proprietary: true,
+    relative_install_path: "hw",
+    vintf_fragments: ["vendor.qti.hardware.alarm.xml"],
+    owner: "qti",
+    srcs: ["service.cpp"],
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libdl",
+        "libbase",
+        "libutils",
+        "libbinder",
+        "libhardware",
+        "libhidlbase",
+        "libbinder_ndk",
+        "libavservices_minijail",
+        "vendor.qti.hardware.alarm-impl",
+        "vendor.qti.hardware.alarm-V1-ndk"
+    ],
+}
+
+cc_fuzz {
+    name: "aidl_fuzzer_alarm_service",
+    proprietary: true,
+    srcs: ["fuzzer/fuzzer.cpp"],
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libdl",
+        "libbase",
+        "libutils",
+        "libbinder",
+        "libhardware",
+        "libhidlbase",
+        "libbinder_ndk",
+        "libavservices_minijail",
+        "vendor.qti.hardware.alarm-impl",
+        "vendor.qti.hardware.alarm-V1-ndk"
+    ],
+
+    static_libs: [
+        "libbinder_random_parcel",
+    ],
+}

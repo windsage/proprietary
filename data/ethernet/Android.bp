@@ -1,0 +1,6 @@
+prebuilt_firmware{
+    name: "qps615_fw.bin",
+    src: "firmware/qps615_fw.bin",
+    filename_from_src: true,
+    soc_specific: true,
+}

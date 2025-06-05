@@ -1,0 +1,47 @@
+cc_library_headers {
+
+    name: "power_core_headers",
+    vendor: true,
+    export_include_dirs: ["core"] + ["utils"] + ["utils/inc"],
+}
+
+cc_library_shared {
+
+    srcs: [
+        "core/PowerCore.cpp", "utils/PowerOptFeature.cpp", "utils/PowerOptXMLParser.cpp", "utils/TargetDifferentiation.cpp"
+    ],
+
+    header_libs: [
+        "libcutils_headers",
+        "perf_mpctl_headers",
+    ],
+
+    include_dirs: [
+         "vendor/qcom/proprietary/android-power/power-core/core",
+         "vendor/qcom/proprietary/android-power/power-core/utils/",
+         "vendor/qcom/proprietary/android-power/power-core/utils/inc",
+    ],
+
+    shared_libs: [
+        "libcutils",
+        "libutils",
+        "liblog",
+        "libdl",
+        "libbinder",
+        "libtinyxml2",
+        "vendor.display.config@1.0",
+        "libhidlbase",
+    ],
+
+    cflags: [
+        "-DCLIENT",
+        "-Wall",
+        "-Wno-unused-variable",
+        "-Wno-unused-parameter",
+        "-Wno-unused-function",
+    ],
+
+    name: "libpowercore",
+    owner: "qti",
+    proprietary: true,
+}

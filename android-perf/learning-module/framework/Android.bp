@@ -1,0 +1,78 @@
+
+cc_library_headers {
+
+    name: "perf_lm_framework_headers",
+
+    vendor_available: true,
+
+    export_include_dirs: [
+         "inc",
+         "inc/core",
+         "inc/metameters",
+         "metameters/inc",
+         "inc/utils",
+         "inc/database",
+         "core/internal",
+         "inc/database/internal/"
+    ],
+}
+
+cc_library_shared {
+    name: "liblearningmodule",
+    srcs: [
+        "metameters/MetaMeter.cpp",
+        "metameters/MeterMgr.cpp",
+        "metameters/Meter.cpp",
+        "metameters/MeterFwk.cpp",
+        "metameters/ThreadHelper.cpp",
+        "core/LearningModule.cpp",
+        "core/Feature.cpp",
+        "core/FeatureState.cpp",
+        "core/FeatureXML.cpp",
+        "core/LMPerfGlue.cpp",
+        "database/lmDB.cpp",
+        "core/AsyncData.cpp",
+        "core/FeedbackAPI.cpp",
+        "core/DynamicLoader.cpp"
+    ],
+
+    header_libs: [
+        "libutils_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_lm_framework_headers",
+        "perf_client_headers",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libc",
+        "libcutils",
+        "libutils",
+        "libtinyxml2",
+        "libsqlite",
+        "libperfgluelayer",
+    ],
+
+    cflags: [
+        "-Wno-unused-parameter",
+        "-DQC_DEBUG=0",
+    ],
+
+    cppflags: [
+        "-fexceptions",
+    ],
+
+    include_dirs: [
+        "external/tinyxml2",
+        "external/sqlite/dist",
+        "external/libxml2/include",
+    ],
+
+    compile_multilib: "first",
+
+    owner: "qti",
+
+    proprietary: true,
+}

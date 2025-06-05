@@ -1,0 +1,75 @@
+subdirs = [
+    "*",
+]
+
+cc_library_headers {
+
+    name: "perf_rf_headers",
+
+    vendor_available: true,
+
+    export_include_dirs: [
+         ".",
+         "UnitTests/perf-util",
+         "UnitTests/perf-hal",
+         "UnitTests/activity-trigger",
+         "UnitTests/mp-ctl",
+         "ModuleTests/mp-ctl",
+    ],
+}
+
+cc_binary {
+    name: "regressionframework",
+
+    srcs: [
+        "RegressionFramework.cpp",
+        "UnitTests/perf-util/EventDataPoolTest.cpp",
+        "UnitTests/perf-util/EventQueueTest.cpp",
+        "UnitTests/perf-hal/PerfGlueLayerTest.cpp",
+        "UnitTests/activity-trigger/ActivityTriggerTest.cpp",
+        "UnitTests/mp-ctl/ActiveRequestListTest.cpp",
+        "UnitTests/mp-ctl-client/PerfThreadPoolTest.cpp",
+        "ModuleTests/mp-ctl/PerfTest.cpp",
+        "ModuleTests/learning-module/Prefappstest.cpp",
+        "ModuleTests/learning-module/Procomptest.cpp",
+        "ModuleTests/learning-module/Prekilltest.cpp",
+        "ModuleTests/learning-module/QGPETests.cpp",
+        "ModuleTests/mp-ctl/PerfStressTest.cpp",
+        "ModuleTests/learning-module/LaunchMeterTests.cpp",
+        "ModuleTests/mp-ctl/DisplayTests.cpp",
+        "ModuleTests/mp-ctl/MemoryDetective.cpp",
+    ],
+
+    shared_libs: [
+        "libcutils",
+        "libdl",
+        "libutils",
+        "liblog",
+        "libxml2",
+        "libqti-util",
+        "libperfconfig",
+        "libperfgluelayer",
+        "libqti-perfd",
+        "libqti-perfd-client",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "perf_mpctl_headers",
+        "perf_client_headers",
+        "perf_util_headers",
+        "perf_hal_headers",
+        "perf_rf_headers",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-DVENDOR_DIR=\"/vendor/etc\"",
+        "-DQC_DEBUG=0",
+        "-fexceptions",
+        "-Wextra",
+        "-Werror",
+    ],
+
+    proprietary: true,
+}

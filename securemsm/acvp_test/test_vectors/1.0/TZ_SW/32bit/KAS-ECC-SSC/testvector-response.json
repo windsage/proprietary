@@ -1,0 +1,273 @@
+[
+  {
+    "acvVersion": "1.0"
+  },
+  {
+    "vsId": 534675,
+    "algorithm": "KAS-ECC-SSC",
+    "revision": "Sp800-56Ar3",
+    "isSample": false,
+    "testGroups": [
+      {
+        "tgId": 1,
+        "tests": [
+          {
+            "ephemeralPublicIutX" : "90EB4F0DAB970027C9B694B7B34470D3A964E46E06897347A995AA63",
+            "ephemeralPublicIutY" : "AA2D1822C4993F361A177CF6DE0CCAD08AD56E58BC9CCA3EBD8BA95B",
+            "tcId" : 1,
+            "z" : "D90F6BD9A1D59515143C3ED2F3054B2E9AF940F9A5008A4949867905"
+          },
+          {
+            "ephemeralPublicIutX" : "9589FE91081B9D91C6A1DD363921D508B6B2947E31171182E365FEFE",
+            "ephemeralPublicIutY" : "A261A1D26CB6C1044AFC1E6CA4BE689C020C735EF2E3928E2F7D2A91",
+            "tcId" : 2,
+            "z" : "16D3BED2C31E235856F4C02F2926711E493CC81A30759EE97EEB4737"
+          },
+          {
+            "ephemeralPublicIutX" : "BED8414FD2080C19AA587BF45727F5C5B08D6A37AC9BA5DC884E88F5",
+            "ephemeralPublicIutY" : "61D704E44095B0B9F41C725E88FEA51FFA797C3485EB900DAD410DAB",
+            "tcId" : 3,
+            "z" : "9A98FDDC84713F9DF69F102A65ED5188A11FCFD2AF3F1CB9856AD67B"
+          },
+          {
+            "ephemeralPublicIutX" : "2999CAD5D54F41102A09F842E37F594FB4368842ACA27FD05F91A65D",
+            "ephemeralPublicIutY" : "6DC2A2B4693EC1773FF3A292B038AAA09AA18609E1EA17FD6D4EF6F1",
+            "tcId" : 4,
+            "z" : "060692C6832A3B980FE7CFCCD0DB6D7F9F7816C4EA8A11B0E31D1D1E"
+          },
+          {
+            "ephemeralPublicIutX" : "98AC1289E7CF4118E3F918644E660FFD33658CB147DCA83B4A7EDCFD",
+            "ephemeralPublicIutY" : "3F3E641EA75A608A26DB70A44F6ADE1CF7099CB08BAA5A0F07D69C61",
+            "tcId" : 5,
+            "z" : "F4CD0583720945D0A82F440642744315E4598E29EFB304EAC4FD781F"
+          },
+          {
+            "ephemeralPublicIutX" : "05597ED7F427E5431B987D6DF6B9DDB22F6F21A801D7B89B3135CBF7",
+            "ephemeralPublicIutY" : "8F46AE0F777F02F74E2A44A87C9FE57B5A81EA6B2A22EE2E7C4F48E0",
+            "tcId" : 6,
+            "z" : "8E87B5797CDCFFB8E6F9F092069DE1E170730500A9E1BC8F7386F91A"
+          },
+          {
+            "ephemeralPublicIutX" : "4FC4B5DDD3CF5CE3A99027E48D07D0A2D4A7234865ED7AA0CC887F1B",
+            "ephemeralPublicIutY" : "821E4C1FA65FB46C565750572D45FECE9A3DF45232B916705C7E133C",
+            "tcId" : 7,
+            "z" : "8EB220620FDE0863D33F9D2E1615B3CC52A42D84A77C40C70E4808C6"
+          },
+          {
+            "ephemeralPublicIutX" : "B05A57024F64C7C89D37A7C6F9A18DBFECDB01B4D043F082D7E40B74",
+            "ephemeralPublicIutY" : "58B6D0F8EF0A70FDC1476C5040DCC39AB254E3CD87054685DF4FEC55",
+            "tcId" : 8,
+            "z" : "7F92CF9D39A46A1FE4CD6BC597AFB398C3C14DE3865C8FBE512C471B"
+          },
+          {
+            "ephemeralPublicIutX" : "A786857E6679890AFDF9C2B0E3EB5652F42C251B38D8BB972A6EC893",
+            "ephemeralPublicIutY" : "D3EDBC2418BAB958D07F93ABE080F83F91CFDFFC1487B128BC38B877",
+            "tcId" : 9,
+            "z" : "5C82B3F32199491A9201E722625B0DB90B34EFB364C79BB657534F3C"
+          },
+          {
+            "ephemeralPublicIutX" : "58DF179270EAB42E3B5363A6E31227BDE9FD032C5E1C4ACE6C86F538",
+            "ephemeralPublicIutY" : "A91F9BBCCA2351C2D488D9B34C65883A7314B608CB7B46C2C85EED67",
+            "tcId" : 10,
+            "z" : "9214920C1014B88B521CCBA47EEF1451F24C726AFE5DF01CDF2D14D6"
+          }
+        ]
+      },
+      {
+        "tgId": 2,
+        "tests": [
+          {
+            "tcId" : 11,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 12,
+            "testPassed" : false
+          },
+          {
+            "tcId" : 13,
+            "testPassed" : false
+          },
+          {
+            "tcId" : 14,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 15,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 16,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 17,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 18,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 19,
+            "testPassed" : false
+          },
+          {
+            "tcId" : 20,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 21,
+            "testPassed" : false
+          },
+          {
+            "tcId" : 22,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 23,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 24,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 25,
+            "testPassed" : false
+          }
+        ]
+      },
+      {
+        "tgId": 3,
+        "tests": [
+          {
+            "ephemeralPublicIutX" : "6C1436BFA6C34FA3CBF45418D321A6644DCD548AEDB3D856C0A4801C293D8777",
+            "ephemeralPublicIutY" : "9E5732CD936D41EBE31FE5C1326B999803220664BFA57289B904CDAB8E4A46CC",
+            "tcId" : 26,
+            "z" : "65EF1008E7749F83540E260FB53120136E9C32FEC1F5B92981C38AECEC100525"
+          },
+          {
+            "ephemeralPublicIutX" : "43270A2330D660944464AF544B90BA1FECCD6F0BB3DF9DF83868183ABCA0171C",
+            "ephemeralPublicIutY" : "937DA943E0819F9333892E5B1E5E62260BD0B3F17E2D68C6D101EC97981680A4",
+            "tcId" : 27,
+            "z" : "1CAD03F299F2988C6A54CE1AB0D37C89B5DC41259851AAD402FB4866D447D4F9"
+          },
+          {
+            "ephemeralPublicIutX" : "B7196D8F8B6E37282E4791B14B7BA76534C335854E98A01BB1AF931D7FF05ACE",
+            "ephemeralPublicIutY" : "BA4FA0C1D8CD3A0B52E9B11C5CFDE1A26712B806985AAA49EFD8B4B598100A43",
+            "tcId" : 28,
+            "z" : "8A20540AF24C2F1004DDF799780B1D43C581F3CBD1BC3166042700AFDBAB00EE"
+          },
+          {
+            "ephemeralPublicIutX" : "9D32126EBEFC860C51075923B86C38C61F13928E94FF849225FEE398ED2D3CF4",
+            "ephemeralPublicIutY" : "3B4E27C470F3D67AEEE3203197D5D9F29383F8AF4BDDFB1929939ACB03759207",
+            "tcId" : 29,
+            "z" : "EBE50B6256A40514D56821B588EDB4DD9FFBB2E32001F57880019D52947C6977"
+          },
+          {
+            "ephemeralPublicIutX" : "A2DDF56DBF85B914BE919372039E2FA2FFC36B8A767AA1D92FA7F248B2626E0E",
+            "ephemeralPublicIutY" : "B2BD59836B8983801791473DDB88633E81D0E03683709F674C81ACEC14115C77",
+            "tcId" : 30,
+            "z" : "EBF3896E3A3E2051E69E9D79845B5840AB69124CDE6649091CB9EC0804CBDC46"
+          },
+          {
+            "ephemeralPublicIutX" : "87E527B046E0116C002429C105955A93F857A18369971500FFB725969E04DF76",
+            "ephemeralPublicIutY" : "B8EEAB9A50D7237E5730B19E7F4663F622E1753272080CBE5EEF367D90D4E540",
+            "tcId" : 31,
+            "z" : "DB9713A78530BEF3B5AD79CEB99AC3720C1192BCD9A7CB20E062A1FC099AD337"
+          },
+          {
+            "ephemeralPublicIutX" : "4DE670CBE68C2C834B859B0948CE039205AAEF4DED180EDBCA1890EB3CD60834",
+            "ephemeralPublicIutY" : "45BFD7D1C1AAAF93559D5F0909CC99CC089B616E03E70FE49A8A8B56B5518C2E",
+            "tcId" : 32,
+            "z" : "97AA2CCDAA4343C6E339E3875C0836C85DD146BE849FC6EB8D617A71BBF23276"
+          },
+          {
+            "ephemeralPublicIutX" : "F142D4DF56FF78D222DC3DA2FA3863BD9640E896D331421063DDAC7391AA6624",
+            "ephemeralPublicIutY" : "35087D9FB997D962922A8B39A36B623381A83F3C8650749A0C4BB08FC49DD36E",
+            "tcId" : 33,
+            "z" : "F6640DFF0E2EB809EAE486A278A61F908075BADE9CFB16EB0D54746A481AA5F4"
+          },
+          {
+            "ephemeralPublicIutX" : "AD03FF4546F46ED4C6E3B688B791AA36916A77F5C8E2D53D13E19C235E69931F",
+            "ephemeralPublicIutY" : "FD5F34A886C70D48CB1680374063092A67FC6AFFF913678ACE5CD430E7004695",
+            "tcId" : 34,
+            "z" : "6FEDC62E9E329C6591740A5E2706CD4BAE275835C21D3C620C3D2E44AD860059"
+          },
+          {
+            "ephemeralPublicIutX" : "06329B1EF5FB449AECC5FBA682DAC5754AF274B179967B26E07AF1B646A330EE",
+            "ephemeralPublicIutY" : "4269EBD6901A24842CE5FEA4A8C7C858DF8ACC8AD28CBC6AABCF94AEA77437B8",
+            "tcId" : 35,
+            "z" : "861C339CC942F9174CC3417B1DFD6526EABB61124ABB384DEBDC9FA6F8925B0F"
+          }
+        ]
+      },
+      {
+        "tgId": 4,
+        "tests": [
+          {
+            "tcId" : 36,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 37,
+            "testPassed" : false
+          },
+          {
+            "tcId" : 38,
+            "testPassed" : false
+          },
+          {
+            "tcId" : 39,
+            "testPassed" : false
+          },
+          {
+            "tcId" : 40,
+            "testPassed" : false
+          },
+          {
+            "tcId" : 41,
+            "testPassed" : false
+          },
+          {
+            "tcId" : 42,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 43,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 44,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 45,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 46,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 47,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 48,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 49,
+            "testPassed" : true
+          },
+          {
+            "tcId" : 50,
+            "testPassed" : true
+          }
+        ]
+      }
+    ]
+  }
+]

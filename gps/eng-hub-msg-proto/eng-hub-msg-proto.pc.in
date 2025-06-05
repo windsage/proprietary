@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: location proto file module
+Description: QTI location proto file
+Version: @VERSION
+Libs: -L${libdir} -leng_hub_msg_proto
+Cflags: -I${includedir}/eng-hub-msg-proto

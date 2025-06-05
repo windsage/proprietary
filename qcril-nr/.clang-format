@@ -1,0 +1,23 @@
+BasedOnStyle: Google
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+BinPackArguments: false
+BinPackParameters: false
+AlignAfterOpenBracket: Align
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowAllArgumentsOnNextLine: true
+BreakBeforeBraces: Custom
+BraceWrapping:
+    AfterFunction: true
+    BeforeLambdaBody: true
+ColumnLimit: 100
+CommentPragmas: NOLINT:.*
+DerivePointerAlignment: false
+IndentWidth: 2
+PointerAlignment: Left
+TabWidth: 2
+UseTab: Never
+PenaltyExcessCharacter: 32
+SortIncludes: false
+Cpp11BracedListStyle: false
+

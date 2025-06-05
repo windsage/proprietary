@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: loc-net-ext-iface
+Description: GPS Loc Net Ext Iface
+Version: @VERSION
+Libs: -L${libdir} -lloc_net_ext_iface
+Cflags: -I${includedir} -I${includedir}/loc-net-ext-iface -I${includedir}/loc-net-ext-iface/le

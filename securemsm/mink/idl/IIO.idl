@@ -1,0 +1,65 @@
+// Copyright (c) 2015 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/** @cond */
+interface IIO {
+/** @endcond */
+
+  /**
+   * @addtogroup IIO
+   * @{
+   */
+
+  /** @cond */
+  /** Offset parameter falls outside the allowable range. */
+  error ERROR_OFFSET_OUT_OF_BOUNDS;
+
+  /** Source buffer for write operation larger than allowed. */
+  error ERROR_SOURCE_BUFFER_TOO_LARGE;
+
+  /** Parameter buffer length and offset overflow. */
+  error ERROR_INVALID_BUFFER_AND_OFFSET;
+  /** @endcond */
+
+  /**
+    Retrieves maximum value for the combination of offset and buffer
+    length for readAtOffset() and writeAtOffset().
+
+    @param[out] len Maximum value for the combination of offset and
+                    buffer length passed to readAtOffset() and
+                    writeAtOffset().
+
+    @return Object_OK on success.
+   */
+  method getLength(out uint64 len);
+
+  /**
+    Copies from source at the given offset into the output buffer up
+    to the size of the output buffer.  If the output buffer is larger
+    than the source at the provided offset, the remaining bytes of
+    the output buffer remain unchanged.
+
+    @param[in]  offset Offset to begin reading from source
+                       buffer.
+    @param[out] data   Destination to copy source data into.
+
+    @return Object_OK on success.
+   */
+  method readAtOffset(in uint64 offset, out buffer data);
+
+  /**
+    Copies in to the destination at the given offset up to input buffer size. \n
+    If the combined input buffer length and offset are a greater length than
+    the destination, an error is returned and no data is copied.
+
+    @param[in] offset Offset to begin writing into the
+                      destination.
+    @param[in] data   Source of data to copy to destination.
+
+    @return Object_OK on success.
+   */
+  method writeAtOffset(in uint64 offset, in buffer data);
+
+  /** @} */ /* end_addtogroup IIO */
+};

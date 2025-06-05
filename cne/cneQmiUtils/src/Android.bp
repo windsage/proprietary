@@ -1,0 +1,34 @@
+//disable for now
+cc_library_shared {
+    name: "libcneqmiutils",
+
+    header_libs: [
+        "libcneqmiutils_headers",
+        "libqmi_legacy_headers",
+        "vendor_common_inc",
+    ],
+
+    export_header_lib_headers: ["libcneqmiutils_headers"],
+
+    arch: {
+        arm: {
+            instruction_set: "arm",
+        },
+    },
+
+    srcs: ["CneQmiUtils.cpp"],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+
+    shared_libs: [
+        "libutils",
+    ],
+
+    host_supported: true,
+
+    owner: "qcom",
+    proprietary: true,
+}

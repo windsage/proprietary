@@ -1,0 +1,14 @@
+cc_binary {
+    proprietary: true,
+    name: "vendor.qti.hardware.soter-provision",
+    srcs: ["SoterProvisioningTool.cpp"],
+    shared_libs: [
+        "liblog",
+        "libdl",
+        "libutils",
+        "libhardware",
+        "libhidlbase",
+        "vendor.qti.hardware.soter-V1-ndk",
+        "libbinder_ndk",
+    ],
+}

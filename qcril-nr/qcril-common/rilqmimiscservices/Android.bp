@@ -1,0 +1,19 @@
+cc_library {
+    name: "librilqmimiscservices",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    srcs: [
+        "src/qmi_ims_vt_v01.c",
+        "src/qtuner_v01.c",
+    ],
+    shared_libs: [
+        "libqmi_common_so",
+    ],
+    export_include_dirs: [
+        "inc",
+        "inc/services",
+    ],
+    cpp_std: "c++17",
+    owner: "qti",
+    proprietary: true,
+}

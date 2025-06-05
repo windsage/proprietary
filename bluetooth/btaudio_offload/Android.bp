@@ -1,0 +1,66 @@
+cc_library_shared {
+    name: "btaudio_offload_if",
+    vendor: true,
+    proprietary: true,
+    srcs: [
+        "btaudio_offload.cpp",
+    ],
+    header_libs: ["libhardware_headers"],
+    include_dirs: [
+        "vendor/qcom/proprietary/bluetooth/bluetooth_audio/2.0/default/session/hw/",
+        "vendor/qcom/proprietary/bluetooth/bluetooth_audio/2.1/default/session/hw/",
+        "vendor/qcom/proprietary/bluetooth/bluetooth_audio/aidl/1.0/default/",
+        "vendor/qcom/proprietary/bluetooth/bluetooth_audio/utils/",
+    ],
+    shared_libs: [
+        "libbase",
+        "libcutils",
+        "libfmq",
+        "libhidlbase",
+        "liblog",
+        "libutils",
+        "libbinder_ndk",
+        "android.hardware.bluetooth.audio-V3-ndk",
+        "libbluetooth_audio_session_aidl_qti",
+        "libbluetooth_audio_session_qti",
+        "libbluetooth_audio_session_qti_2_1",
+        "vendor.qti.hardware.bluetooth.audio-V1-ndk",
+        "android.hardware.bluetooth.audio-impl-qti",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+}
+
+cc_library_shared {
+    name: "libbthost_if_sink",
+    vendor: true,
+    proprietary: true,
+    srcs: [
+        "btaudio_sink_offload.cpp",
+    ],
+    header_libs: ["libhardware_headers"],
+    include_dirs: [
+        "vendor/qcom/proprietary/bluetooth/bluetooth_audio/2.1/default/session/hw/",
+    ],
+    shared_libs: [
+        "libbase",
+        "libcutils",
+        "libfmq",
+        "libhidlbase",
+        "liblog",
+        "android.hardware.bluetooth.audio-V3-ndk",
+        "libutils",
+        "android.hardware.bluetooth.audio@2.0",
+        "libbluetooth_audio_session",
+        "libbluetooth_audio_session_qti",
+        "libbluetooth_audio_session_qti_2_1",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+}

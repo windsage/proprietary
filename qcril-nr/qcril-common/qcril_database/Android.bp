@@ -1,0 +1,182 @@
+
+genrule {
+    name: "config_key_headers",
+    enabled: true,
+    srcs: [
+        "src/configs.xml"
+    ],
+    tool_files: [
+        "tools/config_gen.py",
+        "tools/sql_util.py",
+    ],
+    cmd: "python $(location tools/config_gen.py) $(in) --header $(out)",
+    out: ["__config_key.h"]
+}
+
+filegroup {
+    name: "rildb_other_sql_files",
+    srcs: [
+        "upgrade/other/0000_initial_qcrilnr.sql",
+        "upgrade/other/0001_version_intro_qcrilnr.sql",
+        "upgrade/other/0002_version_add_wps_config_qcrilnr.sql",
+        "upgrade/other/0003_version_update_wps_config_qcrilnr.sql",
+        "upgrade/other/0004_version_update_ecc_table_qcrilnr.sql",
+        "upgrade/other/0005_version_update_ecc_table_qcrilnr.sql",
+        "upgrade/other/0006_version_change_property_table_qcrilnr.sql",
+        "upgrade/other/0007_version_update_ecc_table_qcrilnr.sql",
+        "upgrade/other/0008_version_update_ecc_table.sql",
+        "upgrade/other/0009_version_update_ecc_table.sql",
+        "upgrade/other/0010_version_update_ecc_table.sql",
+        "upgrade/other/0011_version_update_ecc_table.sql",
+        "upgrade/other/0012_version_update_ecc_table.sql",
+        "upgrade/other/0013_version_update_ecc_table.sql",
+        "upgrade/other/0014_version_update_modules.sql",
+        "upgrade/other/0015_version_add_iccid_clir_pref_table.sql",
+    ],
+}
+
+filegroup {
+    name: "rildb_config_sql_files",
+    srcs: [
+        "upgrade/config/0006.0_config.sql",
+        "upgrade/config/0007.0_config.sql",
+        "upgrade/config/0008.0_config.sql",
+        "upgrade/config/0009.0_config.sql",
+        "upgrade/config/0010.0_config.sql",
+        "upgrade/config/0011.0_config.sql",
+        "upgrade/config/0012.0_config.sql",
+        "upgrade/config/0013.0_config.sql",
+        "upgrade/config/0014.0_config.sql",
+        "upgrade/config/0015.0_config.sql",
+    ],
+}
+
+genrule {
+    name: "qcril_config_database",
+    enabled: true,
+    srcs: [
+        ":rildb_other_sql_files",
+        ":rildb_config_sql_files",
+    ],
+    tool_files: [
+        "tools/gen_db.sh",
+    ],
+    tools: [
+        "sqlite3",
+    ],
+    cmd: "$(location tools/gen_db.sh) $(location sqlite3) $(out) $(in)",
+    out: ["qcrilNr.db"],
+}
+
+cc_library_headers {
+    name: "libril-db-headers",
+    host_supported: true,
+    generated_headers: [
+        "config_key_headers"
+    ],
+    export_generated_headers: [
+        "config_key_headers"
+    ],
+    export_include_dirs: ["./inc/"],
+    vendor: true,
+    proprietary: true,
+}
+
+cc_library {
+    name: "libril-db",
+    host_supported: true,
+    srcs: [
+        "src/*.cpp",
+    ],
+    header_libs: [
+        "qcrilnr-toplevel-headers",
+        "libril-db-headers",
+        "qtiril-utils-headers",
+        "qcrilInterfaces-headers",
+        "libqmi_common_headers",
+        "libqmi_legacy_headers",
+        "libril-qc-qmi-services-headers",
+        "qcrilDataInterfaces_headers",
+    ],
+    shared_libs: [
+        "libcutils",
+        "libqcrilNrLogger",
+        "libsqlite",
+        "libqcrilNrFramework",
+        "libqcrilNrQtiMutex",
+        "qtiril-utils",
+        "qcrilIntermodulemsgs",
+    ],
+    defaults: ["qtiril_common_defaults"],
+    export_header_lib_headers: [
+        "libril-db-headers"
+    ],
+}
+
+prebuilt_etc {
+    name: "qcrilNrDb_vendor",
+    filename: "qcrilNr.db",
+    src: ":qcril_config_database",
+    sub_dir: "qcril_database",
+    vendor: true,
+    proprietary: true,
+    owner: "qti",
+    required: [
+        "0000_initial_qcrilnr.sql",
+        "0001_version_intro_qcrilnr.sql",
+        "0002_version_add_wps_config_qcrilnr.sql",
+        "0003_version_update_wps_config_qcrilnr.sql",
+        "0004_version_update_ecc_table_qcrilnr.sql",
+        "0005_version_update_ecc_table_qcrilnr.sql",
+        "0006_version_change_property_table_qcrilnr.sql",
+        "0007_version_update_ecc_table_qcrilnr.sql",
+        "0008_version_update_ecc_table.sql",
+        "0009_version_update_ecc_table.sql",
+        "0010_version_update_ecc_table.sql",
+        "0011_version_update_ecc_table.sql",
+        "0012_version_update_ecc_table.sql",
+        "0013_version_update_ecc_table.sql",
+        "0014_version_update_modules.sql",
+        "0015_version_add_iccid_clir_pref_table.sql",
+        "0006.0_config.sql",
+        "0007.0_config.sql",
+        "0008.0_config.sql",
+        "0009.0_config.sql",
+        "0010.0_config.sql",
+        "0011.0_config.sql",
+        "0012.0_config.sql",
+        "0013.0_config.sql",
+        "0014.0_config.sql",
+        "0015.0_config.sql",
+    ],
+}
+
+prebuilt_etc_host {
+    name: "qcrilNrDb_host",
+    filename: "qcrilNr.db",
+    src: ":qcril_config_database",
+    sub_dir: "qcril_database",
+    proprietary: true,
+    owner: "qti",
+}
+
+sh_binary {
+    name: "qtisetprop",
+    src: "tools/qtisetprop",
+    vendor: true,
+    proprietary: true,
+    owner: "qti",
+}
+
+sh_binary {
+    name: "qtigetprop",
+    src: "tools/qtigetprop",
+    vendor: true,
+    proprietary: true,
+    owner: "qti",
+}
+
+subdirs = [
+    "upgrade/other",
+    "upgrade/config",
+]

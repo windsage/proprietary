@@ -1,0 +1,28 @@
+/*===================================================================================
+  Copyright (c) 2020, 2023 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+
+/*===================================================================================
+FILE:  ITUISessionCallBack.idl
+
+DESCRIPTION:  This file contains interface to the TUISession CallBack, which is
+normally called by TUICoreService to notify app of fatal errors and events.
+
+=====================================================================================*/
+
+interface TUISessionCallBack
+{
+    const uint64 PHONE_STATE_RINGING  = 0x1;
+    const uint64 PHONE_STATE_OFF_HOOK = 0x2;
+    const uint64 PHONE_STATE_IDLE     = 0x4;
+    const uint64 ACTION_SCREEN_OFF    = 0x8;
+    const uint64 ACTION_SCREEN_ON     = 0x10;
+    const uint64 ACTION_SHUTDOWN      = 0x20;
+    const uint64 ACTION_USER_PRESENT  = 0x40;
+    const uint64 SYSTEM_EVENT_MAX     = 0x7FFFFFFF;
+
+    method OnEvent(in uint64 event);
+    method OnError();
+};

@@ -1,0 +1,48 @@
+cc_library_headers {
+    name: "qtiril-utils-headers",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_include_dirs: [
+        "inc",
+    ],
+}
+
+cc_library {
+    name: "qtiril-utils",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    srcs: [
+        "src/*.cpp",
+    ],
+    header_libs: [
+        "libril-qc-qmi-services-headers",
+        "libqcrilNrQtiMutex-headers",
+        "libqcrilNrFramework-headers",
+        "qcrilInterfaces-headers",
+        "qtiril-utils-headers",
+        "libqmi_common_headers",
+        "libcutils_headers",
+        "vendor_common_inc",
+    ],
+    shared_libs: [
+        "libqcrilNrQtiMutex",
+        "libqcrilNrLogger",
+        "qcrilIntermodulemsgs",
+    ],
+    target: {
+        host: {
+            cflags: [
+                "-DHOST_EXECUTABLE_BUILD",
+            ],
+            cppflags: [
+                "-DHOST_EXECUTABLE_BUILD",
+            ],
+        },
+    },
+    export_header_lib_headers: [
+        "qtiril-utils-headers",
+    ],
+    cpp_std: "c++17",
+    owner: "qti",
+    proprietary: true,
+}

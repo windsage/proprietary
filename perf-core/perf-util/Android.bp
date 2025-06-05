@@ -1,0 +1,82 @@
+cc_library_headers {
+
+    name: "perf_util_headers",
+
+    vendor_available: true,
+
+    export_include_dirs: [
+         ".",
+    ],
+}
+
+cc_library_shared {
+
+    srcs: [
+        "XmlParser.cpp",
+        "EventQueue.cpp",
+        "EventDataPool.cpp",
+        "SecureOperations.cpp",
+    ],
+
+    header_libs: [
+        "libcutils_headers",
+    ],
+
+    shared_libs: [
+        "libcutils",
+        "libdl",
+        "libutils",
+        "libxml2",
+        "liblog",
+        "libq-perflog",
+    ],
+
+    include_dirs: [
+        "external/libxml2/include",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-DQC_DEBUG=0",
+        "-Wextra",
+        "-Werror"
+    ],
+
+    cppflags: [
+        "-fexceptions",
+    ],
+
+    name: "libqti-util",
+    proprietary: true,
+
+}
+
+cc_library_shared {
+
+    srcs: [
+        "PerfLog.cpp",
+    ],
+
+    header_libs: [
+        "libcutils_headers",
+    ],
+
+    shared_libs: [
+        "libcutils",
+        "liblog",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+    ],
+
+    cppflags: [
+        "-fexceptions",
+    ],
+
+    name: "libq-perflog",
+    proprietary: true,
+
+}

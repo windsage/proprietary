@@ -1,0 +1,33 @@
+cc_library_shared {
+    name: "libqshlocation",
+    defaults: [
+        "sns_api_dir",
+    ],
+    rtti: false,
+    srcs: [
+        "qsh_location.proto",
+    ],
+    local_include_dirs: ["./"],
+    cppflags: ["-DGOOGLE_PROTOBUF_NO_RTTI"],
+    cflags: [
+        "-Werror",
+        "-Wall",
+        "-Wno-unused-parameter",
+        "-fexceptions",
+    ],
+    proto: {
+        canonical_path_from_root: false,
+        export_proto_headers: true,
+        type: "lite",
+    },
+    shared_libs: [
+        "libsnsapi",
+        "libprotobuf-cpp-lite"
+    ],
+    sanitize:{
+        integer_overflow: true,
+    },
+    export_include_dirs: ["."],
+    owner: "qti",
+    proprietary: true,
+}

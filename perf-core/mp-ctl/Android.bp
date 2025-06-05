@@ -1,0 +1,124 @@
+cc_library_headers {
+
+    name: "perf_mpctl_headers",
+
+    vendor_available: true,
+
+    export_include_dirs: [
+         ".",
+    ],
+}
+
+soong_config_module_type {
+    name: "pasr_manager_cc_defaults",
+    module_type: "cc_defaults",
+    config_namespace: "perf",
+    variables: ["pasr_manager"],
+    properties: ["shared_libs","srcs","exclude_srcs"],
+
+}
+soong_config_string_variable {
+    name: "pasr_manager",
+    values: ["enabled"],
+}
+pasr_manager_cc_defaults {
+    name: "pasr_manager_defaults",
+    soong_config_variables: {
+        pasr_manager:{
+            enabled:{
+            shared_libs: [
+                "vendor.qti.memory.pasrmanager-V1-ndk",
+            ],
+            srcs: [
+                "OptsHandlerExtnPasr.cpp",
+            ],
+            exclude_srcs: [
+                "OptsHandlerExtnPasrStub.cpp",
+            ],
+            } ,
+        }
+    }
+}
+
+cc_library_shared {
+    name: "libqti-perfd",
+    defaults: ["pasr_manager_defaults"],
+    srcs: [
+        "PerfController.cpp",
+        "ActiveRequestList.cpp",
+        "ResourceQueues.cpp",
+        "OptsHandlerExtn.cpp",
+        "OptsHandlerExtnPasrStub.cpp",
+        "OptsHandler.cpp",
+        "RestoreHandler.cpp",
+        "OptsData.cpp",
+        "ResourceInfo.cpp",
+        "Target.cpp",
+        "TargetInit.cpp",
+        "MpctlUtils.cpp",
+        "Request.cpp",
+        "BoostConfigReader.cpp",
+        "HintExtHandler.cpp",
+        "VendorIBoostConfig.cpp",
+        "VendorIPerf.cpp",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "libcutils_headers",
+        "libThermal_headers",
+        "display_intf_headers",
+        "perf_mpctl_headers",
+        "perf_client_headers",
+        "perf_util_headers",
+        "perf_hal_headers",
+        "perf_ioctl_headers",
+        "qti_powerhal_headers",
+    ],
+
+    shared_libs: [
+        "libcutils",
+        "liblog",
+        "libq-perflog",
+        "libutils",
+        "libxml2",
+        "libqti-util",
+        "vendor.qti.hardware.perf2-V1-ndk",
+        "libbase",
+        "libthermalclient",
+        "libqti-perfd-client",
+        "libperfconfig",
+        "libperfgluelayer",
+        "libdisplayconfig.qti",
+        "libperfioctl",
+        "libbinder_ndk",
+        "vendor.qti.hardware.display.config-V5-ndk",
+    ],
+
+    cflags: [
+        "-DSERVER",
+        "-DCLIENT",
+        "-DPERFD",
+        "-g0",
+        "-Wall",
+        "-Wno-unused-variable",
+        "-Wno-unused-parameter",
+        "-Wno-unused-function",
+        "-DVENDOR_DIR=\"/vendor/etc\"",
+        "-DQC_DEBUG=0",
+        "-DQC_TEST_ENABLED=0",
+        "-Wextra",
+        "-Werror",
+    ],
+
+    cppflags: [
+        "-fexceptions",
+    ],
+
+    include_dirs: [
+        "external/libxml2/include",
+    ],
+
+    proprietary: true,
+
+}

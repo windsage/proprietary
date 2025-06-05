@@ -1,0 +1,491 @@
+{
+	"FILE_NAME" : ["wlan_cp_stats_chipset_stats_events.h"],
+
+	"COPYRIGHT_FILE" : ["cstats-cr"],
+
+	"VERSION" : {
+		"CHIPSET_STATS_HDR_VERSION" : 1
+	},
+
+	"HEADER" : ["qdf_types.h", "wmi_unified_param.h"],
+
+	"MACRO" : {
+		"CSTATS_MAC_LEN" : 4
+	},
+
+	"ENUMS" : {
+		"cstats_dir" : {
+			"init" : 0,
+			"param" : ["CSTATS_DIR_TX" , "CSTATS_DIR_RX", "CSTATS_DIR_INVAL"]
+		},
+		"cstats_flag" : {
+			"init" : 1,
+			"param" : ["CSTATS_FLAG_HT", "CSTATS_FLAG_VHT", "CSTATS_FLAG_HE", "CSTATS_FLAG_EHT"]
+		},
+		"cstats_pkt_type" : {
+			"init" : 0,
+			"param" : ["CSTATS_PKT_TYPE_INVALID", "CSTATS_EAPOL_M1", "CSTATS_EAPOL_M2", "CSTATS_EAPOL_M3", "CSTATS_EAPOL_M4", "CSTATS_DHCP_DISCOVER", "CSTATS_DHCP_OFFER", "CSTATS_DHCP_REQ", "CSTATS_DHCP_ACK", "CSTATS_DHCP_NACK", "CSTATS_DHCP_RELEASE", "CSTATS_DHCP_INFORM", "CSTATS_DHCP_DECLINE"]
+		},
+		"cstats_pkt_status" : {
+			"init" : 0,
+			"param" : ["CSTATS_STATUS_INVALID", "CSTATS_TX_STATUS_OK", "CSTATS_TX_STATUS_FW_DISCARD", "CSTATS_TX_STATUS_NO_ACK", "CSTATS_TX_STATUS_DROP", "CSTATS_TX_STATUS_DOWNLOAD_SUCC", "CSTATS_TX_STATUS_DEFAULT"]
+		}
+	},
+
+	"STRUCTURES_NOT_REQUIRED" : ["cstats_reassoc_req_mgmt_frm"],
+
+	"STRUCTURES" : {
+		"cstats_hdr" : [{
+			"evt_id" : [1, "uint16_t", "event_id"],
+			"length" : [1, "uint16_t", "length"]
+		}],
+		"cstats_cmn" : [{
+			"hdr" : ["struct", "cstats_hdr"],
+			"opmode" : [1, "uint8_t", "opmode"],
+			"vdev_id" : [1, "uint8_t", "vdev_id"],
+			"timestamp_us" : [1, "uint64_t", "timestamp_us"],
+			"time_tick" : [1, "uint64_t", "time_tick"]
+		}],
+		"cstats_sta_roam_scan_cancel" : [{
+			"reason_code" : [1, "uint32_t", "reason_code"],
+			"data_rssi" : [1, "uint8_t", "data_rssi"],
+			"data_rssi_threshold" : [1, "uint8_t", "data_rssi_threshold"],
+			"rx_linkspeed_status" : [1, "uint8_t", "rx_linkspeed_status"]
+		}],
+		"cstats_sta_roam_scan_ap" : [{
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"total_score" : [1, "uint32_t", "total_score"],
+			"rssi" : [1, "uint32_t", "rssi"],
+			"etp" : [1, "uint32_t", "etp"],
+			"freq" : [1, "uint16_t", "freq"],
+			"cu_load" : [1, "uint16_t", "cu_load"],
+			"is_mlo" : [1, "uint8_t", "is_mlo"],
+			"type" : [1, "uint8_t", "type"]
+		}]
+	},
+
+	"EVENTS" : {
+		"WLAN_CHIPSET_STATS_MGMT_AUTH_EVENT_ID" : [{
+			"event_info" : ["cstats_auth_mgmt_frm", "MGMT_AUTH"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"auth_algo" : [1, "uint8_t", "auth_log"],
+			"auth_seq_num" : [1, "uint8_t", "auth_seq_num"],
+			"status" : [1, "uint8_t", "status"],
+			"direction" : [1, "uint8_t", "direction"]
+		}],
+		"WLAN_CHIPSET_STATS_MGMT_ASSOC_REQ_EVENT_ID" : [{
+			"event_info" : ["cstats_assoc_req_mgmt_frm", "MGMT_ASSOC_REQ"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"ssid_len" : [1, "uint8_t", "ssid_len"],
+			"ssid" : [0, "uint8_t", 33, "WLAN_SSID_MAX_LEN", 1, "ssid"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"sa" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "sa"],
+			"freq" : [1, "uint16_t", "freq"],
+			"flags" : [1, "uint8_t", "flags"],
+			"direction" : [1, "uint8_t", "direction"]
+		}],
+		"WLAN_CHIPSET_STATS_MGMT_ASSOC_RESP_EVENT_ID" : [{
+			"event_info" : ["cstats_assoc_resp_mgmt_frm", "MGMT_ASSOC_RESP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"dest_mac" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "dest_mac"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"status_code" : [1, "uint16_t", "status_code"],
+			"aid" : [1, "uint16_t", "aid"],
+			"direction" : [1, "uint8_t", "direction"],
+			"flags" : [1, "uint8_t", "flags"]
+		}],
+		"WLAN_CHIPSET_STATS_MGMT_REASSOC_REQ_EVENT_ID" : [{
+			"event_info" : ["cstats_reassoc_req_mgmt_frm", "MGMT_REASSOC_REQ"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"ssid_len" : [1, "uint8_t", "ssid_len"],
+			"ssid" : [0, "uint8_t", 33, "WLAN_SSID_MAX_LEN", 1, "ssid"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"sa" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "sa"],
+			"freq" : [1, "uint16_t", "freq"],
+			"flags" : [1, "uint8_t", "flags"],
+			"direction" : [1, "uint8_t", "direction"]
+		}],
+		"WLAN_CHIPSET_STATS_MGMT_REASSOC_RESP_EVENT_ID": [{
+			"event_info" : ["cstats_assoc_resp_mgmt_frm", "MGMT_REASSOC_RESP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"dest_mac" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "dest_mac"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"status_code" : [1, "uint16_t", "status_code"],
+			"aid" : [1, "uint16_t", "aid"],
+			"direction" : [1, "uint8_t", "direction"],
+			"flags" : [1, "uint8_t", "flags"]
+		}],
+		"WLAN_CHIPSET_STATS_MGMT_DEAUTH_EVENT_ID" : [{
+			"event_info" : ["cstats_deauth_mgmt_frm", "MGMT_DEAUTH"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"reason" : [1, "uint16_t", "reason"],
+			"direction" : [1, "uint8_t", "direction"]
+		}],
+		"WLAN_CHIPSET_STATS_MGMT_DISASSOC_EVENT_ID" : [{
+			"event_info" : ["cstats_disassoc_mgmt_frm",  "MGMT_DISASSOC"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"reason" : [1, "uint16_t", "reason"],
+			"direction" : [1, "uint8_t", "direction"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_CONNECTING_EVENT_ID" : [{
+			"event_info" : ["cstats_sta_connect_req", "STA_CONNECT"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"ssid_len" : [1, "uint8_t", "ssid_len"],
+			"ssid" : [0, "uint8_t", 33, "WLAN_SSID_MAX_LEN", 1, "ssid"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"freq" : [1, "uint16_t", "freq"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_CONNECT_SUCCESS_EVENT_ID" : [{
+			"event_info" : ["cstats_sta_connect_resp", "STA_CONNECT_SUCCESS"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"ssid_len" : [1, "uint8_t", "ssid_len"],
+			"ssid" : [0, "uint8_t", 33, "WLAN_SSID_MAX_LEN", 1, "ssid"],
+			"result_code" : [1, "uint16_t", "result_code"],
+			"freq" : [1, "uint16_t", "freq"],
+			"chnl_bw" : [1, "uint8_t", "chnl_bw"],
+			"dot11mode" : [1, "uint8_t", "dot11mode"],
+			"qos_capability" : [1, "uint8_t", "qos_capability"],
+			"encryption_type" : [1,"uint8_t", "encryption_type"],
+			"auth_type" : [1, "uint8_t", "auth_type"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_CONNECT_FAIL_EVENT_ID" : [{
+			"event_info" : ["cstats_sta_connect_resp", "STA_CONNECT_FAIL"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"ssid_len" : [1, "uint8_t", "ssid_len"],
+			"ssid" : [0, "uint8_t", 33, "WLAN_SSID_MAX_LEN", 1, "ssid"],
+			"result_code" : [1, "uint16_t", "result_code"],
+			"freq" : [1, "uint16_t", "freq"],
+			"chnl_bw" : [1, "uint8_t", "chnl_bw"],
+			"dot11mode" : [1, "uint8_t", "dot11mode"],
+			"qos_capability" : [1, "uint8_t", "qos_capability"],
+			"encryption_type" : [1,"uint8_t", "encryption_type"],
+			"auth_type" : [1, "uint8_t", "auth_type"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_DISCONNECT_REQ_EVENT_ID" : [{
+			"event_info" : ["cstats_sta_disconnect_req", "STA_DISCONNECT_REQ"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"reason_code" : [1, "uint16_t", "reason_code"],
+			"is_no_disassoc_disconnect" : [1, "uint8_t", "is_no_disassoc_disconnect"],
+			"source" : [1, "uint8_t", "source"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_DISCONNECT_DONE_EVENT_ID" : [{
+			"event_info" : ["cstats_sta_disconnect_resp", "STA_DISCONNECT_DONE"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"cm_id" : [1, "uint32_t", "cm_id"],
+			"reason_code" : [1, "uint16_t", "reason_code"],
+			"source" : [1, "uint8_t", "source"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_ROAM_SCAN_START_EVENT_ID" : [{
+			"event_info" : ["cstats_sta_roam_scan_start", "STA_ROAM_SCAN_START"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"trigger_reason" : [1, "uint32_t", "trigger_reason"],
+			"trigger_sub_reason" : [1, "uint32_t", "trigger_sub_reason"],
+			"rssi" : [1, "uint32_t", "rssi"],
+			"rssi_threshold" : [1, "uint32_t", "rssi_threshold"],
+			"timestamp" : [1, "uint32_t", "timestamp"],
+			"cu" : [1, "uint16_t", "cu"],
+			"is_full_scan" : [1, "uint8_t", "is_full_scan"],
+			"abort_roam" : ["struct", "cstats_sta_roam_scan_cancel"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_ROAM_SCAN_DONE_EVENT_ID" : [{
+			"event_info" : ["cstats_sta_roam_scan_done", "STA_ROAM_SCAN_DONE"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"timestamp" : [1, "uint32_t", "timestamp"],
+			"cand_ap_count" : [1, "uint16_t", "cand_ap_count"],
+			"num_scanned_freq" : [1, "uint16_t", "num_scanned_freq"],
+			"scanned_freq" : [0, "uint16_t", 38, "MAX_ROAM_SCAN_CHAN", "scanned_freq"],
+			"ap" : ["struct", "cstats_sta_roam_scan_ap", 9, "MAX_ROAM_CANDIDATE_AP"],
+			"is_full_scan" : [1, "uint8_t", "is_full_scan"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_ROAM_RESULT_EVENT_ID" : [{
+			"event_info" : ["cstats_sta_roam_result", "STA_ROAM_RESULT"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"timestamp" : [1, "uint32_t", "timestamp"],
+			"status" : [1, "uint32_t", "status"],
+			"fail_reason" : [1, "uint32_t", "fail_reason"],
+			"roam_abort" : ["struct", "cstats_sta_roam_scan_cancel"],
+			"roam_cancel_reason" : [1, "uint32_t", "roam_cancel_reason"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_TDLS_DISCOVERY_REQ_EVENT_ID" : [{
+			"event_info" : ["cstats_tdls_disc_req", "STA_TDLS_DISCOVERY_REQ"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"init_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "init_sta_addr"],
+			"resp_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "resp_sta_addr"],
+			"act_category" : [1, "uint8_t", "act_category"],
+			"act" : [1, "uint8_t", "act"],
+			"dt" : [1, "uint8_t", "dt"],
+			"direction" : [1, "uint8_t", "direction"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_TDLS_DISCOVERY_RESP_EVENT_ID" : [{
+			"event_info" : ["cstats_tdls_disc_resp", "STA_TDLS_DISCOVERY_RESP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"init_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "init_sta_addr"],
+			"resp_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "resp_sta_addr"],
+			"act_category" : [1, "uint8_t", "act_category"],
+			"act" : [1, "uint8_t", "act"],
+			"dt" : [1, "uint8_t", "dt"],
+			"direction" : [1, "uint8_t", "direction"],
+			"flags" : [1, "uint8_t", "flags"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_TDLS_SETUP_REQ_EVENT_ID" : [{
+			"event_info" : ["cstats_tdls_setup_req", "STA_TDLS_SETUP_REQ"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"init_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "init_sta_addr"],
+			"resp_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "resp_sta_addr"],
+			"act_category" : [1, "uint8_t", "act_category"],
+			"act" : [1, "uint8_t", "act"],
+			"dt" : [1, "uint8_t", "dt"],
+			"direction" : [1, "uint8_t", "direction"],
+			"flags" : [1, "uint8_t", "flags"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_TDLS_SETUP_RESP_EVENT_ID" : [{
+			"event_info" : ["cstats_tdls_setup_resp", "STA_TDLS_SETUP_RESP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"init_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "init_sta_addr"],
+			"resp_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "resp_sta_addr"],
+			"status" : [1, "uint16_t", "status"],
+			"act_category" : [1, "uint8_t", "act_category"],
+			"act" : [1, "uint8_t", "act"],
+			"dt" : [1, "uint8_t", "dt"],
+			"direction" : [1, "uint8_t", "direction"],
+			"flags" : [1, "uint8_t", "flags"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_TDLS_SETUP_CONFIRM_EVENT_ID" : [{
+			"event_info" : ["cstats_tdls_setup_confirm", "STA_TDLS_SETUP_CONFIRM"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"init_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "init_sta_addr"],
+			"resp_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "resp_sta_addr"],
+			"status" : [1, "uint16_t", "status"],
+			"act_category" : [1, "uint8_t", "act_category"],
+			"act" : [1, "uint8_t", "act"],
+			"dt" : [1, "uint8_t", "dt"],
+			"direction" : [1, "uint8_t", "direction"],
+			"flags" : [1, "uint8_t", "flags"]
+		}],
+		"WLAN_CHIPSET_STATS_STA_TDLS_TEARDOWN_EVENT_ID" : [{
+			"event_info" : ["cstats_tdls_tear_down", "STA_TDLS_TEARDOWN"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"init_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "init_sta_addr"],
+			"resp_sta_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "resp_sta_addr"],
+			"reason" : [1, "uint16_t", "reason"],
+			"act_category" : [1, "uint8_t", "act_category"],
+			"act" : [1, "uint8_t", "act"],
+			"direction" : [1, "uint8_t", "direction"]
+		}],
+		"WLAN_CHIPSET_STATS_SAP_GO_START_EVENT_ID" : [{
+			"event_info" : ["cstats_sap_go_start", "SAP_GO_START"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"status" : [1, "uint8_t", "status"],
+			"operating_chan_freq" : [1, "uint16_t", "operating_chan_freq"],
+			"ch_width" : [1, "uint8_t", "ch_width"],
+			"staId" : [1, "uint16_t", "staId"],
+			"ssid_len" : [1, "uint8_t", "ssid_len"],
+			"ssid" : [0, "uint8_t", 33, "WLAN_SSID_MAX_LEN", 1, "ssid"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"]
+		}],
+		"WLAN_CHIPSET_STATS_SAP_GO_STOP_EVENT_ID" : [{
+			"event_info" : ["cstats_sap_go_stop", "SAP_GO_STOP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"status" : [1, "uint8_t", "status"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"]
+		}],
+		"WLAN_CHIPSET_STATS_SAP_GO_CAC_START_EVENT_ID" : [{
+			"event_info" : ["cstats_sap_go_dfs_evt", "SAP_GO_CAC_START"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"cc" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "cc"],
+			"freq" : [1, "uint16_t", "freq"]
+		}],
+		"WLAN_CHIPSET_STATS_SAP_GO_CAC_END_EVENT_ID" : [{
+			"event_info" : ["cstats_sap_go_dfs_evt", "SAP_GO_CAC_END"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"cc" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "cc"],
+			"freq" : [1, "uint16_t", "freq"]
+		}],
+		"WLAN_CHIPSET_STATS_SAP_GO_CAC_INTERRUPTED_EVENT_ID" : [{
+			"event_info" : ["cstats_sap_go_dfs_evt", "SAP_GO_CAC_INTERRUPTED"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"cc" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "cc"],
+			"freq" : [1, "uint16_t", "freq"]
+		}],
+		"WLAN_CHIPSET_STATS_SAP_GO_RADAR_DETECTED_EVENT_ID" : [{
+			"event_info" : ["cstats_sap_go_dfs_evt", "SAP_GO_RADAR_DETECTED"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"cc" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "cc"],
+			"freq" : [1, "uint16_t", "freq"]
+		}],
+		"WLAN_CHIPSET_STATS_SAP_GO_STA_DISASSOC_EVENT_ID" : [{
+			"event_info" : ["cstats_sap_go_sta_disassoc", "SAP_GO_STA_DISASSOC"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"sta_mac" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "sta_mac"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"sta_id" : [1, "uint8_t", "sta_id"],
+			"status" : [1, "uint8_t", "status"],
+			"status_code" : [1, "uint32_t", "status_code"],
+			"reason" : [1, "uint8_t", "reason"],
+			"reason_code" : [1, "uint32_t", "reason_code"]
+		}],
+		"WLAN_CHIPSET_STATS_SAP_GO_STA_ASSOC_REASSOC_EVENT_ID" : [{
+			"event_info" : ["cstats_sap_go_sta_assoc_reassoc", "STA_ASSOC_REASSOC"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"sta_mac" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "sta_mac"],
+			"bssid" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "bssid"],
+			"sta_id" : [1, "uint8_t", "sta_id"],
+			"status" : [1, "uint8_t", "status"],
+			"status_code" : [1, "uint32_t", "status_code"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_DISCOVERY_ENABLE_REQ_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_disc_enable", "NAN_DISCOVERY_ENABLE_REQ"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"social_chan_2g_freq" : [1, "uint16_t", "social_chan_2g_freq"],
+			"social_chan_5g_freq" : [1, "uint16_t", "social_chan_5g_freq"],
+			"rtt_cap" : [1, "uint32_t", "rtt_cap"],
+			"disable_6g_nan" : [1, "uint8_t", "disable_6g_nan"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_DISCOVERY_ENABLE_RESP_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_disc_enable_resp", "NAN_DISCOVERY_ENABLE_RESP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"is_enable_success" : [1, "uint8_t", "is_enable_success"],
+			"mac_id" : [1, "uint8_t", "mac_id"],
+			"disc_state" : [1, "uint8_t", "disc_state"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_DISCOVERY_DISABLE_REQ_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_disc_disable_req", "NAN_DISCOVERY_DISABLE_REQ"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"disable_2g_discovery" : [1, "uint8_t", "disable_2g_discovery"],
+			"disable_5g_discovery" : [1, "uint8_t", "disable_5g_discovery"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_DISCOVERY_DISABLE_RESP_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_disc_disable_resp", "NAN_DISCOVERY_DISABLE_RESP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"disc_state" : [1, "uint8_t", "NAN_DISCOVERY_DISABLE_RESP"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDI_CREATE_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndi_create_req", "NAN_NDI_CREATE"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"transaction_id" : [1, "uint16_t", "transaction_id"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDI_CREATE_RESP_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndi_create_resp", "NAN_NDI_CREATE_RESP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"transaction_id" : [1, "uint16_t", "transaction_id"],
+			"status" : [1, "uint8_t", "status"],
+			"reason" : [1, "uint8_t", "reason"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDI_DELETE_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndi_delete_req", "NAN_NDI_DELETE"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"transaction_id" : [1, "uint16_t", "transaction_id"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDI_DELETE_RESP_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndi_delete_resp", "NAN_NDI_DELETE_RESP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"transaction_id" : [1, "uint16_t", "transaction_id"],
+			"status" : [1, "uint8_t", "status"],
+			"reason" : [1, "uint8_t", "reason"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDP_INITIATOR_REQ_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndp_initiator_req", "NAN_NDP_INITIATOR_REQ"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"transaction_id" : [1, "uint16_t", "transaction_id"],
+			"channel" : [1, "uint16_t", "channel"],
+			"channel_cfg" : [1, "uint32_t", "channel_cfg"],
+			"service_instance_id" : [1, "uint16_t", "service_instance_id"],
+			"self_ndi_mac_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "self_ndi_mac_addr"],
+			"peer_discovery_mac_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "peer_discovery_mac_addr"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDP_INITIATOR_RSP_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndp_initiator_resp", "NAN_NDP_INITIATOR_RSP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"status" : [1, "uint8_t", "status"],
+			"reason" : [1, "uint8_t", "reason"],
+			"transaction_id" : [1, "uint16_t", "transaction_id"],
+			"service_instance_id" : [1, "uint16_t", "service_instance_id"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDP_RESPONDER_REQ_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndp_responder_req", "NAN_NDP_RESPONDER_REQ"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"transaction_id" : [1, "uint16_t", "transaction_id"],
+			"ndp_instance_id" : [1, "uint16_t", "ndp_instance_id"],
+			"ndp_rsp" : [1, "uint8_t", "ndp_rsp"],
+			"ncs_sk_type" : [1, "uint32_t", "ncs_sk_type"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDP_RESPONDER_RESP_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndp_responder_resp", "NAN_NDP_RESPONDER_RES"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"transaction_id" : [1, "uint16_t", "transaction_id"],
+			"status" : [1, "uint8_t", "status"],
+			"reason" : [1, "uint8_t", "reason"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDP_END_REQ_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndp_end_req", "NAN_NDP_END_REQ"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"transaction_id" : [1, "uint16_t", "transaction_id"],
+			"num_ndp_instances" : [1, "uint8_t", "num_ndp_instances"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDP_END_RESP_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndp_end_resp", "NAN_NDP_END_RESP"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"status" : [1, "uint8_t", "status"],
+			"reason" : [1, "uint8_t", "reason"],
+			"transaction_id" : [1, "uint16_t", "transaction_id"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDP_CONFIRM_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndp_confirm_ind", "NAN_NDP_CONFIRM"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"instance_id" : [1, "uint32_t", "instance_id"],
+			"reason_code" : [1, "uint16_t", "reason_code"],
+			"peer_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "peer_addr"],
+			"rsp_code" : [1, "uint8_t", "rsp_code"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDP_INDICATION_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndp_ind", "NAN_NDP_INDICATION"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"peer_mac" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "peer_mac"],
+			"peer_discovery_mac_addr" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "peer_discovery_mac_addr"],
+			"ndp_instance_id" : [1, "uint16_t", "ndp_instance_id"],
+			"service_instance_id" : [1, "uint32_t", "service_instance_id"]
+		}],
+		"WLAN_CHIPSET_STATS_NAN_NDP_NEW_PEER_EVENT_ID" : [{
+			"event_info" : ["cstats_nan_ndp_new_peer_ind", "NAN_NDP_NEW_PEER"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"peer_mac" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "peer_mac"],
+			"sta_id" : [1, "uint16_t", "sta_id"]
+		}],
+		"WLAN_CHIPSET_STATS_DATA_PKT_EVENT_ID" : [{
+			"event_info" : ["cstats_pkt_info", "DATA_PKT"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"src_mac" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "src_mac"],
+			"dst_mac" : [0, "uint8_t", 4, "CSTATS_MAC_LEN", "dst_mac"],
+			"type" : [1, "uint8_t", "type"],
+			"dir" : [1, "uint8_t", "dir"],
+			"status" : [1, "uint8_t", "status"]
+		}],
+		"WLAN_CHIPSET_STATS_CSA_EVENT_ID" : [{
+			"event_info" : ["cstats_csa_evt", "CSA"],
+			"cmn" : ["struct", "cstats_cmn"],
+			"direction" : [1, "uint8_t", "direciton"],
+			"target_freq" : [1, "uint16_t", "target_freq"],
+			"target_ch_width" : [1, "uint8_t", "target_ch_width"],
+			"current_freq" : [1, "uint16_t", "current_freq"],
+			"current_ch_width" : [1, "uint8_t", "current_ch_width"],
+			"switch_mode" : [1, "uint8_t", "switch_mode"]
+		}],
+		"WLAN_CHIPSET_STATS_MAX_EVENT_ID" : [{
+			"event_info" : ["NONE", "NONE"]
+		}]
+	}
+}

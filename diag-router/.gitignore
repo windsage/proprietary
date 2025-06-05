@@ -1,0 +1,4 @@
+*.o
+diag-router
+send_data
+cscope.out

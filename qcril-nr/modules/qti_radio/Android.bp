@@ -1,0 +1,38 @@
+cc_library_static {
+    name: "qcrilNrQtiRadio",
+    defaults: [
+        "qtiril_common_defaults",
+    ],
+    srcs: [
+        "src/QtiRadioStableAidl.cpp",
+        "src/stable_aidl_impl/qti_radio_stable_aidl_service.cpp",
+        "src/stable_aidl_impl/qti_radio_stable_aidl_service_utils.cpp",
+    ],
+    header_libs: [
+        "libqcrilNr-headers",
+        "libqcrilNrFramework-headers",
+        "libqcrilNrQtiMutex-headers",
+        "libqcrilNrLogger-headers",
+        "qtiril-utils-headers",
+        "qtiRilHalUtil-headers",
+        "libril-legacy-headers",
+        "libril-qc-qmi-services-headers",
+        "libutils_headers",
+        "libril-db-headers"
+    ],
+    shared_libs: [
+        "vendor.qti.hardware.radio.qtiradio-V11-ndk",
+        "libbinder_ndk",
+        "libbase",
+        "libqcrilNrQtiMutex",
+        "qtiril-utils",
+        "libril-db",
+        "libqmi_common_so",
+    ],
+    local_include_dirs: [
+        "src/",
+    ],
+    host_supported: true,
+    owner: "qti",
+    proprietary: true,
+}

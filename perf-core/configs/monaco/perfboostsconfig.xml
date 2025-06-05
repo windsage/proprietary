@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+/* Copyright (c) 2017, 2021-2023 Qualcomm Technologies, Inc.
+ * All Rights Reserved.
+ * Confidential and Proprietary - Qualcomm Technologies, Inc.
+-->
+
+<!--Ids are used in identifying the boosts, increment ids linearly,
+    do not modify Ids, or add in between-->
+<!--follow the number format rules while specifying number, can be given
+    in any format-->
+
+<BoostConfigs>
+    <PerfBoost>
+
+    <!--app lauch boost-->
+        <!-- CPUBOOST_MIN_FREQ BIG Core resource opcode, value-->
+        <!-- DISABLE_POWER_COLLAPSE resource opcode, value-->
+        <!-- CLUSTR_0_CPUS_ON resource opcode, value-->
+        <!-- GPU_MIN_PWRLVL resource opcode, value-->
+
+        <!-- Type="1", main launch boost of 2sec -->
+        <Config
+            Id="0x00001081" Type="1" Enable="true" Timeout="2000" Target="monaco"
+            Resources="0x40800000, 0x5DC, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x0" />
+
+    <!--Vertical Scroll boost-->
+        <!-- CPUBOOST_MIN_FREQ BIG Core resource opcode, value-->
+        <!-- CLUSTR_0_CPUS_ON resource opcode, value-->
+        <!-- SCHED_WINDOW_TICKS_UPDATE -->
+        <!-- GPU MIN_FREQUENCY resource opcode,value -->
+
+        <!-- Type="1", Vertical Scroll boost -->
+        <Config
+            Id="0x00001080" Type="1" Enable="true" Target="monaco"
+            Resources="0x40800000, 0x514, 0x41000000, 0x2, 0x40CA4000, 0x2, 0x42804000, 0x0" />
+
+    <!--PackageInstall boost-->
+        <!-- SCHED_PREFER_SPREAD resource opcode, value -->
+        <!-- CPUBOOST_MIN_FREQ BIG Core resource opcode, value-->
+        <Config
+            Id="0x00001088" Enable="true" Target="monaco"
+            Resources="0x40800000, 0x5DC" />
+
+    <!--Animation boost -->
+        <!-- CPUBOOST_MIN_FREQ BIG Core resource opcode, value -->
+        <!-- CLUSTR_0_CPUS_ON resource opcode, value-->
+        <!-- SCHED_WINDOW_TICKS_UPDATE -->
+        <Config
+            Id="0x00001083" Enable="true" Timeout="50" Target="monaco"
+            Resources="0x40800000, 0x514, 0x41000000, 0x2,  0x40CA4000, 0x2" />
+
+    <!--Display on Resource -->
+        <!-- Display on resource opcode, value -->
+        <Config
+                Id="0x00001041" Enable="true" Timeout="0" Target="monaco"
+                Resources="0x40000000, 1" />
+
+    <!--Display off Resource -->
+        <!-- Display on resource opcode, value -->
+        <Config
+                Id="0x00001040" Enable="true" Timeout="0" Target="monaco"
+                Resources="0x40000000, 0x0" />
+
+    </PerfBoost>
+</BoostConfigs>

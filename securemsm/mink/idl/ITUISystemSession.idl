@@ -1,0 +1,155 @@
+/**============================================================================
+ * Copyright (c) 2020, 2022 Qualcomm Technologies, Inc.
+ * All Rights Reserved.
+ * Confidential and Proprietary - Qualcomm Technologies, Inc.
+ ============================================================================*/
+
+/** @file  ITUISystemSession.idl */
+
+/**
+ * @brief
+ * TUISystemSession interface provides methods needed for TUI Session
+ */
+
+include "IMemObject.idl"
+include "ITUITypes.idl"
+
+    /** @cond */
+    interface TUISystemSession
+{
+    /** @endcond */
+
+    /**
+     * @addtogroup TUISystemSession
+     * @{
+     */
+
+    /**
+      Initialize a new session i.e. sets up input, display and memory
+      related initialization. Respective IO/Memory space is mapped to
+      Trusted VM in this start session.
+
+      @param [in] uint32 ihandle Handle/Slot ID used to identify the buffer to
+      be enqueued for init screen
+
+      @param [in] displayConfig cfgInfo display configuration to be used for
+      display this buffer
+
+      @return
+      interface_OK on success. Any other error code on failure.
+    */
+    method startSession(in int32 ihandle, in displayConfig cfgInfo);
+
+    /**
+      get the display configuration for display ID associated with
+      the session created
+
+      @param [out] dispConfig Display configuration details
+
+      @return
+      interface_OK on success. Any other error code on failure.
+    */
+    method getDisplayProperties(out displayConfig cfgInfo);
+
+    /**
+      get all avaliable color modes supported by the display driver
+
+      @param [out] displayColorModes all supported color modes and how many
+
+      @return
+      interface_OK on success. Any other error code on failure.
+    */
+    method getColorModes(out displayColorModes colorModes);
+
+    /**
+      Set color mode for display diver
+
+      @param [in] displayColorMode gamut, gamma and intent that describe
+      the color mode
+
+      @return
+      interface_OK on success. Any other error code on failure.
+    */
+    method setColorMode(in displayColorMode colorMode);
+
+    /**
+      Enqueue the buffer for display and maintains the buffer state.
+      Using fence signalling from display driver the displayed buffers
+      are marked free and used in subsequent de-queue buffer.
+
+      @param [in] uint32 ihandle Handle/Slot ID used to identify the buffer to
+      be enqueued
+
+      @param [in] displayConfig cfgInfo display configuration to be used for
+      display this buffer
+
+      @return
+      interface_OK on success. Any other error code on failure.
+    */
+    method enqueueBuffer(in int32 ihandle, in displayConfig cfgInfo);
+
+    /**
+      Dequeue the buffer to Application to render the frames to be displayed.
+      Tries to re-use the enqueued buffer if it is already displayed if not
+      allocates new buffer as long as buffer size not exhausted.
+
+      @param [in] IMemObject handle    Display buffer wrapped object. APP does
+      unwrap and use the buffer.
+
+      @param [in] int32     ihandle   Handle/Slot ID to identify this buffer on
+      enqueue request
+
+      @param [in] interface buffSize  Display buffer size to be dequeued
+
+      @return
+      interface_OK on success. Any other error code on failure.
+    */
+    method dequeueBuffer(out IMemObject handle, out int32 ihandle,
+                         in uint32 buffSize);
+
+    /**
+      Allocated the buffer of size requested for APP usage.
+      Maintains the list of buffer handles returned to APPS.
+
+      @param [in] buffSize number of bytes to be allocated
+
+      @param [in] IMemObject handle    App buffer wrapped object. APP does unwrap
+      and use the buffer.
+
+      @param [in] int32     ihandle   Unique ID to identify this buffer on Free
+      memory
+
+      @return
+      interface_OK on success. Any other error code on failure.
+    */
+    method allocateAppBuffer(in uint32 buffSize, out IMemObject handle,
+                             out int32 ihandle);
+
+    /**
+      Free the memory allocated to APPs. Based on handle passed identifies
+      the buffer to be freed.
+
+      @param [in] int32 ihandle  Unique ID to identify the buffer address to be
+      freed
+    */
+    method freeAppBuffer(in int32 ihandle);
+
+    /**
+      Get the touch input with the registered touch method within the
+      timeout value specified
+
+      @param [in] uint32 timeout Time in seconds to wait for input data
+    */
+    method getInputData(in int32 timeout);
+
+    /**
+    Deletes the session references and terminates display/input and
+    memory drivers associated with this session.
+
+    @return
+    interface_OK on success. Any other error code on failure.
+    */
+    method stopSession();
+
+    /** @} */ /* end_addtogroup TUISystemSession */
+};

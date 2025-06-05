@@ -1,0 +1,28 @@
+cc_library_headers {
+    name: "libcneoplookup_headers",
+    vendor: true,
+    host_supported: true,
+    export_include_dirs: ["./inc"],
+}
+
+cc_library_shared {
+    name: "libcneoplookup",
+
+    header_libs: ["libcneoplookup_headers"],
+    export_header_lib_headers: ["libcneoplookup_headers"],
+
+    srcs: ["src/OperatorLookup.cpp"],
+
+    shared_libs: [
+        "libcutils",
+        "liblog",
+    ],
+
+    host_supported: true,
+    owner: "qti",
+    proprietary: true,
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+}

@@ -1,0 +1,8 @@
+cc_binary {
+    name: "glink_pkt_test",
+    srcs: [
+        "glink_pkt_test.c"
+    ],
+    owner: "qti",
+    proprietary: true,
+}

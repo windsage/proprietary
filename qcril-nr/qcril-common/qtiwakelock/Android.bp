@@ -1,0 +1,47 @@
+cc_library_headers {
+    name: "qtiwakelock-headers",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_include_dirs: [
+        "inc",
+    ],
+}
+
+cc_library {
+    name: "qtiwakelock",
+    host_supported: true,
+    defaults: ["qtiril_common_defaults"],
+    srcs: [
+        "src/common/*.cpp",
+        "src/android/*.cpp",
+    ],
+    header_libs: [
+        "qtiwakelock-headers",
+        "libqcrilNrQtiMutex-headers",
+    ],
+    export_header_lib_headers: [
+        "qtiwakelock-headers",
+    ],
+    shared_libs: [
+        "libcutils",
+        "libqcrilNrQtiMutex",
+    ],
+    target: {
+        host: {
+            cflags: [
+                "-DQMI_RIL_UTF",
+            ],
+            cppflags: [
+                "-DQMI_RIL_UTF",
+            ],
+        },
+        android: {
+            shared_libs: [
+                "libhardware_legacy",
+            ],
+        },
+    },
+    cpp_std: "c++17",
+    owner: "qti",
+    proprietary: true,
+}

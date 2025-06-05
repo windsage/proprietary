@@ -1,0 +1,77 @@
+soong_config_module_type {
+    name: "qcrildata_cc_defaults",
+    module_type: "cc_defaults",
+    config_namespace: "qcrildatanamespace",
+    variables: [
+        "targetram",
+    ],
+    properties: [
+        "cflags",
+        "srcs",
+        "shared_libs",
+    ],
+}
+
+soong_config_string_variable {
+    name: "targetram",
+    values: ["lowram", "highram"],
+}
+
+qcrildata_cc_defaults {
+    name: "qcrildatalowram_defaults",
+    soong_config_variables: {
+        targetram: {
+            lowram : {
+                cflags : ["-DRIL_FOR_LOW_RAM"],
+            },
+        }
+    }
+}
+
+qcrildata_cc_defaults {
+    name: "qcrildata_defaults",
+    soong_config_variables: {
+        targetram: {
+            lowram : {
+                cflags : ["-DRIL_FOR_LOW_RAM"],
+            },
+            highram :{
+                srcs: [
+                    "util/src/SegmentTracker.cpp",
+                    "endpoints/src/VoiceCallModemEndPoint.cpp",
+                    "endpoints/src/VoiceCallModemEndPointModule.cpp",
+                    "iwlanservice/src/*.cpp",
+                    "networkavailabilityhandler/src/*.cpp",
+                    "KeepAliveManager/src/*.cpp",
+                    "dataconnectionservice/src/*.cpp",
+                ],
+                shared_libs: [
+                    "vendor.qti.hardware.data.iwlan@1.0",
+                    "vendor.qti.hardware.data.connection@1.0",
+                    "vendor.qti.hardware.data.connection@1.1",
+                ],
+            }
+        },
+     },
+}
+
+cc_library_headers {
+    name: "qcrilDataModule_headers",
+    sanitize:{
+          integer_overflow: true,
+    },
+    defaults : ["qcrildatalowram_defaults"],
+    vendor: true,
+    export_include_dirs: [
+          "datamodule/include","datamodule/include/local","datamodule/include/module",
+          "lcehandler/inc", "endpoints/inc","authmanager/inc",
+          "dataconnectionservice/inc","profilehandler/inc",
+          "networkservicehandler/inc","callmanager/inc",
+          "KeepAliveManager/inc", "util/inc",
+          "networkavailabilityhandler/inc","iwlanservice/inc",
+          "tmdmanager/inc","aidl/inc",
+    ],
+    host_supported:true,
+}
+
+

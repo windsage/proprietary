@@ -1,0 +1,37 @@
+
+cc_binary {
+
+    name: "loc_launcher",
+    proprietary: true,
+    owner: "qti",
+    vendor: true,
+
+    init_rc: ["loc-launcher.rc"],
+
+    shared_libs: [
+        "liblog",
+        "libutils",
+        "libcutils",
+        "libgps.utils",
+        "libloc_base_util",
+        "libloc_mq_client",
+    ],
+
+    srcs: [
+        "process_launcher.cpp",
+    ],
+
+    cflags: [
+        "-fno-short-enums",
+        "-D_ANDROID_",
+    ] + GNSS_CFLAGS,
+
+    header_libs: [
+        "libgps.utils_headers",
+        "libloc_base_util_headers",
+        "libloc_pla_headers",
+        "liblocation_api_headers",
+        "libloc_mq_client_headers",
+        "libloc_core_headers",
+    ],
+}

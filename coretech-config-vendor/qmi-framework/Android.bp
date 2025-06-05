@@ -1,0 +1,33 @@
+// _________________________ libqmi_common _________________________ //
+
+cc_library_headers {
+    name: "libqmi_common_headers",
+    export_include_dirs: ["inc"],
+    vendor_available: true,
+    host_supported: true
+}
+
+// _________________________ libqmi_encdec _________________________ //
+
+cc_library_headers {
+    name: "libqmi_encdec_headers",
+    export_include_dirs: ["inc"],
+    proprietary: true,
+    host_supported: true
+}
+
+// _________________________ libqmi_cci _________________________ //
+
+cc_library_headers {
+    name: "libqmi_cci_headers",
+    export_include_dirs: ["qcci/inc"] + ["inc"],
+    vendor_available: true,
+}
+
+// _________________________ libqmi_csi _________________________ //
+
+cc_library_headers {
+    name: "libqmi_csi_headers",
+    export_include_dirs: ["qcsi/inc"] + ["inc"],
+    vendor_available: true,
+}

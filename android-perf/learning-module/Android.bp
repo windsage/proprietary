@@ -1,0 +1,51 @@
+
+
+cc_binary {
+    name: "lmtests",
+
+    srcs: [
+        "tests/lmtests.cpp",
+        "tests/ModuleTests/core/LMCore.cpp",
+        "tests/ModuleTests/database/iopDB.cpp",
+        "tests/ModuleTests/database/LMDBTest.cpp",
+        "framework/database/lmDB.cpp",
+    ],
+
+    header_libs: [
+        "libutils_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_lm_framework_headers",
+        "perf_lm_tests_headers",
+        "perf_util_headers",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libc",
+        "libcutils",
+        "libsqlite",
+        "libperfhinthelper",
+    ],
+
+    cflags: [
+        "-Wno-unused-parameter",
+        "-Werror",
+    ],
+
+    cppflags: [
+        "-fexceptions",
+    ],
+
+    include_dirs: [
+        "external/tinyxml2",
+        "external/sqlite/dist",
+        "external/libxml2/include",
+    ],
+
+    compile_multilib: "first",
+
+    owner: "qti",
+
+    proprietary: true,
+}

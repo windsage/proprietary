@@ -1,0 +1,8 @@
+// Copyright (c) 2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+// This UID is used by 'SecureCamera2App' TA in QTVM.
+
+// The hex value of this UID is 0x165
+const uint32 CTrustedCameraMemory_UID = 357;

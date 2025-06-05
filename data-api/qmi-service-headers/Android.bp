@@ -1,0 +1,7 @@
+cc_library_headers {
+    name: "libdataqmiservices_headers_ext",
+    export_include_dirs: ["."],
+    host_supported: true,
+    owner: "qti",
+    proprietary: true,
+}

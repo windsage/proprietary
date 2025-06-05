@@ -1,0 +1,16 @@
+cc_library_shared {
+    name: "libQtiTestMain",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    srcs: [
+        "src/main.cpp"
+    ],
+
+    static_libs: [
+        "libgtest",
+    ],
+    shared_libs: [
+        "qcrilIntermodulemsgs",
+        "libril-db",
+    ],
+}

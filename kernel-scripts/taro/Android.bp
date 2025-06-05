@@ -1,0 +1,6 @@
+// Create a dummy 'qti_kernel_headers' header library
+cc_library_headers {
+    name: "qti_kernel_headers",
+    vendor: true,
+    recovery_available: true,
+}

@@ -1,0 +1,63 @@
+cc_library_headers {
+    name: "qcrilInterfaces-headers",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_include_dirs: [
+        "inc",
+    ],
+}
+
+filegroup {
+    name: "qcrilInterfaces-headers-ril_header-file",
+    srcs: [
+        "inc/telephony/ril.h"
+    ]
+}
+
+cc_library_shared {
+    name: "qcrilInterfaces",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    srcs: [
+        "lpa/src/*.cpp",
+        "module_config/src/*.cpp",
+        "nv/src/*.cpp",
+        "sms/src/*.cpp",
+        "uim/src/*.cpp",
+    ],
+    header_libs: [
+        "libril-qc-qmi-services-headers",
+        "libqcrilNrQtiMutex-headers",
+        "libqcrilNrFramework-headers",
+        "qcrilInterfaces-headers",
+        "qcrilIntermodulemsgs-headers",
+        "qtiril-utils-headers",
+        "libqmi_common_headers",
+        "libcutils_headers",
+        "vendor_common_inc",
+        "qcrilNrUimModule-headers",
+    ],
+    shared_libs: [
+        "libqcrilNrFramework",
+        "libqcrilNrQtiMutex",
+        "libqcrilNrLogger",
+        "qtiril-utils",
+    ],
+    target: {
+        host: {
+            cflags: [
+                "-DHOST_EXECUTABLE_BUILD",
+            ],
+            cppflags: [
+                "-DHOST_EXECUTABLE_BUILD",
+            ],
+        },
+    },
+    export_header_lib_headers: [
+        "qcrilInterfaces-headers",
+        "vendor_common_inc",
+    ],
+    cpp_std: "c++17",
+    owner: "qti",
+    proprietary: true,
+}

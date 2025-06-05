@@ -1,0 +1,57 @@
+cc_library_headers {
+
+    name: "perf_client_headers",
+
+    vendor_available: true,
+
+    export_include_dirs: [
+         ".",
+    ],
+}
+
+cc_library_shared {
+
+    srcs: [
+        "client.cpp",
+        "PerfOffloadHelper.cpp",
+        "PerfThreadPool.cpp",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "libcutils_headers",
+        "perf_mpctl_headers",
+        "perf_util_headers",
+        "perf_hal_headers",
+    ],
+
+    shared_libs: [
+        "libcutils",
+        "libutils",
+        "liblog",
+        "vendor.qti.hardware.perf2-V1-ndk",
+        "libbase",
+        "libbinder_ndk"
+    ],
+
+    cflags: [
+        "-DCLIENT",
+        "-g0",
+        "-Wall",
+        "-Wno-unused-variable",
+        "-Wno-unused-parameter",
+        "-Wno-unused-function",
+        "-DQC_DEBUG=0",
+        "-Wextra",
+        "-Werror",
+    ],
+
+    cppflags: [
+        "-fexceptions",
+    ],
+
+    name: "libqti-perfd-client",
+    owner: "qti",
+    proprietary: true,
+
+}

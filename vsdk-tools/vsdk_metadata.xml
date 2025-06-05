@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<QVSDK>
+	<!--========================================================================
+        Copyright (c) 2021 Qualcomm Technologies, Inc.
+        All Rights Reserved.
+        Confidential and Proprietary - Qualcomm Technologies, Inc.
+    ========================================================================
+
+
+    Qvsdk version convention details
+       ID is of the form:
+       QVSDK.<Android_version>.<BU>.<Variant>.<AOSP_milestone>.<Major>.<Minor>
+       <Android_version>:
+           Represents the Android version.
+           Android-R is 11, Android-S is 12 and so on.
+       <BU>:
+           Respresents the Business Unit.
+           "MB" is for Mobile, "AB" is for Automobile.
+       <Variant>:
+           Represents the build variant this vsdk is generated-from/meant to be used for.
+           "FULL" for full QSSI build, "HYxx" for HYxx variant build.
+       <AOSP_milestone>:
+           Represents the AOSP milestone tag.
+       <Major>:
+           Signifies that it is the N-th VSDK major release within a given AOSP milestone.
+       <Minor>:
+           Signifies a minor release corresponding to a major release, say with a few
+           additional minor hot fixes added.
+-->
+	<Version ID="QVSDK.14.0.MB.FULL.GPP.117.0"/>
+	<!--QSSI AU on top which this VSDK is generated-->
+	<Qssi_Info AU="AU_LINUX_ANDROID_LA.QSSI.14.0.14.00.00.993.730"/>
+	<!--List of all the Vendor AUs which were validated with this VSDK-->
+	<Validated_Vendor_AUs>
+		<Vendor_AU AU="AU_LINUX_ANDROID_LA.VENDOR.14.3.0.11.00.00.973.861"/>
+		<Vendor_AU AU="AU_LINUX_ANDROID_LA.VENDOR.14.3.1.11.00.00.1093.541"/>
+		<Vendor_AU AU="AU_LINUX_ANDROID_LA.VENDOR.14.3.3.11.00.00.1127.321"/>
+	</Validated_Vendor_AUs>
+	<!--Commit/SHA-ID corresponding to the remote vsdk configs git commit, used to fetch
+       the vsdk config files.
+-->
+	<Vsdk_Configs_Git_Info SHA="403ab7e6dd3760e1087304c27efb8c1b5cb6ca93"/>
+	<!--Snapshots enabled in this version-->
+	<Snapshots Enabled="vndk,vendor,recovery,ramdisk,host,otatools,rawdata,java"/>
+</QVSDK>

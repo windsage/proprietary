@@ -1,0 +1,6 @@
+{
+    "appName": "trustedinputservice",
+    "neverUnload": "true",
+    "services": ["TouchInput"],
+    "privileges":["TTouchControlService"]
+}

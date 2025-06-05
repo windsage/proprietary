@@ -1,0 +1,20 @@
+# Copyright (c) 2022 Qualcomm Technologies, Inc.
+# All Rights Reserved.
+# Confidential and Proprietary - Qualcomm Technologies, Inc.
+#
+
+[Unit]
+Description=Perf Hal Service
+SourcePath=/usr/bin/perf-hal-service
+After=multi-user.target init_post_boot.service
+Requires=init_post_boot.service
+
+[Service]
+User=root
+Group=root
+Restart=always
+RemainAfterExit=yes
+ExecStart=/usr/bin/perf-hal-service
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+cc_library {
+    name: "qcrilNrSecureMode",
+    defaults: ["qtiril_common_defaults"],
+    srcs: [
+        "src/*.cpp",
+    ],
+    header_libs: [
+        "qtiril-utils-headers",
+        "libril-db-headers",
+        "libqcrilNrLogger-headers",
+        "qtiRilHalUtil-headers",
+        "libril-legacy-headers",
+        "qcrilInterfaces-headers",
+        "qcrilIntermodulemsgs-headers",
+        "mink_headers",
+        "peripheralstate_headers",
+    ],
+    shared_libs: [
+        "liblog",
+        "qtiril-utils",
+        "libbinder_ndk",
+        "libbase",
+        "libbinder",
+        "libqcrilNrFramework",
+        "libqcrilNrLogger",
+        "libqcrilNrQtiMutex",
+    ],
+    owner: "qti",
+}

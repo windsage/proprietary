@@ -1,0 +1,24 @@
+cc_library_shared {
+    name: "libqape_oem_ext",
+    srcs: ["qape_oem_extension.cpp"],
+
+    header_libs: [
+        "libcutils_headers",
+        "perf_util_headers"
+    ],
+
+    shared_libs: [
+        "libcutils",
+        "libdl",
+        "libutils",
+        "liblog",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-DQC_DEBUG=0",
+        "-g0",
+    ],
+
+    proprietary: true,
+}

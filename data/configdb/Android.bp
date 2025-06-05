@@ -1,0 +1,39 @@
+cc_library_headers {
+    name: "libconfigdb_headers",
+    export_include_dirs: ["inc"],
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libconfigdb",
+
+    cflags: [
+       // "-DFEATURE_DATA_LOG_QXDM",
+        "-DFEATURE_XMLLIB"
+    ],
+
+    header_libs: [
+        "libxml_headers",
+        "libdiag_headers",
+        "libdsutils_headers",
+        "vendor_common_inc",
+        "libconfigdb_headers",
+        "libcutils_headers"
+    ],
+
+    srcs: ["src/*.c"],
+
+    shared_libs: [
+        "libxml",
+        "libdiag",
+        "libdsutils",
+        "liblog",
+    ],
+
+    sanitize: {
+        integer_overflow: true,
+    },
+
+    owner: "qti",
+    proprietary: true,
+}

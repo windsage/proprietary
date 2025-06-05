@@ -1,0 +1,42 @@
+cc_library {
+    name: "qcrilNrQmiModule",
+    defaults: ["qtiril_common_defaults"],
+    srcs: [
+        "src/*.cpp",
+    ],
+    header_libs: [
+        "libqcrilNrFramework-headers",
+        "libqcrilNrLogger-headers",
+        "libcutils_headers",
+        "libutils_headers",
+        "libqcrilNrQtiMutex-headers",
+        "libqcrilNrLogger-headers",
+        "qcrilInterfaces-headers",
+        "qcrilNrUimModule-headers",
+        "libqmi_legacy_headers",
+        "vendor_common_inc",
+    ],
+    shared_libs: [
+        "libqcrilNrLogger",
+        "libqcrilNrFramework",
+        "libqcrilNrQtiMutex",
+        "qtiril-utils",
+        "libqmi_cci",
+        "libqmi_client_qmux",
+        "libqmiservices",
+        "libqmi_client_helper",
+        "libqmi_encdec",
+        "qcrilIntermodulemsgs",
+        "libsystem_health_mon",
+    ],
+    cflags: [
+        "-DFEATURE_QCRIL_SHM",
+    ],
+    cppflags: [
+        "-DFEATURE_QCRIL_SHM",
+    ],
+
+    cpp_std: "c++17",
+    owner: "qti",
+    proprietary: true,
+}

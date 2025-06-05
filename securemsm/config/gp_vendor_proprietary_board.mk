@@ -1,0 +1,40 @@
+#Strait 2.5 specific build flag
+ifeq ($(TARGET_BOARD_PLATFORM),blair)
+TARGET_ENABLE_QTEECONNECTOR := true
+TARGET_ENABLE_QTEECONNECTOR_SMCINVOKE := true
+endif
+
+#Lanai specific build flag
+ifeq ($(TARGET_BOARD_PLATFORM),pineapple)
+TARGET_ENABLE_QTEECONNECTOR := false
+TARGET_ENABLE_QTEECONNECTOR_SMCINVOKE := false
+endif
+
+#Milos specific build flag
+ifeq ($(TARGET_BOARD_PLATFORM),volcano)
+TARGET_ENABLE_QTEECONNECTOR := false
+TARGET_ENABLE_QTEECONNECTOR_SMCINVOKE := false
+endif
+
+#pakala specific build flag
+ifeq ($(TARGET_BOARD_PLATFORM),sun)
+TARGET_ENABLE_QTEECONNECTOR := false
+TARGET_ENABLE_QTEECONNECTOR_SMCINVOKE := false
+endif
+
+#Hana gen3 specific build flag
+ifeq ($(TARGET_BOARD_PLATFORM),msmnile)
+TARGET_ENABLE_QTEECONNECTOR := true
+TARGET_ENABLE_QTEECONNECTOR_SMCINVOKE := false
+endif
+
+#Talos AU specific build flag
+ifeq ($(TARGET_BOARD_PLATFORM),$(MSMSTEPPE))
+TARGET_ENABLE_QTEECONNECTOR := true
+TARGET_ENABLE_QTEECONNECTOR_SMCINVOKE := false
+endif
+
+ifeq ($(TARGET_BOARD_PLATFORM),anorak61)
+TARGET_ENABLE_QTEECONNECTOR := true
+TARGET_ENABLE_QTEECONNECTOR_SMCINVOKE := true
+endif

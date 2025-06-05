@@ -1,0 +1,255 @@
+
+cc_prebuilt_library_shared{
+    name : "libqcbor",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libqcbor.so"],
+        shared_libs: [
+                      "liblog",
+                      "libutils",
+                      "libcutils",
+                      "libc++",
+                      "libc",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libadsprpc",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libadsprpc.so"],
+        shared_libs: [
+                      "libhidlbase",
+                      "libhardware",
+                      "libutils",
+                      "vendor.qti.hardware.dsp@1.0",
+                      "liblog",
+                      "libc",
+                      "libcutils",
+                      "libdmabufheap",
+                      "libvmmem",
+                      "libc++",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libcdsprpc",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libcdsprpc.so"],
+        shared_libs: [
+                      "libhidlbase",
+                      "libhardware",
+                      "libutils",
+                      "vendor.qti.hardware.dsp@1.0",
+                      "liblog",
+                      "libc",
+                      "libcutils",
+                      "libdmabufheap",
+                      "libvmmem",
+                      "libc++",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libmdsprpc",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libmdsprpc.so"],
+        shared_libs: [
+                      "libhidlbase",
+                      "libhardware",
+                      "libutils",
+                      "vendor.qti.hardware.dsp@1.0",
+                      "liblog",
+                      "libc",
+                      "libcutils",
+                      "libdmabufheap",
+                      "libvmmem",
+                      "libc++",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libos",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libos.so"],
+        shared_libs: [
+                      "liblog",
+                      "libc++",
+                      "libc",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libperipheral_client",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libperipheral_client.so"],
+        shared_libs: [
+                      "libcutils",
+                      "libutils",
+                      "liblog",
+                      "libbinder",
+                      "libmdmdetect",
+                      "libc++",
+                      "libc",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libqti-qesdk-secure",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libqti-qesdk-secure.so"],
+        shared_libs: [
+                      "liblog",
+                      "libc++",
+                      "libc",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libsdsprpc",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libsdsprpc.so"],
+        shared_libs: [
+                      "libhidlbase",
+                      "libhardware",
+                      "libutils",
+                      "vendor.qti.hardware.dsp@1.0",
+                      "liblog",
+                      "libc",
+                      "libcutils",
+                      "libdmabufheap",
+                      "libvmmem",
+                      "libc++",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libsynx",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libsynx.so"],
+        shared_libs: [
+                      "libos",
+                      "libthreadutils",
+                      "liblog",
+                      "libc++",
+                      "libc",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libthreadutils",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libthreadutils.so"],
+        shared_libs: [
+                      "libos",
+                      "libc++",
+                      "libc",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libvmmem",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libvmmem.so"],
+        shared_libs: [
+                      "liblog",
+                      "libbase",
+                      "libc++",
+                      "libc",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}
+
+cc_prebuilt_library_shared{
+    name : "libxml",
+        strip:{
+               none: true,
+        },
+        srcs : ["./vendor/lib64/libxml.so"],
+        shared_libs: [
+                      "liblog",
+                      "libdiag",
+                      "libcutils",
+                      "libc++",
+                      "libc",
+                      "libm",
+                      "libdl",
+        ],
+        owner: "qcom",
+        proprietary : true,
+        soc_specific : true,
+}

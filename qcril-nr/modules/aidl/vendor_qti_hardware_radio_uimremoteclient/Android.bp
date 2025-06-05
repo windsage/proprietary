@@ -1,0 +1,30 @@
+cc_library {
+  name: "qcrilNr_aidl_UimRemoteClient",
+  defaults: ["qtiril_common_defaults"],
+  srcs: [
+    "src/*.cpp",
+  ],
+  header_libs: [
+    "qcrilInterfaces-headers",
+    "libqcrilNrLogger-headers",
+    "qcrilIntermodulemsgs-headers",
+    "libqcrilNrFramework-headers",
+    "libril-legacy-headers",
+    "libqmi_common_headers",
+    "libqcrilNrQtiMutex-headers",
+    "libril-qc-qmi-services-headers",
+  ],
+  shared_libs: [
+    "vendor.qti.hardware.radio.uim_remote_client-V1-ndk",
+    "liblog",
+    "libbinder_ndk",
+    "libbase",
+    "libbinder",
+    "libqcrilNrFramework",
+    "libqcrilNrLogger",
+    "libqcrilNrQtiMutex",
+    "qcrilNrQmiModule",
+  ],
+  owner: "qti",
+  proprietary:true,
+}

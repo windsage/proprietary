@@ -1,0 +1,26 @@
+cc_library {
+  name: "qcrilNr_aidl_UimService",
+  defaults: ["qtiril_common_defaults"],
+  srcs: [
+    "src/*.cpp",
+  ],
+  header_libs: [
+    "qcrilInterfaces-headers",
+    "libqcrilNrLogger-headers",
+  ],
+  shared_libs: [
+    "liblog",
+    "vendor.qti.hardware.radio.uim-V1-ndk",
+    "libbinder_ndk",
+    "libbase",
+    "libbinder",
+    "libqcrilNrFramework",
+    "libqcrilNrLogger",
+    "libqcrilNrQtiMutex",
+    "libutils",
+    "libril-db",
+    "libcutils",
+  ],
+  owner: "qti",
+  proprietary:true,
+}

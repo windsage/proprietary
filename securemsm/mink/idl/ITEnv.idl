@@ -1,0 +1,32 @@
+/** @file ITEnv.idl */
+
+// Copyright (c) 2022-2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+include "IOpener.idl"
+
+/** @cond */
+interface ITEnv : IOpener {
+/** @endcond */
+
+  /**
+   * @addtogroup ITEnv
+   * @{
+   */
+
+  /** @cond */
+  /* The open() method returns this error code when the privilege is held by the
+     caller, but the remote, hosting domain disallows remote callers from
+     accessing the service */
+  error ERROR_LOCAL_EXCLUSIVE;
+
+  /* The open() method returns this error code when the requested service is
+     hosted by an embedded process but was unable to open it. */
+  error ERROR_EMBED_RETRY;
+
+  error ERROR_EMBED_MISSING_PROPERTY;             /**< Property missing from metadata prevents launch */
+  /** @endcond */
+
+  /** @} */ /* end_addtogroup ITEnv */
+};

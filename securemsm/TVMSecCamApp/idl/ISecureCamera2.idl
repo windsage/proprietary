@@ -1,0 +1,72 @@
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+include "ISecureCamera2Notify.idl"
+
+/** @cond */
+interface ISecureCamera2 {
+/** @endcond */
+
+  /**
+   * @addtogroup ISecureCamera2
+   * @{
+   */
+
+  error ERROR_LICENSE_VALIDATION;                     /** Haven license validation failed. */
+  error ERROR_WRONG_STATE;                            /** ISecureCamera2 is in the wrong state for the requested operation. */
+  error ERROR_UNSUPPORTED;                            /** ISecureCamera2 does not support this operation. */
+
+  /** @endcond */
+
+
+  const uint32 PARAM_LICENSE = 1;                     /** PARAM_LICENE MUST be set using a HAVEN license provisioned
+                                                       ** with the correct OEM_ID / FEAT_ID for this device */
+  const uint32 PARAM_NUM_SENSORS = 2;                 /** Number of Protected Sensors required for this session. Range (1 up to total # sensors on device) */
+
+  /**
+    Sets and Validates supported Secure Camera parameters.
+
+    @param[in]  paramId     Parameter that needs to be set (see PARAM_*)
+    @param[in]  paramBuf    Buffer/BufferSize used for the specified paramId
+
+    @detdesc
+    This method must be called at least once after the device reboots to enable the
+    secure camera feature by setting the license certificate.  Invoking secure camera
+    without calling this method first, or if the provided certificate is not valid,
+    results in a disabled secure camera feature.
+
+    @return
+    Object_OK on success. Any other error code on failure.
+  */
+  method setParam(in uint32 paramId, in buffer paramBuf);
+
+  /**
+    Registers a \link ISecureCamera2Notify \endlink callback object.
+
+    @param[in]  cb          ISecureCamera2Notify callback object
+
+    @detdesc
+    This method is optional. Only if TA wants to receive a notification when
+    all sensors are protected/unprotected, should it register the callback via
+    this method.
+
+    @return
+    Object_OK on success. Any other error code on failure.
+  */
+  method registerNotifyCB(in ISecureCamera2Notify cb);
+
+  /**
+    Resets camera to clear secure memory.
+
+    @detdesc
+    This method must be called to clear secure memory between two authenticated
+    users. Before calling, the secure camera session should already be started.
+
+    @return
+    Object_OK on success. Any other error code on failure.
+  */
+  method resetCamera();
+
+  /* @} */ /* end_addtogroup ISecureCamera2 */
+};

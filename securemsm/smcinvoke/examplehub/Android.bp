@@ -1,0 +1,5 @@
+cc_library_headers {
+    name: "securemsm_smcinvoke_examplehub_header",
+    vendor_available: true,
+    export_include_dirs: ["."],
+}

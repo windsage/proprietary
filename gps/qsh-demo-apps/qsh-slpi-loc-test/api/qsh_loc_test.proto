@@ -1,0 +1,120 @@
+// @file qsh_loc_test.proto
+//
+// Defines standard message types for LOCATION TEST
+//
+// Copyright (c) 2021-2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+syntax = "proto2";
+import "nanopb.proto";
+import "sns_std.proto";
+
+option optimize_for = LITE_RUNTIME;
+
+// Location Attribute Requirements:
+// SNS_STD_SENSOR_ATTRID_TYPE: "loc_test"
+// SNS_STD_SENSOR_ATTRID_AVAILABLE: true
+// SNS_STD_SENSOR_ATTRID_API: "qsh_loc_test.proto"
+// SNS_STD_SENSOR_ATTRID_STREAM_TYPE: SNS_STD_SENSOR_STREAM_TYPE_STREAMING
+
+enum qsh_loc_test_msgid
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // Uses message: qsh_loc_test_config
+  // Direction: From client to sensor
+  // Purpose: Configures the sensor to test location or geofence
+  // Expects QSH_LOC_TEST_MSGID_QSH_LOC_TEST_ACK from the sensor
+  QSH_LOC_TEST_MSGID_QSH_LOC_TEST_CONFIG = 512;
+
+  // Uses message: qsh_loc_test_ack
+  // Direction: From sensor to client
+  // Purpose: ACK/NACK for all commands
+  // Client uses this as an indication that the command was successful/completed
+  QSH_LOC_TEST_MSGID_QSH_LOC_TEST_ACK = 768;
+}
+
+enum qsh_loc_test_request
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // position test
+  QSH_LOC_TEST_POSITION = 1;
+
+  // measurement and clock test
+  QSH_LOC_TEST_MEAS_AND_CLK = 2;
+
+  // position, and measurement and clock test
+  QSH_LOC_TEST_POSITION_MEAS_AND_CLK = 3;
+
+  // geofence test
+  QSH_LOC_TEST_GEOFENCE = 4;
+}
+
+enum qsh_loc_test_geofence_breach_type_mask
+{
+  option (nanopb_enumopt).long_names = false;
+
+  QSH_LOC_TEST_GEOFENCE_BREACH_ENTER_BIT        = 0x00000001;
+  QSH_LOC_TEST_GEOFENCE_BREACH_EXIT_BIT         = 0x00000002;
+  QSH_LOC_TEST_GEOFENCE_BREACH_DWELL_IN_BIT     = 0x00000004;
+  QSH_LOC_TEST_GEOFENCE_BREACH_DWELL_OUT_BIT    = 0x00000008;
+}
+
+message qsh_loc_test_geofence_specification
+{
+  // geofence ID
+  optional uint32 id = 1;
+
+  // Bitwise OR of qsh_loc_test_geofence_breach_type_mask bits
+  // Either QSH_LOC_TEST_GEOFENCE_BREACH_ENTER_BIT or QSH_LOC_TEST_GEOFENCE_BREACH_EXIT_BIT
+  // MUST be on, therefore the possible valueas are:
+  // 1  = QSH_LOC_TEST_GEOFENCE_BREACH_ENTER_BIT
+  // 2  = QSH_LOC_TEST_GEOFENCE_BREACH_EXIT_BIT
+  // 5  = QSH_LOC_TEST_GEOFENCE_BREACH_ENTER_BIT | QSH_LOC_TEST_GEOFENCE_BREACH_DWELL_IN_BIT
+  // 10 = QSH_LOC_TEST_GEOFENCE_BREACH_EXIT_BIT | QSH_LOC_TEST_GEOFENCE_BREACH_DWELL_OUT_BIT
+  optional uint32 breach_type_mask = 2;
+
+  // Responsiveness in milliseconds
+  // Specifies the rate of detection for a Geofence breach.
+  // This can impact the time lag between the actual breach event and
+  // when it is reported. This parameter has power implications
+  // and must be fine-tuned to optimize power savings
+  // The gap between the actual breach and
+  // the time it is reported depends on the user setting. The power implication
+  // is inversely proportional to the responsiveness value set by the user.
+  // The higher the responsiveness value, the lower the power implications, and vice-versa.
+  optional uint32 responsiveness = 3;
+
+  // Dwell time in seconds
+  optional uint32 dwell_time = 4;
+
+  // Fixed point latitude in degrees times 10^7
+  optional int32 latitude = 5;
+
+  // Fixed point longitude in degrees times 10^7
+  optional int32 longitude = 6;
+
+  // Radius in meters
+  optional float radius = 7;
+}
+
+message qsh_loc_test_config
+{
+  // indicate if positions, measurements/clock,
+  // positions and measurements/clock or geofences test is requested
+  required qsh_loc_test_request loc_test_request = 1;
+
+  // the required interval between positions or measurements in ms
+  required uint32 interval = 2;
+
+  // array of geofence specifications, see qsh_loc_test_geofence_specification
+  repeated qsh_loc_test_geofence_specification specs = 3;
+}
+
+message qsh_loc_test_ack
+{
+  // The command/report was succesful or not (true/false)
+  required bool error = 1;
+}

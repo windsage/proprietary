@@ -1,0 +1,28 @@
+python_binary_host {
+  name: "install_vsdk_py2",
+  main: "scripts/install_vsdk.py",
+  srcs: ["scripts/install_vsdk.py",
+         ],
+  version: {
+    py2: {enabled: true,},
+    py3: {enabled: false,},
+  },
+}
+
+python_binary_host {
+  name: "install_vsdk_py3",
+  main: "scripts/install_vsdk.py",
+  srcs: ["scripts/install_vsdk.py",
+         ],
+  version: {
+    py2: {enabled: false,},
+    py3: {enabled: true,},
+  },
+}
+
+prebuilt_root_host {
+    name: "vsdk-metadata",
+    src: "scripts/vsdk_metadata.xml",
+    filename_from_src: true,
+    relative_install_path: "vsdk/config",
+}

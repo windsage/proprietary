@@ -1,0 +1,23 @@
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+ * Describes the interface for memory objects.
+ *
+ * This interface is identical to the generic interface (no added methods),
+ * but allows other interfaces which reference shareable memory objects to
+ * specify that the object in question is expected to be a memory object.
+ */
+
+/** @cond */
+interface IMemObject {
+/** @endcond */
+
+  /**
+   * @addtogroup IMemObject
+   * @{
+   */
+
+  /** @} */ /* end_addtogroup IMemObject */
+};

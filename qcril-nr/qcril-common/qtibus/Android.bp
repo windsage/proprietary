@@ -1,0 +1,44 @@
+cc_library_headers {
+    name: "libqcrilNrQtiBus-headers",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_include_dirs: [
+        "include",
+    ],
+}
+
+cc_library_headers {
+    name: "libqcrilNrQtiBus-headers-private",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_include_dirs: [
+        "src",
+    ],
+}
+
+cc_library {
+    name: "libqcrilNrQtiBus",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    srcs: [
+        "src/*.cpp",
+    ],
+    header_libs: [
+        "libqcrilNrQtiMutex-headers",
+        "libqcrilNrLogger-headers",
+        "libqcrilNrQtiBus-headers",
+        "libqcrilNrQtiBus-headers-private",
+    ],
+    shared_libs: [
+        "libqcrilNrQtiMutex",
+        "libqcrilNrFramework",
+        "libqcrilNrLogger",
+        "liblog",
+    ],
+    export_header_lib_headers: [
+        "libqcrilNrQtiMutex-headers",
+    ],
+    cpp_std: "c++17",
+    owner: "qti",
+    proprietary: true,
+}

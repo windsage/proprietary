@@ -1,0 +1,50 @@
+/*===================================================================================
+  Copyright (c) 2023 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+
+/** @file  ITTouchControlService.idl */
+
+/**
+ * ITTouchControlService provides interface for processes to acquire and release
+ * Touch in QTVM
+ */
+
+/** @cond */
+interface ITTouchControlService {
+/** @endcond */
+
+    /**
+     * @addtogroup ITTouchControlService
+     * @{
+     */
+
+    /*=======================================================
+      Error Codes
+    =========================================================*/
+    error ERROR_INVALID_CONTROLFD;
+    error ERROR_OPEN_CONTROLFD;
+    error ERROR_READ_CONTROLFD;
+    error ERROR_WRITE_CONTROLFD;
+
+    /**
+      Acquire touch in QTVM when TrustedUI usecase is starting
+
+      @param [in] Buffer filename  Touch node filename which we want to acquire
+
+      @return
+      Object_OK on success. Any other error code on failure.
+    */
+    method acquireTouch(in buffer fileName);
+
+    /**
+      Release touch from QTVM when TrustedUI usecase is ending
+
+      @return
+      Object_OK on success. Any other error code on failure.
+    */
+    method releaseTouch();
+
+    /** @} */ /* end_addtogroup ITTouchControlService */
+};

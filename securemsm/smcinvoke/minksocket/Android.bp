@@ -1,0 +1,72 @@
+
+
+commonIncludes = [
+    "include",
+    "kernel",
+    "sock",
+    "sharemm/inc",
+]
+
+commonSrcfiles = [
+    "ext/itoa.c",
+    "sock/bbuf.c",
+    "sock/ConnEventHandler.c",
+    "sock/ConnEventReleaser.c",
+    "sock/LinkCredentials.c",
+    "sock/LocalAdapter.c",
+    "sock/minkipc.c",
+    "sock/minksocket.c",
+    "sock/msforwarder.c",
+    "sock/MinkTransportUtils.c",
+    "sock/Primordial.c",
+    "sock/ProtocolVsock.c",
+    "sock/RemoteAdapter.c",
+    "sock/threadpool.c",
+    "sock/xtzdCredentials.c",
+    "sharemm/src/CConfinement.c",
+    "sharemm/src/fdwrapper.c",
+    "sharemm/src/MSMem.c",
+    "sharemm/src/RemoteShareMemory.c",
+    "sharemm/src/ShareMemory.c",
+    "vmosal/VmOsalUnix.c",
+]
+
+cc_library_headers {
+    name: "minksocket_headers",
+    vendor: true,
+    export_include_dirs: ["include", "kernel", "sock", "sharemm/inc"],
+}
+
+cc_library_shared {
+
+    name: "libminksocket_vendor",
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-DVNDR_SMCINVOKE_QRTR",
+        "-DVNDR_VSOCK",
+        "-DANDROID"
+    ],
+
+    export_include_dirs: [
+        "include",
+        "kernel",
+        "sock",
+        "sharemm/inc",
+    ],
+    local_include_dirs: commonIncludes,
+
+    srcs: commonSrcfiles,
+    owner: "qti",
+    proprietary: true,
+    shared_libs: ["libcutils","liblog","libqrtr","libvmmem"],
+    header_libs: ["vendor_common_inc","libvmmem_headers","mink_headers","device_kernel_headers","smmu_proxy_uapi_header"],
+    product_variables: {
+        debuggable: {
+            cflags: ["-DMINK_TRACE_ON"],
+        },
+    },
+}
+

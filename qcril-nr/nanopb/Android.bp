@@ -1,0 +1,11 @@
+cc_library_headers {
+    name: "libqcrilnr-nanopb-headers",
+    vendor: true,
+    host_supported: true,
+    local_include_dirs: [
+        ".",
+    ],
+    export_include_dirs: [
+        ".",
+    ],
+}

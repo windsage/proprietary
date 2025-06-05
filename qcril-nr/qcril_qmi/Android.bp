@@ -1,0 +1,55 @@
+cc_library_headers {
+    name: "libqcrilNr-headers",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_include_dirs: [
+        ".",
+        "nanopb_utils",
+        "oem_socket",
+        "radio_config",
+        ],
+    header_libs: [
+        "libqcrilNrQtiBus-headers",
+        "qcrilInterfaces-headers",
+        "qcrilIntermodulemsgs-headers",
+        "qcrilDataInternal_headers",
+        "qcrilDataInterfaces_headers",
+        "libtime_genoff_headers",
+        "vendor_common_inc",
+        "qtiril-utils-headers",
+    ],
+    export_header_lib_headers: [
+        "libqcrilNrQtiBus-headers",
+        "qcrilInterfaces-headers",
+        "qcrilIntermodulemsgs-headers",
+        "qcrilDataInternal_headers",
+        "qcrilDataInterfaces_headers",
+        "libtime_genoff_headers",
+        "vendor_common_inc",
+        "qtiril-utils-headers",
+    ],
+    target: {
+        host: {
+        },
+        android: {
+            header_libs: [
+                "libdiag_headers",
+                "libperipheralclient_headers",
+                "libqmi_common_headers",
+                "libqmi_legacy_headers",
+                "libqcrilNrFramework-headers",
+                "libril-qc-qmi-services-headers",
+                "libril-legacy-headers",
+            ],
+            export_header_lib_headers: [
+                "libdiag_headers",
+                "libperipheralclient_headers",
+                "libqmi_common_headers",
+                "libqmi_legacy_headers",
+                "libqcrilNrFramework-headers",
+                "libril-qc-qmi-services-headers",
+                "libril-legacy-headers",
+            ],
+        },
+    },
+}

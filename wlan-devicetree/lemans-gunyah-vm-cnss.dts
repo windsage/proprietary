@@ -1,0 +1,11 @@
+/dts-v1/;
+/plugin/;
+
+#include "lemans-gunyah-vm-cnss.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. Lemans Single LA Guest Virtual Machine";
+	compatible = "qcom,lemans", "qcom,qam", "qcom,cob";
+	qcom,board-id = <0x10025 0x0>, <0x0 0x1000002>, <0x10019 0x0>;
+	qcom,msm-id = <532 0x10000>, <533 0x10000>, <534 0x10000>, <619 0x10000>, <532 0x20000>, <533 0x20000>, <534 0x20000>, <619 0x20000>;
+};

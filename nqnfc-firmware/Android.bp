@@ -1,0 +1,37 @@
+subdirs = ["nqnfcinfo"]
+
+cc_prebuilt_library_shared {
+    name: "libsn100u_fw",
+
+    arch: {
+        arm: {
+            srcs: ["sn100x/32-bit/libsn100u_fw.so"],
+        },
+        arm64: {
+            srcs: ["sn100x/64-bit/libsn100u_fw.so"],
+        },
+    },
+    proprietary: true,
+    owner: "nxp",
+    strip: {
+        none: true,
+    }
+}
+
+cc_prebuilt_library_shared {
+    name: "libsn220u_fw",
+
+    arch: {
+        arm: {
+            srcs: ["sn220x/32-bit/libsn220u_fw.so"],
+        },
+        arm64: {
+            srcs: ["sn220x/64-bit/libsn220u_fw.so"],
+        },
+    },
+    proprietary: true,
+    owner: "nxp",
+    strip: {
+        none: true,
+    }
+}

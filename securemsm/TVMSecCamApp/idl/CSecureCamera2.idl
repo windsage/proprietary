@@ -1,0 +1,20 @@
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+* @addtogroup CSecureCamera2
+* @{
+  Class CSecureCamera2 implements \link ISecureCamera2 \endlink interface.
+
+  The class ID `SecureCamera2` needs to be added to the TA privileges set
+  to allow the TA to use the CSecureCamera2 class.
+
+  With this class ID, there is a possibility that the protect/unprotect event
+  callback of \link ISecureCamera2Notify \endlink may never reach TA if the TA is busy
+  processing a request or is out on a listener.
+*/
+
+const uint32 CSecureCamera2_UID = 57;
+
+/** @} */

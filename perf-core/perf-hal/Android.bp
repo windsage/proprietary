@@ -1,0 +1,182 @@
+cc_library_headers {
+
+    name: "perf_hal_headers",
+
+    vendor_available: true,
+
+    export_include_dirs: [
+         ".",
+    ],
+}
+
+cc_library_shared {
+    name: "libperfgluelayer",
+    proprietary: true,
+
+    srcs: [
+        "PerfGlueLayer.cpp",
+        "VendorIGlue.cpp"
+    ],
+
+    cflags: [
+        "-fexceptions",
+        "-DQC_DEBUG=0",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "libcutils_headers",
+        "perf_mpctl_headers",
+        "perf_client_headers",
+        "perf_util_headers",
+    ],
+
+    cppflags: [
+        "-fexceptions",
+    ],
+
+    shared_libs: [
+        "libutils",
+        "liblog",
+        "libq-perflog",
+        "libcutils",
+        "libqti-perfd-client",
+        "libperfconfig",
+    ],
+
+    include_dirs: [
+        "external/libxml2/include",
+    ],
+}
+
+cc_library_shared {
+    name: "libperfconfig",
+    proprietary: true,
+
+    srcs: [
+        "TargetConfig.cpp",
+        "PerfConfig.cpp",
+        "DivergentConfig.cpp"
+    ],
+
+    cflags: [
+        "-fexceptions",
+        "-DVENDOR_DIR=\"/vendor/etc\"",
+        "-DQC_DEBUG=0",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "libcutils_headers",
+        "perf_mpctl_headers",
+        "perf_util_headers",
+    ],
+
+    shared_libs: [
+        "libutils",
+        "liblog",
+        "libq-perflog",
+        "libcutils",
+        "libxml2",
+        "libqti-util",
+    ],
+
+    include_dirs: [
+        "external/libxml2/include",
+    ],
+}
+
+
+prebuilt_etc {
+    name: "init.pixel.vendor.qti.hardware.perf-hal-service.rc",
+
+    src: "init.pixel.vendor.qti.hardware.perf-hal-service.rc",
+
+    sub_dir: "init",
+
+    device_specific: true,
+}
+
+/* Perf_Stub.cpp will be picked when
+SOONG_CONFIG_perf_TARGET_DISABLE_QC_PERF_OPTIMIATIONS is true in <Target>.mk*/
+
+soong_config_module_type {
+    name: "perfopts_cc_defaults",
+    module_type: "cc_defaults",
+    config_namespace: "perf",
+    bool_variables: ["QMAA_ENABLE_PERF_STUB_HALS"],
+    properties: ["srcs","exclude_srcs"],
+    }
+
+perfopts_cc_defaults {
+    name: "perfopts_defaults",
+    soong_config_variables: {
+        QMAA_ENABLE_PERF_STUB_HALS: {
+            srcs: [
+                "Perf_Stub.cpp",
+            ],
+            exclude_srcs : [
+                "Perf.cpp"
+            ],
+        },
+    }
+}
+
+cc_binary {
+    name: "vendor.qti.hardware.perf2-hal-service",
+    relative_install_path: "hw",
+    proprietary: true,
+    init_rc: ["vendor.qti.hardware.perf2-hal-service.rc"],
+    defaults: ["perfopts_defaults"],
+
+    srcs: [
+        "service.cpp",
+        "Perf.cpp",
+    ],
+
+    include_dirs: [
+        "external/libxml2/include",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "libcutils_headers",
+        "perf_mpctl_headers",
+        "perf_client_headers",
+        "perf_util_headers",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libq-perflog",
+        "libcutils",
+        "libbase",
+        "libutils",
+        "libbinder_ndk",
+        "vendor.qti.hardware.perf2-V1-ndk",
+
+        "libperfconfig",
+        "libperfgluelayer",
+        "libqti-perfd-client"
+    ],
+
+    cppflags: [
+        "-fexceptions",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+
+    arch: {
+        arm: {
+            cflags: ["-DENABLE_BINDER_BUFFER_TUNING_FOR_32_BIT"],
+        },
+     },
+     vintf_fragments: ["vendor.qti.hardware.perf2.xml"],
+}

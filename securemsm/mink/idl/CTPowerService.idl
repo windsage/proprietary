@@ -1,0 +1,18 @@
+// Copyright (c) 2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+* @addtogroup CPowerService
+* @{
+  Class CPowerService implements \link IPowerService \endlink interface.
+
+  The class ID `PowerService` is a platform service in Mink daemon.
+*/
+
+// This class provides an interface to get wake lock from kernel which will stop kernel stepping into low power mode.
+//
+
+const uint32 CTPowerService_UID = 331;
+
+/** @} */

@@ -1,0 +1,266 @@
+// @file qsh_geofence.proto
+//
+// Defines standard message types for GEOFENCE
+//
+// Copyright (c) 2021-2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+syntax = "proto2";
+import "nanopb.proto";
+import "sns_std.proto";
+
+option optimize_for = LITE_RUNTIME;
+
+// Geofence Attribute Requirements:
+// SNS_STD_SENSOR_ATTRID_TYPE: "geofence"
+// SNS_STD_SENSOR_ATTRID_AVAILABLE: true
+// SNS_STD_SENSOR_ATTRID_API: "qsh_geofence.proto"
+// SNS_STD_SENSOR_ATTRID_STREAM_TYPE: SNS_STD_SENSOR_STREAM_TYPE_ON_CHANGE
+
+enum qsh_geofence_msgid
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // Uses message: qsh_geofence_open
+  // Direction: From client to sensor
+  // Purpose: Attempts to open the geofence driver with required version
+  // Expects QSH_GEOFENCE_MSGID_QSH_GEOFENCE_ACK from the sensor
+  QSH_GEOFENCE_MSGID_QSH_GEOFENCE_OPEN = 512;
+
+  // Does not use any message body.
+  // Direction: From client to sensor
+  // Purpose: Attempts to close the geofence driver
+  // Expects QSH_GEOFENCE_MSGID_QSH_GEOFENCE_ACK from the sensor
+  QSH_GEOFENCE_MSGID_QSH_GEOFENCE_CLOSE = 513;
+
+  // Uses message: qsh_geofence_update
+  // Direction: From client to sensor
+  // Purpose: Attempts to add/remove/modify/pause/resume geofences
+  // in the geofence driver
+  // Expects QSH_GEOFENCE_MSGID_QSH_GEOFENCE_ACK from the sensor
+  QSH_GEOFENCE_MSGID_QSH_GEOFENCE_UPDATE = 514;
+
+  // Uses message: qsh_geofence_ack
+  // Direction: From sensor to client
+  // Purpose: ACK/NACK for all geofence commands
+  // Client uses this as an indication that the geofence command was successful/completed
+  // and it can send subsequent commands. Some information might be sent to the
+  // client as well for some commands, e.g. the geofence(s) ID(s)
+  QSH_GEOFENCE_MSGID_QSH_GEOFENCE_ACK = 768;
+
+  // Uses message: qsh_geofence_breach_event
+  // Direction: From sensor to client
+  // Purpose: Reports to the client when any number of geofences have a state change,
+  // i.e. whenever there is a geofence breach
+  QSH_GEOFENCE_MSGID_QSH_GEOFENCE_BREACH_EVENT = 1024;
+}
+
+message qsh_geofence_open
+{
+  // requested version number. The sensor must support a version with the same
+  // major version as the one requested
+  required uint32 version = 1;
+}
+
+enum qsh_geofence_subcommand
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // Add geofence(s)
+  QSH_GEOFENCE_ADD = 1;
+
+  // Remove geofence(s)
+  QSH_GEOFENCE_REMOVE = 2;
+
+  // Modify geofence(s)
+  QSH_GEOFENCE_MODIFY = 3;
+
+  // Pause geofence(s)
+  QSH_GEOFENCE_PAUSE = 4;
+
+  // Resume geofence(s)
+  QSH_GEOFENCE_RESUME = 5;
+}
+
+enum qsh_geofence_breach_type
+{
+  option (nanopb_enumopt).long_names = false;
+
+  QSH_GEOFENCE_BREACH_ENTER            = 0;
+  QSH_GEOFENCE_BREACH_EXIT             = 1;
+  QSH_GEOFENCE_BREACH_DWELL_IN         = 2;
+  QSH_GEOFENCE_BREACH_DWELL_OUT        = 3;
+}
+
+enum qsh_geofence_breach_type_mask
+{
+  option (nanopb_enumopt).long_names = false;
+
+  QSH_GEOFENCE_BREACH_ENTER_BIT        = 0x00000001;
+  QSH_GEOFENCE_BREACH_EXIT_BIT         = 0x00000002;
+  QSH_GEOFENCE_BREACH_DWELL_IN_BIT     = 0x00000004;
+  QSH_GEOFENCE_BREACH_DWELL_OUT_BIT    = 0x00000008;
+}
+
+message qsh_geofence_specification
+{
+  // geofence ID
+  optional uint32 id = 1;
+
+  // Bitwise OR of qsh_geofence_breach_type_mask bits
+  // Either QSH_GEOFENCE_BREACH_ENTER_BIT or QSH_GEOFENCE_BREACH_EXIT_BIT
+  // MUST be on, therefore the possible valueas are:
+  // 1  = QSH_GEOFENCE_BREACH_ENTER_BIT
+  // 2  = QSH_GEOFENCE_BREACH_EXIT_BIT
+  // 5  = QSH_GEOFENCE_BREACH_ENTER_BIT | QSH_GEOFENCE_BREACH_DWELL_IN_BIT
+  // 10 = QSH_GEOFENCE_BREACH_EXIT_BIT | QSH_GEOFENCE_BREACH_DWELL_OUT_BIT
+  optional uint32 breach_type_mask = 2;
+
+  // Responsiveness in milliseconds
+  // Specifies the rate of detection for a Geofence breach.
+  // This can impact the time lag between the actual breach event and
+  // when it is reported. This parameter has power implications
+  // and must be fine-tuned to optimize power savings
+  // The gap between the actual breach and
+  // the time it is reported depends on the user setting. The power implication
+  // is inversely proportional to the responsiveness value set by the user.
+  // The higher the responsiveness value, the lower the power implications, and vice-versa.
+  optional uint32 responsiveness = 3;
+
+  // Dwell time in seconds
+  optional uint32 dwell_time = 4;
+
+  // Fixed point latitude in degrees times 10^7
+  optional int32 latitude = 5;
+
+  // Fixed point longitude in degrees times 10^7
+  optional int32 longitude = 6;
+
+  // Radius in meters
+  optional float radius = 7;
+}
+
+message qsh_geofence_update
+{
+  // indicate if this is add/remove/modify/pause/resume geofences
+  required qsh_geofence_subcommand geofence_subcommand = 1;
+
+  // array of geofence specifications, see qsh_geofence_specification
+  repeated qsh_geofence_specification specs = 2;
+}
+
+enum  qsh_geofence_error_type
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // Success
+  QSH_GEOFENCE_ERROR_SUCCESS                = 0;
+
+  // General failure
+  QSH_GEOFENCE_ERROR_GENERAL_FAILURE        = 1;
+
+  // Callback is missing
+  QSH_GEOFENCE_ERROR_CALLBACK_MISSING       = 2;
+
+  // Invalid parameter
+  QSH_GEOFENCE_ERROR_INVALID_PARAMETER      = 3;
+
+  // ID already exists
+  QSH_GEOFENCE_ERROR_ID_EXISTS              = 4;
+
+  // ID is unknown
+  QSH_GEOFENCE_ERROR_ID_UNKNOWN             = 5;
+
+  // Already started
+  QSH_GEOFENCE_ERROR_ALREADY_STARTED        = 6;
+
+  // Not initialized
+  QSH_GEOFENCE_ERROR_NOT_INITIALIZED        = 7;
+
+  // Maximum number of geofences reached
+  QSH_GEOFENCE_ERROR_GEOFENCES_AT_MAX       = 8;
+}
+
+message qsh_geofence_ack
+{
+  // The command/report was succesful or not (true/false)
+  required bool error = 1;
+
+  // The command/report for which this ACK is sent
+  required qsh_geofence_msgid command = 2;
+
+  // driver's version number. The driver must support a version with the same
+  // major version as the one requested
+  // filled in only for Open command
+  optional uint32 version = 3;
+
+  // The subcommand for which this ACK is sent in case
+  // command = QSH_GEOFENCE_MSGID_QSH_GEOFENCE_UPDATE
+  optional qsh_geofence_subcommand subcommand = 4;
+
+  // array of geofence IDs
+  // maximum number of entries in the array = 30
+  repeated uint32 ids = 5;
+
+  // array of of qsh_geofence_error_type associated with the request
+  // maximum number of entries in the array = 30
+  // the number of ids is the same as the number of errs
+  repeated uint32 errs = 6;
+}
+
+enum qsh_geofence_flags_type
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // Location has a valid latitude and longitude
+  QSH_GEOFENCE_HAS_LAT_LONG_BIT                = 0x00000001;
+
+  // Location has a valid altitude
+  QSH_GEOFENCE_HAS_ALTITUDE_BIT                = 0x00000002;
+
+  // Location has a valid speed
+  QSH_GEOFENCE_HAS_SPEED_BIT                   = 0x00000004;
+
+  // Location has a valid bearing
+  QSH_GEOFENCE_HAS_BEARING_BIT                 = 0x00000008;
+
+  // Location has valid accuracy
+  QSH_GEOFENCE_HAS_ACCURACY_BIT                = 0x00000010;
+}
+
+message qsh_geofence_breach_event
+{
+  // array of geofence IDs
+  // maximum number of entries in the array = 30
+  repeated uint32 ids = 1;
+
+  // UTC timestamp for a location fix; milliseconds since Jan. 1, 1970
+  required uint64 location_timestamp = 2;
+
+  // Fixed point latitude in degrees times 10^7
+  // This is the latitude where the breach occurred
+  required int32 latitude = 3;
+
+  // Fixed point longitude in degrees times 10^7
+  // This is the longitude where the breach occurred
+  required int32 longitude = 4;
+
+  // Altitude in meters above the WGS 84 reference ellipsoid
+  required float altitude = 5;
+
+  // Speed in meters per second
+  required float speed = 6;
+
+  // Bearing in degrees; range: 0 to 360
+  required float bearing = 7;
+
+  // Accuracy in meters
+  required float accuracy = 8;
+
+  // Bitwise OR of qsh_geofence_flags_type
+  required uint32 flags = 9;
+
+  // Type of breach (see qsh_geofence_breach_type)
+  required uint32 breach_type = 10;
+}

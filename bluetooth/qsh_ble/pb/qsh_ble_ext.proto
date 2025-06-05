@@ -1,0 +1,867 @@
+// @file qsh_ble_ext.proto
+//
+// Defines the API for qsh ble extended sensor.
+//
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+syntax = "proto2";
+import "nanopb.proto";
+import "sns_std.proto";
+import "sns_std_sensor.proto";
+import "sns_std_type.proto";
+
+/**
+ * ble_ext sensor Attribute Requirements:
+ * SNS_STD_SENSOR_ATTRID_TYPE: "ble_ext"
+ * SNS_STD_SENSOR_ATTRID_API: "qsh_ble_ext.proto"
+ * SNS_STD_SENSOR_ATTRID_STREAM_TYPE: SNS_STD_SENSOR_STREAM_TYPE_ON_CHANGE
+ * SNS_STD_SENSOR_ATTRID_TRANSPORT_MTU_SIZE
+ */
+
+/**
+ * ble_ext sensor provides functions of BLE advertising and BLE scanning.
+ *
+ * BLE advertising:
+ * 1) When sensor client wants to use advertising function, sensor client should firstly
+ *  look up the attribute SNS_STD_SENSOR_ATTRID_TRANSPORT_MTU_SIZE to get the
+ *  maximum advertising data length.
+ *  Currently the value of atribute SNS_STD_SENSOR_ATTRID_TRANSPORT_MTU_SIZE is 229, but
+ *  the value might be changed in the future.
+ * 2) Sensor client can send QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_ADV_START_ADVERTISING
+ *  to start advertising and can send QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_ADV_STOP_ADVERTISING
+ *  to stop advertising.
+ *  For QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_ADV_START_ADVERTISING,
+ *  if no advertising is started, ble_ext sensor will start advertising;
+ *  if the advertising is ongoing and the new parameter is different, ble_ext sensor will
+ *  reconfigure advertising with the new parameter, advertising data and duration;
+ *  if the advertising is ongoing and the new parameter is same, ble_ext sensor will directly
+ *  update advertising data and duration.
+ * 3) Each data stream will have a corresponding advertising set in ble_ext sensor. Sensor
+ *  client can create multiple data streams for multiple advertising. If there is no
+ *  available advertising set, QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_ADV_STARTED_EVENT with status
+ *  QSH_BLE_EXT_ADV_STATUS_FAILED_TOO_MANY_ADVERTISERS will be responded to sensor client.
+ *
+ * BLE scanning:
+ * 1) ble_ext sensor supports setting up scan filters and starting scan.
+ * 2) Sensor client can send QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_SCAN_START_SCAN
+ *  to start scan and can send QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_SCAN_STOP_SCAN
+ *  to stop scan.
+ * 3) ble_ext will send the filtered advertising data to sensor client by using
+ *  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_SCAN_RESULT_EVENT.
+ *
+ *
+ * Sensor client should not send next request until the ACK for current request is received.
+ *
+ * When BT SOC is turned on or off, attribute SNS_STD_SENSOR_ATTRID_AVAILABLE will be published
+ * to notify the availability of ble_ext sensor. Sensor client should keep the suid stream
+ * open to receive the availability of ble_ext sensor.
+ * After unavailable is published by ble_ext sensor:
+ *  1) Sensor client will receive an unavailable notification through the suid stream.
+ *  2) Sensor client will also receive a SNS_STD_MSGID_SNS_STD_ERROR_EVENT with error code
+ *   SNS_STD_ERROR_INVALID_STATE if the data stream to ble_ext is already created. Sensor client
+ *   should remove the data stream after receiving this error event.
+ *  3) In ble_ext, advertising and scanning status will be reset. No advertising and scanning
+ *   will be started on its own till sensor client restarts it again once the available is published.
+ *
+ * An error event SNS_STD_MSGID_SNS_STD_ERROR_EVENT, with payload message
+ * sns_std_error_event, having appropriate error code, will be sent to sensor
+ * client when error happened in ble_ext sensor code. If error code is
+ * SNS_STD_ERROR_INVALID_STATE, sensor client shall remove the data stream to
+ * deactivate ble_ext sensor.
+ */
+
+enum qsh_ble_ext_msgid
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // BLE advertising:
+
+  /**
+   * Uses payload message: qsh_ble_ext_req_adv_start_advertising
+   * Direction: From client to ble_ext sensor.
+   * Purpose: To start advertising.
+   * Expectation: QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_ADV_STARTED_EVENT.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_ADV_START_ADVERTISING  = 621;
+
+  /**
+   * Uses payload message: none
+   * Direction: From client to ble_ext sensor.
+   * Purpose: To stop advertising.
+   * Expectation: QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_ADV_STOPPED_EVENT.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_ADV_STOP_ADVERTISING  = 622;
+
+  /**
+   * Uses payload message: qsh_ble_ext_req_adv_set_random_address
+   * Direction: From client to ble_ext sensor
+   * Purpose: To set advertising set random address to BT SOC.
+   * By default, anonymous advertising is used. If random address is provided by using
+   * this message request before the first START_ADVERTISING request after data stream
+   * is created, all following advertising will use random address.
+   * The provided random address is only valid in current data stream. Once data stream
+   * is destroyed, the random address will be cleared.
+   * Expectation: QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_ADV_RANDOM_ADDRESS_SET_EVENT.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_ADV_SET_RANDOM_ADDRESS = 623;
+
+  /**
+   * Uses payload message: qsh_ble_ext_evt_adv_started_event
+   * Direction: From ble_ext sensor to sensor client.
+   * Purpose: To ACK for QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_ADV_START_ADVERTISING.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_ADV_STARTED_EVENT = 1121;
+
+  /**
+   * Uses payload message: qsh_ble_ext_evt_adv_stopped_event
+   * Direction: From ble_ext sensor to sensor client.
+   * Purpose: To ACK for QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_ADV_STOP_ADVERTISING or
+   * unsolicited notification to client when advertising duration expires.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_ADV_STOPPED_EVENT = 1122;
+
+  /**
+   * Uses payload message: qsh_ble_ext_evt_adv_random_address_set_event
+   * Direction: From ble_ext sensor to sensor client.
+   * Purpose: To ACK for QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_ADV_SET_RANDOM_ADDRESS.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_ADV_RANDOM_ADDRESS_SET_EVENT = 1123;
+
+
+  // BLE scanning:
+
+  /**
+   * Uses payload message: qsh_ble_ext_req_scan_start_scan
+   * Direction: From client to ble_ext sensor
+   * Purpose: To start scan for the specified advertising data.
+   * Expectation: QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_SCAN_STARTED_EVENT.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_SCAN_START_SCAN = 641;
+
+  /**
+   * Uses payload message: none
+   * Direction: From client to ble_ext sensor
+   * Purpose: To stop scan for the specified advertising data.
+   * Expectation: QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_SCAN_STOPPED_EVENT.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_SCAN_STOP_SCAN = 642;
+
+  /**
+   * Uses payload message: qsh_ble_ext_evt_scan_started_event
+   * Direction: From ble_ext sensor to sensor client
+   * Purpose: To ACK for QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_SCAN_START_SCAN.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_SCAN_STARTED_EVENT = 1141;
+
+  /**
+   * Uses payload message: qsh_ble_ext_evt_scan_stopped_event
+   * Direction: From ble_ext sensor to sensor client
+   * Purpose: To ACK for QSH_BLE_EXT_MSGID_QSH_BLE_EXT_REQ_SCAN_STOP_SCAN.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_SCAN_STOPPED_EVENT = 1142;
+
+  /**
+   * Uses payload message: qsh_ble_ext_evt_scan_result_event
+   * Direction: From ble_ext sensor to sensor client
+   * Purpose: To deliver scan result to sensor client.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_SCAN_RESULT_EVENT = 1143;
+
+  /**
+   * Uses payload message: qsh_ble_ext_evt_raw_hci_event
+   * Direction: From ble_ext sensor to sensor client
+   * Purpose: To deliver raw hci event to sensor client.
+   */
+  QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_RAW_HCI_EVENT = 1151;
+}
+
+enum qsh_ble_ext_adv_param_interval_constants
+{
+  option (nanopb_enumopt).long_names = false;
+  option allow_alias = true;
+
+  /**
+   * Advertise on low frequency, around every 1000ms. This is the default and
+   * preferred advertising mode as it consumes the least power.
+   */
+  QSH_BLE_EXT_ADV_PARAM_INTERVAL_HIGH = 1000;
+
+  /**
+   * Advertise on medium frequency, around every 250ms. This is balanced
+   * between advertising frequency and power consumption.
+   */
+  QSH_BLE_EXT_ADV_PARAM_INTERVAL_MEDIUM = 250;
+
+  /**
+   * Perform high frequency, low latency advertising, around every 100ms. This
+   * has the highest power consumption and should not be used for continuous
+   * background advertising.
+   */
+  QSH_BLE_EXT_ADV_PARAM_INTERVAL_LOW = 100;
+
+  /**
+   * Minimum value for advertising interval in ms.
+   */
+  QSH_BLE_EXT_ADV_PARAM_INTERVAL_MIN = 100;
+
+  /**
+   * Maximum value for advertising interval in ms.
+   */
+  QSH_BLE_EXT_ADV_PARAM_INTERVAL_MAX = 10485759;
+}
+
+enum qsh_ble_ext_adv_param_tx_power_constants
+{
+  option (nanopb_enumopt).long_names = false;
+
+  /**
+   * Advertise using the lowest transmission (TX) power level. Low transmission
+   * power can be used to restrict the visibility range of advertising packets.
+   */
+  QSH_BLE_EXT_ADV_PARAM_TX_POWER_ULTRA_LOW = -21;
+
+  /**
+   * Advertise using low TX power level.
+   */
+  QSH_BLE_EXT_ADV_PARAM_TX_POWER_LOW = -15;
+
+  /**
+   * Advertise using medium TX power level.
+   */
+  QSH_BLE_EXT_ADV_PARAM_TX_POWER_MEDIUM = -7;
+
+  /**
+   * Advertise using high TX power level. This corresponds to largest visibility
+   * range of the advertising packet.
+   */
+  QSH_BLE_EXT_ADV_PARAM_TX_POWER_HIGH = 1;
+
+  /**
+   * Minimum value for TX power.
+   */
+  QSH_BLE_EXT_ADV_PARAM_TX_POWER_MIN = -127;
+
+  /**
+   * Maximum value for TX power.
+   */
+  QSH_BLE_EXT_ADV_PARAM_TX_POWER_MAX = 20;
+}
+
+enum qsh_ble_ext_adv_data_type_constants
+{
+  option (nanopb_enumopt).long_names = false;
+
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_UUID_16_BIT_PARTIAL = 2;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_UUID_16_BIT_COMPLETE = 3;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_UUID_32_BIT_PARTIAL = 4;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_UUID_32_BIT_COMPLETE = 5;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_UUID_128_BIT_PARTIAL = 6;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_UUID_128_BIT_COMPLETE = 7;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_DATA_UUID_16_BIT = 22;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_DATA_UUID_32_BIT = 32;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_DATA_UUID_128_BIT = 33;
+  QSH_BLE_EXT_ADV_TYPE_MANUFACTURER_SPECIFIC_DATA = 255;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_SOLICITATION_UUID_16_BIT = 20;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_SOLICITATION_UUID_32_BIT = 31;
+  QSH_BLE_EXT_ADV_TYPE_SERVICE_SOLICITATION_UUID_128_BIT = 21;
+}
+
+message qsh_ble_ext_advertising_parameters
+{
+  /**
+   * Bluetooth LE Advertising interval, in 1ms unit. Valid range is from
+   * 100 to 10,485,759. Recommended values are:
+   * {QSH_BLE_EXT_ADV_PARAM_INTERVAL_HIGH}, {QSH_BLE_EXT_ADV_PARAM_INTERVAL_MEDIUM},
+   * or {QSH_BLE_EXT_ADV_PARAM_INTERVAL_LOW}.
+   * Default value is {QSH_BLE_EXT_ADV_PARAM_INTERVAL_MEDIUM} if this is not set.
+   */
+  optional uint32 interval = 1 [default = 250];
+
+  /**
+   * The transmission power of Bluetooth LE Advertising, in dBm. The valid
+   * range is [-127, 1] Recommended values are:
+   * {QSH_BLE_EXT_ADV_PARAM_TX_POWER_ULTRA_LOW},
+   * {QSH_BLE_EXT_ADV_PARAM_TX_POWER_LOW},
+   * {QSH_BLE_EXT_ADV_PARAM_TX_POWER_MEDIUM},
+   * or {QSH_BLE_EXT_ADV_PARAM_TX_POWER_HIGH}.
+   * Default value is {QSH_BLE_EXT_ADV_PARAM_TX_POWER_MEDIUM} if this is not set.
+   */
+  optional sint32 tx_power_level = 2 [default = -7];
+
+  /**
+   * Whether TX power should be included in the extended header.
+   * Default value is false if this is not set.
+   */
+  optional bool include_tx_power = 3 [default = false];
+
+  /**
+   * When set to true, advertising set will advertise legacy advertisements.
+   * Note: leagacy advertising doesn't support anonymous advertising, so
+   * public own address will be used by default if random address is not provided.
+   */
+  optional bool legacy = 4 [default = false];
+}
+
+/**
+ * uuid is always in 128-bit format and little endian.
+ * For bluetooth uuids:
+ *   The BASE_UUID is "00000000-0000-1000-8000-00805F9B34FB".
+ *   If the uuid is 16-bit 0xTTTT, then
+ *   uuid_low will be 0x8000-00805F9B34FB and uuid_high will be 0x0000TTTT-0000-1000.
+ *   If the uuid is 32-bit 0xTTTTTTTT, then
+ *   uuid_low will be 0x8000-00805F9B34FB and uuid_high will be 0xTTTTTTTT-0000-1000.
+ */
+message qsh_ble_ext_uuid
+{
+  required fixed64 uuid_low = 1;
+  required fixed64 uuid_high = 2;
+}
+
+message qsh_ble_ext_service_data
+{
+  required qsh_ble_ext_uuid uuid = 1;
+
+  required bytes data = 2;
+}
+
+message qsh_ble_ext_manufacturer_data
+{
+  required uint32 manufacturer_id = 1;
+
+  required bytes data = 2;
+}
+
+/**
+ * Advertise data packet container for BLE advertising.
+ * Each advertise data structure has a Length field of one byte,
+ * an Advertise Type field of one byte and an Advertise Data field of Length - 1
+ * bytes. Since the Length field only has one byte, the total length of
+ * each advertise data structure shall not exceed 256 (1 byte for length field + 255).
+ * OVERHEAD_BYTES_PER_FIELD = 2 ( one byte for Length field and
+ *                                and one byte for Advertise Type field)
+ * UUID length is 2, 4 or 16
+ *
+ * The total size of qsh_ble_ext_advertise_data is calculated in such below way:
+ * 1) service_data_s length is
+ *    for (service_data : service_data_s) {
+ *      service_data_len += OVERHEAD_BYTES_PER_FIELD + UUID_length(service_data.uuid) +
+ *          length(service_data.data); // service_data_len shall be <=256
+ *      total_size += service_data_len;
+ *    }
+ * 2) manufacturer_data_s length is
+ *    for (manufacturer_data : manufacturer_data_s) {
+ *      manufacturer_data_len += OVERHEAD_BYTES_PER_FIELD + 2 +
+ *          length(manufacturer_data.data); // manufacturer_data_len shall be <=256
+ *      total_size += manufacturer_data_len;
+ *    }
+ * 3) service_uuid_s length is
+ *      get num_of_uuid_2_bytes, num_of_uuid_4_bytes and num_of_uuid_16_bytes from
+ *      service_uuid_s;
+ *      if (num_of_uuid_2_bytes > 0) {
+ *        uuid_len += OVERHEAD_BYTES_PER_FIELD +
+ *            2 * num_of_uuid_2_bytes; // uuid_len shall be <=256
+ *        total_size += uuid_len;
+ *      }
+ *      if (num_of_uuid_4_bytes > 0) {
+ *        uuid_len += OVERHEAD_BYTES_PER_FIELD +
+ *            4 * num_of_uuid_4_bytes // uuid_len shall be <=256
+ *        total_size += uuid_len;
+ *      }
+ *      if (num_of_uuid_16_bytes > 0) {
+ *        uuid_len += OVERHEAD_BYTES_PER_FIELD +
+ *            16 * num_of_uuid_16_bytes // uuid_len shall be <=256
+ *        total_size += uuid_len;
+ *      }
+ * 4) service_solicitation_uuid_s length is
+ *      get num_of_uuid_2_bytes, num_of_uuid_4_bytes and num_of_uuid_16_bytes from
+ *      service_solicitation_uuid_s;
+ *      if (num_of_uuid_2_bytes > 0) {
+ *        uuid_len += OVERHEAD_BYTES_PER_FIELD +
+ *            2 * num_of_uuid_2_bytes; // uuid_len shall be <=256
+ *        total_size += uuid_len;
+ *      }
+ *      if (num_of_uuid_4_bytes > 0) {
+ *        uuid_len += OVERHEAD_BYTES_PER_FIELD +
+ *            4 * num_of_uuid_4_bytes // uuid_len shall be <=256
+ *        total_size += uuid_len;
+ *      }
+ *      if (num_of_uuid_16_bytes > 0) {
+ *        uuid_len += OVERHEAD_BYTES_PER_FIELD +
+ *            16 * num_of_uuid_16_bytes // uuid_len shall be <=256
+ *        total_size += uuid_len;
+ *      }
+ *
+ * total_size is the calculated size of qsh_ble_ext_advertise_data.
+ *
+ */
+message qsh_ble_ext_advertise_data
+{
+  /**
+   * service data list to be advertised.
+   */
+  repeated qsh_ble_ext_service_data service_data_s = 1;
+
+  /**
+   * manufacturer specific data list.
+   */
+  repeated qsh_ble_ext_manufacturer_data manufacturer_data_s = 2;
+
+  /**
+   * service uuid list to be advertised.
+   */
+  repeated qsh_ble_ext_uuid service_uuid_s = 3;
+
+  /**
+   * service solicitation uuid list to be advertised.
+   */
+  repeated qsh_ble_ext_uuid service_solicitation_uuid_s = 4;
+}
+
+/**
+ * The calculated total size will be:
+ * total_size = total size of advertise_data or length of raw_advertise_data;
+ * if (include_local_name)
+ *   total_size += 28
+ *
+ * total_len is the calculated size of qsh_ble_ext_advertise_data_union.
+ */
+message qsh_ble_ext_advertise_data_union
+{
+  option (nanopb_msgopt).no_unions=true;
+
+  oneof data {
+    qsh_ble_ext_advertise_data advertise_data = 1;
+
+    /**
+     * raw advertising data bytes which are built according to
+     * "BT core spec, Vol 3, Part C, 11 ADVERTISING AND SCAN RESPONSE DATA FORMAT".
+     */
+    bytes raw_advertise_data = 2;
+  }
+
+  /**
+   * If include_local_name is true, 28 bytes will be consumed in advertising data.
+   * Default value is false if this is not set.
+   */
+  optional bool include_local_name = 3;
+}
+
+message qsh_ble_ext_req_adv_start_advertising
+{
+  /**
+   * advertising parameters.
+   */
+  optional qsh_ble_ext_advertising_parameters parameters = 1;
+
+  /**
+   * Advertisement data to be broadcasted.
+   * The calculated total size must not exceed the value of max_advertising_data_len.
+   * max_advertising_data_len is published via
+   * SNS_STD_SENSOR_ATTRID_TRANSPORT_MTU_SIZE atrribute.
+   */
+  required qsh_ble_ext_advertise_data_union advertise_data_union = 2;
+
+  /**
+   * Advertising duration, in 1ms unit. Valid range is from 10 to 655,350.
+   * Recommended value is a multiple of 10.
+   * After duration timeout, advertising will be stopped in ble_ext
+   * automatically. 0 means advertising should continue until stopped explicitly
+   * by sensor client.
+   */
+  required uint32 duration = 3;
+}
+
+message qsh_ble_ext_req_adv_set_random_address
+{
+  /**
+   * random address format is defined in core spec [Vol 6] Part B, Section 1.3.2.
+   * The LSB of random address should be put at address[0].
+   */
+  required bytes address = 1;
+}
+
+enum qsh_ble_ext_adv_status
+{
+  option (nanopb_enumopt).long_names = false;
+
+  /**
+   * The requested operation was successful.
+   */
+  QSH_BLE_EXT_ADV_STATUS_SUCCESS = 0;
+
+  /**
+   * Failed to start advertising as the advertise data to be broadcasted is too
+   * large.
+   */
+  QSH_BLE_EXT_ADV_STATUS_FAILED_DATA_TOO_LARGE = 1;
+
+  /**
+   * Failed to register advertiser because no advertising instance is available.
+   */
+  QSH_BLE_EXT_ADV_STATUS_FAILED_TOO_MANY_ADVERTISERS = 2;
+
+  /**
+   * Operation failed due to an internal error.
+   */
+  QSH_BLE_EXT_ADV_STATUS_FAILED_INTERNAL_ERROR = 3;
+
+  /**
+   * Fails to start advertising as the parameters set by
+   * sensor client are incorrect.
+   */
+  QSH_BLE_EXT_ADV_STATUS_FAILED_INCORRECT_PARAMETERS = 4;
+
+  /**
+   * This feature is not supported on this platform.
+   */
+  QSH_BLE_EXT_ADV_STATUS_FAILED_FEATURE_UNSUPPORTED = 5;
+
+  /**
+   * Advetising stopped as BT SOC is turned off.
+   */
+  QSH_BLE_EXT_ADV_STATUS_FAILED_BT_TURNED_OFF = 6;
+}
+
+message qsh_ble_ext_evt_adv_started_event
+{
+  /**
+   * Status of the operation, value of qsh_ble_ext_adv_status.
+   */
+  required uint32 status = 1;
+}
+
+message qsh_ble_ext_evt_adv_stopped_event
+{
+  /**
+   * Status of the operation, value of qsh_ble_ext_adv_status.
+   */
+  required uint32 status = 1;
+}
+
+message qsh_ble_ext_evt_adv_random_address_set_event
+{
+  /**
+   * Status of the operation, value of qsh_ble_ext_adv_status.
+   */
+  required uint32 status = 1;
+}
+
+// BLE scanning:
+
+/**
+ * For all scan modes' scan_interval_ms, scan_window_ms and priority
+ * are reconfigurable by json conf file. The priorities of enabled scan modes in the json conf file
+ * should be >= 1.
+ * The scan mode whose priority is -1 will be disabled. When re-configuring scan modes by using
+ * json conf file, scan modes except QSH_BLE_EXT_SCAN_MODE_OEM_* shall not be disabled.
+ */
+enum qsh_ble_ext_scan_mode_constants
+{
+  option (nanopb_enumopt).long_names = false;
+
+  /**
+   * Perform Bluetooth LE scan in low power mode. This is the default scan mode as it consumes the
+   * least power.
+   * Default scan_interval_ms/scan_window_ms/priority for this scan mode is 1400/140/1.
+   */
+  QSH_BLE_EXT_SCAN_MODE_LOW_POWER = 0;
+
+  /**
+   * Perform Bluetooth LE scan in balanced power mode. Scan results are returned at a rate that
+   * provides a good trade-off between scan frequency and power consumption.
+   * Default scan_interval_ms/scan_window_ms/priority for this scan mode is 730/183/2.
+   */
+  QSH_BLE_EXT_SCAN_MODE_BALANCED = 1;
+
+  /**
+   * Deprecated. It is same as SCAN_MODE_BALANCED, use SCAN_MODE_BALANCED
+   * instead of this mode.
+   */
+  QSH_BLE_EXT_SCAN_MODE_AMBIENT_DISCOVERY = 2;
+
+  /**
+   * Scan using highest duty cycle.
+   * Default scan_interval_ms/scan_window_ms/priority for this scan mode is 100/100/3.
+   */
+  QSH_BLE_EXT_SCAN_MODE_LOW_LATENCY = 3;
+
+  /**
+   * Below scan modes are not enabled by default, configure scan_interval_ms/scan_window_ms/priority
+   * by json conf file to enable them if needed.
+   */
+  QSH_BLE_EXT_SCAN_MODE_OEM_1 = 51;
+  QSH_BLE_EXT_SCAN_MODE_OEM_2 = 52;
+  QSH_BLE_EXT_SCAN_MODE_OEM_3 = 53;
+  QSH_BLE_EXT_SCAN_MODE_OEM_4 = 54;
+  QSH_BLE_EXT_SCAN_MODE_OEM_5 = 55;
+  QSH_BLE_EXT_SCAN_MODE_OEM_6 = 56;
+}
+
+message qsh_ble_ext_scan_settings
+{
+  /**
+   * scan mode for Bluetooth LE scan.
+   *
+   * The scan mode can be one of,
+   * {QSH_BLE_EXT_SCAN_MODE_LOW_POWER}, {QSH_BLE_EXT_SCAN_MODE_BALANCED},
+   * {QSH_BLE_EXT_SCAN_MODE_LOW_LATENCY} and {QSH_BLE_EXT_SCAN_MODE_AMBIENT_DISCOVERY}.
+   */
+  required sint32 scan_mode = 1;
+
+  /**
+   * Batch scan parameter for time threshold. Unit is millisecond.
+   * Batch scanning is not supported currently
+   */
+  optional uint32 max_latency = 2;
+
+  /**
+   * Default value is -128
+   */
+  optional sint32 high_rssi_threshold = 3;
+}
+
+message qsh_ble_ext_scan_filter
+{
+  /**
+   * filter on service data. For any bit in the service_data_mask, set it to 1
+   * if it needs to match the one in service data, otherwise set it to 0 to
+   * ignore that bit.
+   * If sensor client uses below service data filter, service_data_uuid will be
+   * mandatory. Besides, if service_data_mask is not null, it must have the
+   * same length as the service_data.
+   */
+  optional qsh_ble_ext_uuid service_data_uuid = 1;
+  optional bytes service_data = 2;
+  optional bytes service_data_mask = 3;
+
+  /**
+   * filter on manufacturer data. For any bit in the manufacturer_data_mask, set it to 1
+   * if it needs to match the one in manufacturer data, otherwise set it to 0 to
+   * ignore that bit.
+   * If sensor client uses below manufacturer data filter, manufacturer_id will be
+   * mandatory. Besides, if manufacturer_data_mask is not null, it must have the
+   * same length as the manufacturer_data.
+   */
+  optional uint32 manufacturer_id = 4;
+  optional bytes manufacturer_data = 5;
+  optional bytes manufacturer_data_mask = 6;
+
+  /**
+   * filter on device name.
+   */
+  optional string device_name = 7;
+
+  /**
+   * filter on service uuid. The service_uuid_mask is the bit mask for the
+   * {service_uuid}. Set any bit in the mask to 1 to indicate a match is needed for the
+   * bit in service_uuid, and 0 to ignore that bit. service_uuid_mask is optional.
+   * If sensor client uses below service uuid filter, service_uuid will be mandatory.
+   * service_uuid_mask is optional.
+   */
+  optional qsh_ble_ext_uuid service_uuid = 8;
+  optional qsh_ble_ext_uuid service_uuid_mask = 9;
+
+  /**
+   * filter on service solicitation uuid. The service_solicitation_uuid_mask is the bit mask for the
+   * {service_solicitation_uuid}. Set any bit in the mask to 1 to indicate a match is needed for the
+   * bit in service_solicitation_uuid, and 0 to ignore that bit. service_solicitation_uuid_mask is optional.
+   * If sensor client uses below service solicitation uuid filter, service_solicitation_uuid will be mandatory.
+   * service_solicitation_uuid_mask is optional.
+   */
+  optional qsh_ble_ext_uuid service_solicitation_uuid = 10;
+  optional qsh_ble_ext_uuid service_solicitation_uuid_mask = 11;
+}
+
+message qsh_ble_ext_req_scan_start_scan
+{
+  /**
+   * settings for the scan.
+   */
+  required qsh_ble_ext_scan_settings scan_settings = 1;
+
+  /**
+   * list of ScanFilters for filtering advertisements.
+   */
+  repeated qsh_ble_ext_scan_filter scan_filters = 2;
+
+  /**
+   * when set to true, QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_RAW_HCI_EVENT
+   * will be used to deliver advertising event,
+   * instead of using QSH_BLE_EXT_MSGID_QSH_BLE_EXT_EVT_SCAN_RESULT_EVENT.
+   */
+  optional bool report_raw_event = 3 [default = false];
+}
+
+enum qsh_ble_ext_scan_status
+{
+  option (nanopb_enumopt).long_names = false;
+
+  /**
+   * The requested operation was successful.
+   */
+  QSH_BLE_EXT_SCAN_STATUS_SUCCESS = 0;
+
+  /**
+   * Fails to start scan as BLE scan within the same data stream is already started.
+   */
+  QSH_BLE_EXT_SCAN_STATUS_FAILED_ALREADY_STARTED = 1;
+
+  /**
+   * Failed to register scanner because no scan instance is available.
+   */
+  QSH_BLE_EXT_SCAN_STATUS_FAILED_TOO_MANY_SCANNERS = 2;
+
+  /**
+   * Operation failed due to an internal error.
+   */
+  QSH_BLE_EXT_SCAN_STATUS_FAILED_INTERNAL_ERROR = 3;
+
+  /**
+   * Fails to start scan as the parameters set by sensor client are incorrect.
+   */
+  QSH_BLE_EXT_SCAN_STATUS_FAILED_INCORRECT_PARAMETERS = 4;
+
+  /**
+   * Fails to start scan as it is out of hardware resources.
+   */
+  QSH_BLE_EXT_SCAN_STATUS_FAILED_OUT_OF_HARDWARE_RESOURCES = 5;
+
+  /**
+   * Scan stopped as BT SOC is turned off.
+   */
+  QSH_BLE_EXT_SCAN_STATUS_FAILED_BT_TURNED_OFF = 6;
+}
+
+
+message qsh_ble_ext_evt_scan_started_event
+{
+  /**
+   * Status of the operation, value of qsh_ble_ext_scan_status.
+   */
+  required uint32 status = 1;
+}
+
+message qsh_ble_ext_evt_scan_stopped_event
+{
+  /**
+   * Status of the operation, value of qsh_ble_ext_scan_status.
+   */
+  required uint32 status = 1;
+}
+
+message qsh_ble_ext_scan_record
+{
+  /**
+   * Raw bytes of scan record. Sensor client can parse it to extract
+   * the needed data if the data doesn't belong to following fields.
+   */
+  optional bytes raw_adv_data = 1;
+
+  /**
+   * List of service data.
+   */
+  repeated qsh_ble_ext_service_data service_data_s = 2;
+
+  /**
+   * List of manufacturer data.
+   */
+  repeated qsh_ble_ext_manufacturer_data manufacturer_data_s = 3;
+
+  /**
+   * Remote device name.
+   */
+  optional string device_name = 4;
+
+  /**
+   * List of service uuid.
+   */
+  repeated qsh_ble_ext_uuid service_uuid_s = 5;
+
+  /**
+   * List of service solicitation uuid.
+   */
+  repeated qsh_ble_ext_uuid service_solicitation_uuid_s = 6;
+}
+
+message qsh_ble_ext_evt_scan_result_event
+{
+  /**
+   * The scan record.
+   */
+  optional qsh_ble_ext_scan_record scan_record = 1;
+
+  /**
+   * Remote device address type.
+   */
+  required uint32 device_address_type = 2;
+
+  /**
+   * Remote device address.
+   */
+  required bytes device_address = 3;
+
+  /**
+   * The received signal strength in dBm.
+   * The valid range is [-127, 20].
+   */
+  required sint32 rssi = 4;
+
+  /**
+   * The remote transmit power in dBm.
+   * Valid range is [-127, 20].
+   * 0x7F indicates that TX power is not available.
+   */
+  required sint32 tx_power = 5;
+
+  /**
+   * the system time tick when the scan result was observed.
+   * value is sns_get_system_time()
+   */
+  required fixed64 time_stamp = 6;
+
+  /**
+  * Adv event type
+  */
+  required uint32 event_type = 7;
+
+  /**
+  * Indicates primary phy used to send advertsing pdu
+  */
+  required uint32 primary_phy = 8;
+
+  /**
+  * Indicates secondary phy used to send advertsing pdu
+  */
+  required uint32 secondary_phy = 9;
+
+  /**
+  * Periodic adv interval.
+  * Set to 0 if no periodic advertisment is present
+  */
+  required uint32 pa_interval = 10;
+
+  /**
+  * Advertising SID
+  */
+  required uint32 adv_sid = 11;
+
+  /**
+  * Direct address and address type of Advertiser
+  * These fields are valid only for directed advertisments event_type
+  * second bit is 1
+  */
+  required uint32 direct_address_type = 12;
+
+  required bytes direct_address = 13;
+}
+
+message qsh_ble_ext_evt_raw_hci_event
+{
+  /**
+  * This field contains the whole HCI event. The first byte is 0x04 which
+  * indicates that packet type is HCI event. Second byte is Event Code.
+  */
+  required bytes hci_event = 1;
+}

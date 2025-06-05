@@ -1,0 +1,332 @@
+// @file qsh_location.proto
+//
+// Defines standard message types for LOCATION
+//
+// Copyright (c) 2020-2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+syntax = "proto2";
+import "nanopb.proto";
+import "sns_std.proto";
+
+option optimize_for = LITE_RUNTIME;
+
+// Location Attribute Requirements:
+// SNS_STD_SENSOR_ATTRID_TYPE: "location"
+// SNS_STD_SENSOR_ATTRID_AVAILABLE: true
+// SNS_STD_SENSOR_ATTRID_API: "qsh_location.proto"
+// SNS_STD_SENSOR_ATTRID_STREAM_TYPE: SNS_STD_SENSOR_STREAM_TYPE_STREAMING
+
+enum qsh_location_msgid
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // Uses message: qsh_location_open
+  // Direction: From client to sensor
+  // Purpose: Attempts to open the location driver with required version
+  // Expects QSH_LOCATION_MSGID_QSH_LOCATION_ACK from the sensor
+  QSH_LOCATION_MSGID_QSH_LOCATION_OPEN = 512;
+
+  // Does not use any message body.
+  // Direction: From client to sensor
+  // Purpose: Attempts to close the location driver
+  // Expects QSH_LOCATION_MSGID_QSH_LOCATION_ACK from the sensor
+  QSH_LOCATION_MSGID_QSH_LOCATION_CLOSE = 513;
+
+  // Uses message: qsh_location_update
+  // Direction: From client to sensor
+  // Purpose: Starts/stops tracking requiring positions or measurements with
+  // the specified rate
+  // On receiving this request for start=1, the tracking session is started and the
+  // sensor will then send either QSH_LOCATION_MSGID_QSH_LOCATION_POSITION_EVENT or
+  // QSH_LOCATION_MSGID_QSH_LOCATION_MEAS_AND_CLK_EVENT based on the location_request
+  // at the specified interval until the session is stopped by the same request with
+  // start=0
+  // Expects QSH_LOCATION_MSGID_QSH_LOCATION_ACK from the sensor
+  QSH_LOCATION_MSGID_QSH_LOCATION_UPDATE = 514;
+
+  // Uses message: qsh_location_ack
+  // Direction: From sensor to client
+  // Purpose: ACK/NACK for all commands
+  // Client uses this as an indication that the command was successful/completed
+  // and it can send subsequent commands. Some information might be sent to the
+  // client as well for some commands, e.g. capabilities of the sensor
+  QSH_LOCATION_MSGID_QSH_LOCATION_ACK = 768;
+
+  // Uses message: qsh_location_position_event
+  // Direction: From sensor to client
+  // Purpose: Reports information related to position fixes to the client
+  QSH_LOCATION_MSGID_QSH_LOCATION_POSITION_EVENT = 1024;
+
+  // Uses message: qsh_location_meas_and_clk_event
+  // Direction: From sensor to client
+  // Purpose: Reports information related to measurements and clock to the client
+  QSH_LOCATION_MSGID_QSH_LOCATION_MEAS_AND_CLK_EVENT = 1025;
+}
+
+message qsh_location_open
+{
+  // requested version number. The sensor must support a version with the same
+  // major version as the one requested
+  required uint32 version = 1;
+}
+
+enum qsh_location_request
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // position requests
+  QSH_LOCATION_POSITION_REQUEST = 1;
+
+  // measurement and clock requests
+  QSH_LOCATION_MEAS_AND_CLK_REQUEST = 2;
+}
+
+message qsh_location_update
+{
+  // start/stop indicator, true to start the session, false to stop the session
+  required bool start = 1;
+
+  // indicate if either positions or measurements/clock are requested
+  required qsh_location_request location_request = 2;
+
+  // the required interval between positions or measurements in ms
+  required uint32 interval = 3;
+}
+
+enum qsh_location_capabilities
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // The driver supports position requests
+  QSH_LOCATION_CAPABILITIES_POSITION = 1;
+
+  // The driver supports measurement and clock requests
+  QSH_LOCATION_CAPABILITIES_MEAS_AND_CLK = 2;
+}
+
+message qsh_location_ack
+{
+  // The command/report was succesful or not (true/false)
+  // If trying to open the driver when it is already open
+  // this will be false
+  required bool error = 1;
+
+  // The command/report for which this ACK is sent
+  required qsh_location_msgid command = 2;
+
+  // driver's version number. The driver must support a version with the same
+  // major version as the one requested
+  // filled in only for Open command
+  optional uint32 version = 3;
+
+  // driver's capabilities
+  // filled in only for Open command, see qsh_location_capabilities
+  // bitwise OR of qsh_location_capabilities bits
+  optional uint32 capabilities = 4;
+}
+
+message qsh_location_position_event
+{
+  // UTC timestamp for location fix in milliseconds since January 1, 1970
+  required uint64 timestamp = 1;
+
+  // Fixed point latitude in degrees times 10^7
+  optional int32 latitude = 2;
+
+  // Fixed point longitude in degrees times 10^7
+  optional int32 longitude = 3;
+
+  // Fixed point altitude in meters above the WGS 84 reference ellipsoid
+  optional float altitude = 4;
+
+  // Horizontal accuracy in meters such that a circle with a radius
+  // of length 'accuracy' from the latitude and longitude has a 68%
+  // probability of including the true location.
+  optional float horizontal_accuracy = 5;
+
+  // Vertical accuracy in meters such that a range of
+  // 2 * altitude_accuracy centered around altitude has a 68%
+  // probability of including the true altitude.
+  optional float vertical_accuracy = 6;
+
+  // Horizontal speed in meters/second
+  optional float speed = 7;
+
+  // Speed accuracy in meters per second such that a range of
+  // 2 * speed_accuracy centered around speed has a 68% probability of
+  // including the true speed.
+  optional float speed_accuracy = 8;
+
+  // Clockwise angle between north and current heading, in degrees; range
+  // [0, 360)
+  optional float bearing = 9;
+
+  // Bearing accuracy in degrees such that a range of
+  // 2 * bearing_accuracy centered around bearing has a 68% probability of
+  // including the true bearing.
+  optional float bearing_accuracy = 10;
+
+  // Conformity index. Indicates how well the various input data considered for
+  // navigation solution conform to expectations
+  // Range: 0 (least conforming) to 1 (most conforming)
+  optional float conformity_index = 11;
+}
+
+enum qsh_location_constellation_type
+{
+  option (nanopb_enumopt).long_names = false;
+
+  QSH_LOCATION_CONSTELLATION_TYPE_UNKNOWN    = 0;
+  QSH_LOCATION_CONSTELLATION_TYPE_GPS        = 1;
+  QSH_LOCATION_CONSTELLATION_TYPE_SBAS       = 2;
+  QSH_LOCATION_CONSTELLATION_TYPE_GLONASS    = 3;
+  QSH_LOCATION_CONSTELLATION_TYPE_QZSS       = 4;
+  QSH_LOCATION_CONSTELLATION_TYPE_BEIDOU     = 5;
+  QSH_LOCATION_CONSTELLATION_TYPE_GALILEO    = 6;
+  QSH_LOCATION_CONSTELLATION_TYPE_NAVIC      = 7;
+}
+
+enum qsh_location_measurement_state
+{
+  option (nanopb_enumopt).long_names = false;
+
+  // Flags indicating the GNSS measurement state
+  QSH_LOCATION_MEASUREMENT_STATE_UNKNOWN                        = 0;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_CODE_LOCK                = 0x00000001;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_BIT_SYNC                 = 0x00000002;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_SUBFRAME_SYNC            = 0x00000004;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_TOW_DECODED              = 0x00000008;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_MSEC_AMBIGUOUS           = 0x00000010;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_SYMBOL_SYNC              = 0x00000020;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_GLO_STRING_SYNC          = 0x00000040;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_GLO_TOD_DECODED          = 0x00000080;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_BDS_D2_BIT_SYNC          = 0x00000100;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_BDS_D2_SUBFRAME_SYNC     = 0x00000200;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_GAL_E1BC_CODE_LOCK       = 0x00000400;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_GAL_E1C_2ND_CODE_LOCK    = 0x00000800;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_GAL_E1B_PAGE_SYNC        = 0x00001000;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_SBAS_SYNC                = 0x00002000;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_TOW_KNOWN                = 0x00004000;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_GLO_TOD_KNOWN            = 0x00008000;
+  QSH_LOCATION_MEASUREMENT_STATE_STATE_2ND_CODE_LOCK            = 0x00010000;
+}
+
+enum qsh_location_multipath_indicator
+{
+  option (nanopb_enumopt).long_names = false;
+
+  QSH_LOCATION_MULTIPATH_INDICATOR_UNKNOWN      = 0;
+  QSH_LOCATION_MULTIPATH_INDICATOR_PRESENT      = 1;
+  QSH_LOCATION_MULTIPATH_INDICATOR_NOT_PRESENT  = 2;
+}
+
+message qsh_location_measurement
+{
+  // Satellite vehicle ID number
+  required int32 sv_id = 1;
+
+  // Constellation of the given satellite vehicle
+  required qsh_location_constellation_type constellation_type = 2;
+
+  // Hardware time offset from time_ns for this measurement, in nanoseconds
+  required int64 time_offset = 3;
+
+  // Satellite sync state flags, see qsh_location_measurement_state
+  // bitwise OR of qsh_location_measurement_state bits
+  required uint32 state = 4;
+
+  // Received GNSS satellite time at the time of measurement, in nanoseconds
+  required int64 received_sv_time = 5;
+
+  // 1-sigma uncertainty of received GNSS satellite time, in nanoseconds
+  required int64 received_sv_time_uncertainty = 6;
+
+  // Carrier-to-noise density in dB-Hz, measured at the antenna, in the range of [0, 63]
+  required float c_n0 = 7;
+
+  // Pseudorange rate at the timestamp in meters per second (uncorrected)
+  required float pseudorange_rate = 8;
+
+  // 1-sigma uncertainty of pseudorange rate in meters per second
+  required float pseudorange_rate_uncertainty = 9;
+
+  // Carrier phase measurement (L1 cycles)
+  optional double carrier_phase = 10;
+
+  // 1-sigma uncertainty of the carrier phase measurement
+  optional float carrier_phase_uncertainty = 11;
+
+  // Increments when a cycle slip is detected
+  optional uint32 cycle_slip_count = 12;
+
+  // multipath indicator, see qsh_location_multipath_indicator
+  optional qsh_location_multipath_indicator multipath_indicator = 13;
+
+  // Signal to noise ratio (dB), power above observed noise at correlators
+  optional float snr = 14;
+
+  // Carrier frequency of the signal tracked in Hz.
+  // For example, it can be the GPS central frequency for L1 = 1575.45 MHz,
+  // or L2 = 1227.60 MHz, L5 = 1176.45 MHz, various GLO channels, etc.
+  //
+  // For an L1, L5 receiver tracking a satellite on L1 and L5 at the same
+  // time, two chreGnssMeasurement structs must be reported for this same
+  // satellite, in one of the measurement structs, all the values related to
+  // L1 must be filled, and in the other all of the values related to L5
+  // must be filled.
+  optional float carrier_frequency = 15;
+}
+
+message qsh_location_clock
+{
+  // The GNSS receiver hardware clock value in nanoseconds
+  required int64 time = 1;
+
+  // The GNSS receiver hardware clock value uncertainty in nanoseconds
+  optional float time_uncertainty = 2;
+
+  // The difference between hardware clock inside GNSS receiver and the
+  // estimated GNSS time in nanoseconds; contains bias uncertainty
+  optional int64 full_bias = 3;
+
+  // Sub-nanosecond bias, adds to full_bias
+  optional float bias = 4;
+
+  // 1-sigma uncertainty associated with the clock's bias in nanoseconds
+  optional float bias_uncertainty = 5;
+
+  // The clock's drift in nanoseconds per second
+  optional float drift = 6;
+
+  // 1-sigma uncertainty associated with the clock's drift in nanoseconds
+  // per second
+  optional float drift_uncertainty = 7;
+
+  // While this number stays the same, timeNs should flow continuously
+  optional uint32 hw_clock_discontinuity_count = 8;
+}
+
+message qsh_location_meas_and_clk_event
+{
+  // Number of qsh_location_measurement entries included in the report for this epoch.
+  // Must be in the range [0, 128]. Note that multiple messages might be used to
+  // transmit all the measurements for one epoch, please see comment below for
+  // measurement_index for an example
+  required uint32 number_of_measurements = 1;
+
+  // array of measurements, see qsh_location_measurement
+  repeated qsh_location_measurement measurements = 2;
+
+  // clock information, see qsh_location_clock
+  required qsh_location_clock clock = 3;
+
+  // indicates the measurement index. This is useful in case there is not enough
+  // room in the message to send all the measurements. As an example, if
+  // number_of_measurements = 87, but only 30 measurements can be sent in one
+  // message measurement_index will be 1 for the first message, 31 for the
+  // second, 61 for the third. Note that in this case clock information will
+  // be identical for all three messages
+  required uint32 measurement_index = 4;
+}

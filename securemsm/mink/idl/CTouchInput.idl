@@ -1,0 +1,24 @@
+/*===================================================================================
+  Copyright (c) 2020, 2022 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+
+/**
+* @addtogroup CTouchInput
+* @{
+  Class CTouchInput implements \link ITouchInput \endlink interface.
+
+  The class ID `CTouchInput` is an embedded service in QTVM.
+*/
+
+/*===================================================================================
+FILE:  CTouchInput.idl
+
+DESCRIPTION:  This file specifies the UID that is used to expose
+TouchInput service in QTVM. This can used by TUICoreService or
+other TA/services to provide touch support in QTVM.
+
+=====================================================================================*/
+
+const uint32 CTouchInput_UID = 290;

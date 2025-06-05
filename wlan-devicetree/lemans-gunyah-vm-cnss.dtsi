@@ -1,0 +1,59 @@
+#include <dt-bindings/interconnect/qcom,lemans.h>
+
+&soc {
+	cnss_pcie: qcom,cnss-qca-converged {
+		compatible = "qcom,cnss-qca-converged";
+		qcom,wlan-rc-num = <0>;
+		qcom,wlan;
+		qcom,multi-wlan-exchg;
+		qcom,bus-type=<0>;
+		qcom,notify-modem-status;
+		firmware-managed-resources;
+
+		#address-cells=<1>;
+		#size-cells=<1>;
+		ranges = <0xb0000000 0xb0000000 0x10000>;
+
+		power-domains = <&scmi_power 2>, <&scmi_power 3>;
+		power-domain-names = "wlan_ldo", "wlan_gpio";
+
+		chip_cfg@0 {
+			supported-ids = <0x1101>;
+			qcom,wlan-ramdump-dynamic = <0x400000>;
+		};
+
+		chip_cfg@1 {
+			supported-ids = <0x1102>;
+			qcom,wlan-ramdump-dynamic = <0x400000>;
+		};
+
+		chip_cfg@2 {
+			supported-ids = <0x1103>;
+			wlan_vregs;
+			qcom,wlan-ramdump-dynamic = <0x420000>;
+			qcom,no-bwscale;
+		};
+	};
+};
+
+&pcie0 {
+	pcie0_rp: pcie0_rp {
+		#address-cells = <5>;
+		#size-cells = <0>;
+		cnss_pci: cnss_pci {
+			reg = <0 0 0 0 0>;
+			qcom,iommu-group = <&cnss_pci_iommu_group>;
+
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			cnss_pci_iommu_group: cnss_pci_iommu_group {
+			qcom,iommu-dma-addr-pool = <0xa0000000 0x10000000>;
+			qcom,iommu-dma = "fastmap";
+			qcom,iommu-pagetable = "coherent";
+			qcom,iommu-faults = "stall-disable", "HUPCF", "no-CFRE",
+					"non-fatal";
+			};
+		};
+	};
+};

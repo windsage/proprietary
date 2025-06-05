@@ -1,0 +1,6 @@
+cc_library_headers {
+    name: "libqms_headers",
+    export_include_dirs: ["inc"],
+    vendor: true,
+    host_supported: true,
+}

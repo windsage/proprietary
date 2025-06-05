@@ -1,0 +1,27 @@
+cc_library {
+    name: "qcrilNr_aidl_UimLpaService",
+    defaults: ["qtiril_common_defaults"],
+    srcs: [
+        "src/*.cpp",
+    ],
+    header_libs: [
+        "qcrilInterfaces-headers",
+        "libqcrilNrLogger-headers",
+        "qcrilIntermodulemsgs-headers",
+        "qcrilnr-toplevel-headers",
+    ],
+    shared_libs: [
+        "liblog",
+        "vendor.qti.hardware.radio.lpa-V1-ndk",
+        "libbinder_ndk",
+        "libbase",
+        "libqcrilNrQtiMutex",
+        "libqcrilNrLogger",
+        "libqcrilNrFramework",
+        "qcrilInterfaces",
+        "libqmi_common_so",
+        "qcrilNrQmiModule",
+    ],
+    owner: "qti",
+    proprietary: true,
+}

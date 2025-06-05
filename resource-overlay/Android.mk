@@ -1,0 +1,4 @@
+BASE_PATH := $(call my-dir)
+
+-include $(BASE_PATH)/$(TARGET_BOARD_PLATFORM)$(TARGET_BOARD_SUFFIX)/Android.mk
+-include $(BASE_PATH)/$(TARGET_BOARD_PLATFORM)$(TARGET_BOARD_SUFFIX)/Android.bp

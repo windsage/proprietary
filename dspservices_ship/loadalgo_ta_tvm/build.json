@@ -1,0 +1,23 @@
+{
+    "idl_dir": [
+       "./idl"
+    ],
+
+    "includes": [
+        "./inc"
+    ],
+
+    "sources": [
+        "src/CLoadalgo_TA.cpp",
+        "src/Metadata.json"
+    ],
+
+    "staticLibsWholeArchive": [
+
+    ],
+    "staticLibsNoWholeArchive": [
+
+    ],
+    "dynamicLibs": [
+    ]
+}

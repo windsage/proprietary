@@ -1,0 +1,34 @@
+/******************************************************************************
+#  Copyright (c) 2020-2021 Qualcomm Technologies, Inc.
+#  All Rights Reserved.
+#  Confidential and Proprietary - Qualcomm Technologies, Inc.
+#******************************************************************************/
+
+#define  DSI_START_DATA_CALL 0
+#define  DSI_STOP_DATA_CALL  1
+#define  DSI_GET_IFACE_NAME  2
+#define  DSI_GET_IFACE_ADDRESSES 3
+#define  DSI_GET_PCSCF_ADDRESSES 4
+#define  DSI_GET_LINK_MTU 5
+#define  DSI_GET_CALL_END_REASON 6
+#define  DSI_GET_IP_ADDRESS_COUNT 7
+#define  DSI_GET_LINK_MTU_BY_FAMILY 8
+#define  DSI_CHECK_IF_CALL_EXIST 17
+
+#define QDP_UTF_MANAGER_INIT 1
+#define QDP_UTF_MANAGER_REFRESH 2
+#define QDP_UTF_MANAGER_ADD_PROFILE 3
+#define QDP_UTF_MANAGER_MODIFY_PROFILE 4
+#define QDP_UTF_MANAGER_DELETE_PROFILE 5
+#define QDP_UTF_MANAGER_FILTER 6
+#define QDP_UTF_MANAGER_GET_PROFILE 7
+#define QDP_UTF_MANAGER_MATCH 8
+#define QDP_UTF_MANAGER_RELEASE 9
+#define QDP_UTF_UTIL_SET_PROFILE_UPDATE_ALLOWED 10
+#define QDP_UTF_UTIL_MATCH_LTE_ATTACH_PROFILE_ID 11
+#define QDP_UTF_UTIL_FIND_OR_CREATE_PROFILE_FOR_LTE_ATTACH 12
+#define QDP_UTF_UTIL_UPDATE_MODEM_PROFILE_BY_APN_CLASS 13
+#define QDP_UTF_UTIL_UPDATE_APN_TYPE_BITMASK_ON_MODEM_PROFILE 14
+#define QDP_UTF_UTIL_FIND_OR_CREATE_PROFILE_FOR_SETUP_DATA_CALL 15
+#define QDP_UTF_UTIL_FIND_OR_CREATE_PROFILE_FOR_EMEGENCY_DATA_CALL 16
+

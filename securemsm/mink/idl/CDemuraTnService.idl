@@ -1,0 +1,23 @@
+/*===================================================================================
+  Copyright (c) 2023 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+
+/**
+* @addtogroup CDemuraTnService
+* @{
+  Class CDemuraTnService implements \link IDemuraTnService \endlink interface.
+
+  The class ID `CDemuraTnService` is an embedded service in QTVM.
+*/
+
+/*===================================================================================
+FILE:  CDemuraTnService.idl
+
+DESCRIPTION:  This file specifies the UID that is used to expose
+DemuraTnService service in QTVM.
+
+=====================================================================================*/
+
+const uint32 CDemuraTnService_UID = 253;

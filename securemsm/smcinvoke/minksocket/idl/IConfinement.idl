@@ -1,0 +1,43 @@
+/** @file IConfinement.idl */
+
+// Copyright (c) 2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+include "ITAccessPermissions.idl"
+
+/**
+  IConfinement provides interface for processes to operate confinement.
+*/
+
+/** @cond */
+interface IConfinement {
+/** @endcond */
+
+  /**
+   * @addtogroup IConfinement
+   * @{
+   */
+
+  /*
+   * Error codes
+   */
+  /** @cond */
+  error ERROR_INVALID_BUFFER;                     /**< Buffer is invalid */
+  /** @endcond */
+
+  /**
+
+
+    @param[in]  .
+
+    @return  Object_OK if successful.
+   */
+
+   method getSpecialRules(out uint64 specialRules);
+
+   method getConfinementRules(out ITAccessPermissions_rules outConfRules);
+
+  /** @} */ /* end_addtogroup IConfinement */
+
+};

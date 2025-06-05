@@ -1,0 +1,11 @@
+cc_library_headers {
+    name: "libdsi_netctrl_headers",
+    export_include_dirs: ["inc"],
+    vendor: true,
+}
+
+cc_library_headers {
+    name: "libdsi_netctrl_internal_headers",
+    export_include_dirs: ["internal_inc"],
+    vendor: true,
+}

@@ -1,0 +1,54 @@
+/** @file IPowerService.idl */
+
+// Copyright (c) 2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+  ITWakeLock provides wakeLock Object.
+*/
+
+/** @cond */
+interface ITWakeLock {
+/** @endcond */
+
+  /**
+   * @addtogroup ITWakeLock
+   * @{
+   */
+
+  /** @} */ /* end_addtogroup ITWakeLock */
+
+};
+
+/**
+  ITPowerService provides interface for processes to get wake lock.
+*/
+
+/** @cond */
+interface ITPowerService {
+/** @endcond */
+
+  /**
+   * @addtogroup ITPowerService
+   * @{
+   */
+
+  /*
+   * Error codes
+   */
+  /** @cond */
+  error ERROR_GET_WAKELOCK;
+
+  /** @endcond */
+
+  /**
+    @ try to get wake lock
+    @ output : the wakeLock Object
+    @ return  Object_OK if successful.
+   */
+  method acquireWakeLock(out ITWakeLock wakeLockObj);
+
+  /** @} */ /* end_addtogroup ITPowerService */
+
+};

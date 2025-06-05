@@ -1,0 +1,8 @@
+//Copyright (c) 2018 Qualcomm Technologies, Inc.
+//All Rights Reserved.
+//Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+// This class implements the IDiagnostics interface.
+
+const uint32 CDiagnostics_UID = 143;
+

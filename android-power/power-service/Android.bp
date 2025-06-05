@@ -1,0 +1,122 @@
+cc_binary {
+    name: "poweropt-service",
+    proprietary: true,
+    init_rc: ["poweropt-service.rc"],
+
+    srcs: [
+        "service.cpp",
+        "PowerCallback.cpp",
+        "PowerModule.cpp",
+    ],
+
+    header_libs: ["libcutils_headers",
+                  "perf_mpctl_headers",
+                  "power_core_headers",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libdl",
+        "libbase",
+        "libutils",
+        "libhardware_legacy",
+        "libhardware",
+        "libhwbinder",
+        "libbinder",
+        "libhidlbase",
+        "libhidltransport",
+        "libpowercore",
+        "libtinyxml2",
+        "vendor.qti.hardware.perf2-V1-ndk",
+        "libbinder_ndk",
+        "vendor.qti.hardware.power.powermodule-V1-ndk"
+    ],
+    vintf_fragments: ["vendor.qti.hardware.power.powermodule.xml"],
+}
+
+cc_library_shared {
+    name: "libpowercallback",
+    proprietary: true,
+
+    srcs: [
+        "service.cpp",
+        "PowerCallback.cpp",
+        "PowerModule.cpp"
+    ],
+
+    header_libs: ["libcutils_headers",
+                  "perf_mpctl_headers",
+                  "power_core_headers",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libdl",
+        "libbase",
+        "libutils",
+        "libhardware_legacy",
+        "libhardware",
+        "libhwbinder",
+        "libbinder",
+        "libhidlbase",
+        "libhidltransport",
+        "libpowercore",
+        "libtinyxml2",
+        "vendor.qti.hardware.perf2-V1-ndk",
+        "libbinder_ndk",
+        "vendor.qti.hardware.power.powermodule-V1-ndk"
+    ],
+}
+
+prebuilt_etc {
+    name: "init.pixel.poweropt-service.rc",
+    src:  "init.pixel.poweropt-service.rc",
+    sub_dir: "init",
+    device_specific: true,
+}
+cc_fuzz {
+    name: "powerservice.aidl_fuzzer",
+    proprietary: true,
+    native_coverage: true,
+    static_libs: [
+           "libbinder_random_parcel",
+    ],
+    shared_libs: [
+           "liblog",
+           "libhardware",
+           "libhardware_legacy",
+           "libcutils",
+           "libbase",
+           "libhwbinder",
+           "libhidlbase",
+           "libhidltransport",
+           "libtinyxml2",
+           "libpowercore",
+           "vendor.qti.hardware.power.powermodule-V1-ndk",
+           "vendor.qti.hardware.perf2-V1-ndk",
+    ],
+    target: {
+            android: {
+                     shared_libs: [
+                          "libbinder_ndk",
+                          "libbinder",
+                          "libutils",
+                     ],
+            },
+            darwin: {
+                   enabled: false,
+           },
+    },
+    srcs: [
+          "fuzzer.cpp",
+          "PowerModule.cpp",
+          "PowerCallback.cpp",
+    ],
+    header_libs: [
+          "libcutils_headers",
+          "perf_mpctl_headers",
+          "power_core_headers",
+    ],
+}

@@ -1,0 +1,48 @@
+/** @file ITProcessLoader.idl */
+
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+include "ITProcessController.idl"
+
+/**
+  ITProcessLoader provides interface to load processes in Mink daemon.
+*/
+
+/** @cond */
+interface ITProcessLoader {
+/** @endcond */
+
+  /**
+   * @addtogroup ITProcessLoader
+   * @{
+   */
+
+  /*
+   * Error codes
+   */
+  /** @cond */
+  error ERROR_INVALID_BUFFER;                     /**< Buffer is invalid */
+  error ERROR_PROC_NOT_LOADED;                    /**< No loaded TP with distinguished name */
+  error ERROR_PROC_ALREADY_LOADED;                /**< TP with distinguished name is loaded */
+  error ERROR_EMBED_MISSING_PROPERTY;             /**< Property missing from metadata prevents launch */
+  error ERROR_IMODULE_REGISTRATION;               /**< Error occurred while registering IModule */
+  error ERROR_LOADER_NOT_READY;                   /**< Process Loader is not ready, please retry again */
+
+  /** @endcond */
+
+  /**
+    Loads a trusted process.
+    The process ELF binary is passed as a memory object.
+
+    @param[in]  memObj            Memory Object containing ELF image.
+    @param[out] tprocObj          An instance of a launched process.
+                                  TProcess Object return to client, can be released using Object_Release() or Object_RELEASE_IF().
+
+    @return  Object_OK if successful.
+  */
+  method loadFromBuffer(in interface memObj, out ITProcessController tprocObj);
+
+  /** @} */ /* end_addtogroup ITProcessLoader */
+};

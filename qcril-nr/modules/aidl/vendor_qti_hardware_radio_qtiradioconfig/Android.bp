@@ -1,0 +1,37 @@
+cc_library {
+    name: "qcrilNr_aidl_IQtiRadioConfig",
+    defaults: ["qtiril_common_defaults"],
+    srcs: [
+        "src/*.cpp",
+    ],
+    header_libs: [
+        "qcrilInterfaces-headers",
+        "libqcrilNrLogger-headers",
+        "qcrilDataInterfaces_headers",
+        "libril-qc-qmi-services-headers",
+        "libqmi_legacy_headers",
+        "qcrilIntermodulemsgs-headers",
+    ],
+    shared_libs: [
+        "liblog",
+        "vendor.qti.hardware.radio.qtiradioconfig-V6-ndk",
+        "libbinder_ndk",
+        "libbase",
+        "libbinder",
+        "libqcrilNrFramework",
+        "libqcrilNrLogger",
+        "libqcrilNrQtiMutex",
+    ],
+    static_libs: [
+        "libqcrilNRDataInterfaces",
+        "qcrilIntermodulemsgs",
+    ],
+    cflags: [
+        "-Wno-unused-parameter",
+    ],
+    cppflags: [
+        "-Wno-unused-parameter",
+    ],
+    owner: "qti",
+    proprietary: true,
+}

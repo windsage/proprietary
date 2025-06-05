@@ -1,0 +1,14 @@
+cc_binary {
+	name: "fan_service",
+	owner: "qti",
+	proprietary: true,
+	shared_libs: ["libc"] + ["liblog"] + ["libcutils"],
+	srcs: [
+		"fan_service.cpp",
+	],
+	cflags: [
+		 "-DCLIENT",
+	],
+
+	init_rc: ["init_fan_service.rc"],
+}

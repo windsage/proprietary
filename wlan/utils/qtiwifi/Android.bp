@@ -1,0 +1,143 @@
+soong_config_module_type {
+    name: "qtiwifi_cc_defaults",
+    module_type: "cc_defaults",
+    config_namespace: "qtiwifi",
+    bool_variables: [
+        "automobile",
+        "wifi_enable_someip",
+    ],
+    properties: [
+        "enabled",
+        "cppflags",
+        "shared_libs",
+    ],
+}
+
+qtiwifi_cc_defaults {
+    name: "qtiwifi_binary_defaults",
+    soong_config_variables: {
+        automobile: {
+            enabled: true,
+            conditions_default: {
+                enabled: false,
+            },
+        },
+    },
+}
+
+soong_config_module_type {
+   name: "qtiwifi_someip_outside_cc_defaults",
+   module_type: "cc_defaults",
+   config_namespace: "wifi",
+   bool_variables: [
+       "wifi_enable_someip",
+   ],
+   properties: [
+        "cppflags",
+        "shared_libs",
+   ],
+}
+
+qtiwifi_someip_outside_cc_defaults {
+   name: "qtiwifi_someip_outside_defaults",
+   soong_config_variables: {
+        wifi_enable_someip: {
+            cppflags:    ["-DQTIWIFI_RPC"],
+            shared_libs: [
+                "libqti_wifi_vendor_rpc_impl",
+                "libcutils",
+            ],
+        },
+    },
+}
+
+cc_library_headers {
+    name: "qtiwifi_headers",
+    export_include_dirs: [
+        "inc",
+    ],
+    soc_specific: true,
+}
+cc_binary {
+    name: "qtiwifi",
+    defaults: [
+        "qtiwifi_binary_defaults",
+        "qtiwifi_someip_outside_defaults",
+    ],
+    proprietary: true,
+
+    cppflags: [
+        "-Wall",
+        "-Werror",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-Wno-int-to-pointer-cast",
+        "-Wno-maybe-uninitialized",
+        "-Wno-parentheses",
+    ],
+    srcs: [
+        "qtiwifitool.c",
+        "qtiwifi_process_cmd.c",
+        "main.c",
+        "eloop.c",
+    ],
+    shared_libs: [
+        "vendor.qti.hardware.wifi.qtiwifi-V1-ndk",
+        "libbinder_ndk",
+        "libbase",
+        "libutils",
+        "liblog",
+        "libc",
+        "libnl",
+    ],
+    header_libs: [
+        "qtiwifi_headers",
+        "libqtiwifi_aidl_headers",
+    ],
+    static_libs: [
+        "libqtiwifi_aidl_bp",
+    ],
+    init_rc: ["vendor.qti.hardware.wifi.qtiwifi.rc"],
+    vintf_fragments: ["vendor.qti.hardware.wifi.qtiwifi.xml"],
+    sanitize: {
+        integer_overflow: true,
+    },
+
+}
+
+cc_fuzz {
+    name: "aidl_fuzzer_qtiwifi",
+    defaults: ["qtiwifi_binary_defaults"],
+    proprietary: true,
+    srcs: [
+        "qtiwifitool.c",
+        "qtiwifi_process_cmd.c",
+        "eloop.c",
+        "fuzzer/fuzzer.cpp",
+    ],
+
+    shared_libs: [
+        "vendor.qti.hardware.wifi.qtiwifi-V1-ndk",
+        "liblog",
+        "libbase",
+        "libutils",
+        "libcutils",
+        "libbinder_ndk",
+        "libbinder",
+        "libc",
+        "libnl",
+    ],
+
+    header_libs: [
+        "qtiwifi_headers",
+        "libqtiwifi_aidl_headers",
+    ],
+
+    static_libs: [
+        "libbinder_random_parcel",
+        "libqtiwifi_aidl_bp",
+    ],
+}

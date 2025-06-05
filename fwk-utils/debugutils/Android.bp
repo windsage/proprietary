@@ -1,0 +1,25 @@
+cc_binary {
+    name: "vendor.qti.hardware.debugutils-service",
+    relative_install_path: "hw",
+    proprietary: true,
+    init_rc: ["vendor.qti.hardware.debugutils-service.rc"],
+    vintf_fragments: ["vendor.qti.hardware.debugutils-service.xml"],
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libutils",
+        "libdl",
+        "libcutils",
+        "libbinder_ndk",
+        "vendor.qti.hardware.debugutils_aidl-V1-ndk",
+    ],
+    srcs: [
+        "DebugUtils.cpp",
+        "main.cpp",
+    ],
+}
+prebuilt_etc {
+    name: "PerfettoConfig.cfg",
+    vendor: true,
+    src: "PerfettoConfig.cfg",
+}

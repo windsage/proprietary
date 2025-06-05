@@ -1,0 +1,27 @@
+test_cflags = ["-g"]
+test_cflags += ["-O2"]
+test_cflags += ["-fno-inline"]
+test_cflags += ["-fno-short-enums"]
+test_cflags += ["-fpic"]
+test_cflags += ["-Werror"]
+test_cflags += ["-Wno-unused-parameter"]
+
+cc_binary {
+    name: "vsock_server",
+    cflags: test_cflags,
+    srcs: [
+        "vsock_server.c",
+    ],
+    owner: "qti",
+    proprietary: true,
+}
+
+cc_binary {
+    name: "vsock_client",
+    cflags: test_cflags,
+    srcs: [
+        "vsock_client.c",
+    ],
+    owner: "qti",
+    proprietary: true,
+}

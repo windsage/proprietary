@@ -1,0 +1,25 @@
+genrule {
+    name: "request_api_map_auto_headers",
+    enabled: true,
+    srcs: [
+        ":qcrilInterfaces-headers-ril_header-file"
+    ],
+    tool_files: [
+        "scripts/generate_api_map.py"
+    ],
+    cmd: "python3 $(location scripts/generate_api_map.py) -i $(in) -o $(out)",
+    out: ["request_api_map_auto.h"],
+}
+
+cc_library_headers {
+    name: "RequestManagerHeaders",
+    host_supported: true,
+    generated_headers: [
+        "request_api_map_auto_headers"
+    ],
+    export_generated_headers: [
+        "request_api_map_auto_headers"
+    ],
+    vendor: true,
+    proprietary: true,
+}

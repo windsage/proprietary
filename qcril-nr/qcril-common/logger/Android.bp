@@ -1,0 +1,52 @@
+cc_library_headers {
+    name: "libqcrilNrLogger-headers",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_include_dirs: [
+        ".",
+    ],
+}
+
+cc_library {
+    name: "libqcrilNrLogger",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    cflags: [
+        "-DTAG=\"libqcrilNrLogger\""
+    ],
+    cppflags: [
+        "-DTAG=\"libqcrilNrLogger\""
+    ],
+    srcs: [
+        "Logger.cpp",
+        "AndroidLogger.cpp",
+    ],
+    include_dirs: [
+        ".",
+    ],
+    header_libs: [
+        "libqcrilNrLogger-headers",
+        "vendor_common_inc",
+    ],
+    export_header_lib_headers: [
+        "libqcrilNrLogger-headers",
+    ],
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libc++",
+    ],
+    target: {
+        android: {
+            shared_libs: [
+                "libdiag",
+            ],
+            header_libs: [
+                "libdiag_headers",
+            ],
+            srcs: [
+                "DiagLogger.cpp",
+            ],
+        }
+    }
+}

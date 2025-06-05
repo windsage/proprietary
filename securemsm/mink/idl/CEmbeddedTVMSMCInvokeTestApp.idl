@@ -1,0 +1,15 @@
+/*===================================================================================
+  Copyright (c) 2023 Qualcomm Technologies, Inc.
+  All Rights Reserved.
+  Confidential and Proprietary - Qualcomm Technologies, Inc.
+  ===================================================================================*/
+ /*===================================================================================
+ FILE:  CEmbeddedTVMSMCInvokeTestApp.idl
+
+ DESCRIPTION:  This file specifies the UID that is used to expose
+ smcinvoke test client service in QTVM. This can be used by smcinvoke LA
+ client to trigger tests inside QTVM from PVM.
+
+ =====================================================================================*/
+
+const uint32 CEmbeddedTVMSMCInvokeTestApp_UID = 0x00FF0013;

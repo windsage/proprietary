@@ -1,0 +1,159 @@
+cc_library_shared {
+    name: "libqti-tests-mod1",
+    proprietary: true,
+
+    srcs: [
+        "module1.cpp",
+    ],
+
+    shared_libs: [
+        "libutils",
+        "liblog",
+        "libcutils",
+        "libqti-util",
+        "libperfgluelayer",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_rf_headers",
+    ],
+
+}
+
+cc_library_shared {
+    name: "libqti-tests-mod2",
+    proprietary: true,
+
+    srcs: [
+        "module2.cpp",
+    ],
+
+    shared_libs: [
+        "libutils",
+        "liblog",
+        "libcutils",
+        "libqti-util",
+        "libperfgluelayer",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_rf_headers",
+    ],
+
+}
+
+cc_library_shared {
+    name: "libqti-tests-mod3",
+    proprietary: true,
+
+    srcs: [
+        "module3.cpp",
+    ],
+
+    shared_libs: [
+        "libutils",
+        "liblog",
+        "libcutils",
+        "libqti-util",
+        "libperfgluelayer",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_rf_headers",
+    ],
+
+}
+
+cc_library_shared {
+    name: "libqti-tests-mod4",
+    proprietary: true,
+
+    srcs: [
+        "module4.cpp",
+    ],
+
+    shared_libs: [
+        "libutils",
+        "liblog",
+        "libcutils",
+        "libqti-util",
+        "libperfgluelayer",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_rf_headers",
+    ],
+
+}
+
+cc_library_shared {
+    name: "libqti-tests-mod5",
+    proprietary: true,
+
+    srcs: [
+        "module5.cpp",
+    ],
+
+    shared_libs: [
+        "libutils",
+        "liblog",
+        "libcutils",
+        "libqti-util",
+        "libperfgluelayer",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_rf_headers",
+    ],
+
+}
+
+cc_library_shared {
+    name: "libqti-tests-mod6",
+    proprietary: true,
+
+    srcs: [
+        "module6.cpp",
+    ],
+
+    shared_libs: [
+        "libutils",
+        "liblog",
+        "libcutils",
+        "libqti-util",
+        "libperfgluelayer",
+    ],
+
+    header_libs: [
+        "perf_core_headers",
+        "perf_util_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_rf_headers",
+    ],
+
+}
+
+subdirs = [
+    "..",
+]

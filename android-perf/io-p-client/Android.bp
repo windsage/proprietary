@@ -1,0 +1,54 @@
+cc_library_headers {
+
+    name: "iop_client_headers",
+
+    vendor_available: true,
+
+    export_include_dirs: [
+         ".",
+    ],
+}
+
+cc_library_shared {
+
+    srcs: [
+        "client.cpp",
+    ],
+
+    header_libs: [
+       "libcutils_headers",
+       "perf_client_headers",
+       "perf_util_headers",
+    ],
+
+    shared_libs: [
+        "libcutils",
+        "libutils",
+        "libxml2",
+        "libqti-util",
+        "liblog",
+        "vendor.qti.hardware.iop@2.0",
+        "libhidlbase",
+        "libsqlite",
+        "libqti-perfd-client",
+    ],
+
+    include_dirs: [
+        "external/sqlite/dist"
+    ],
+
+    cflags: [
+        "-DCLIENT",
+        "-g0",
+        "-Wall",
+        "-Wno-unused-variable",
+        "-Wno-unused-parameter",
+        "-Wno-unused-function",
+        "-DVENDOR_DIR=\"$(TARGET_COPY_OUT_VENDOR)/etc\"",
+    ],
+
+    name: "libqti-iopd-client",
+    owner: "qti",
+    proprietary: true,
+
+}

@@ -1,0 +1,47 @@
+#QMI
+QMI := check_system_health
+QMI += irsc_util
+QMI += libqmi_cci
+QMI += libqmi_common_so
+QMI += libqmi_common_system
+QMI += libqmi_csi
+QMI += libqmi_encdec
+QMI += libqmi_encdec_system
+QMI += libsmemlog
+QMI += libmdmdetect
+QMI += libqsocket
+QMI += qmiproxy
+QMI += qmi_test_mt_client_init_instance
+QMI += libqmi_cci_system
+QMI += libqrtr
+QMI += libqsocket
+QMI += qrtr-cfg
+QMI += qrtr-ns
+QMI += qrtr-lookup
+PRODUCT_PACKAGES += $(QMI)
+
+#QMI_DBG
+QMI_DBG := qmi_fw.conf
+QMI_DBG += qmi_simple_ril_test
+QMI_DBG += qmi_ping_clnt_test_0000
+QMI_DBG += qmi_ping_clnt_test_0001
+QMI_DBG += qmi_ping_clnt_test_1000
+QMI_DBG += qmi_ping_clnt_test_1001
+QMI_DBG += qmi_ping_clnt_test_2000
+QMI_DBG += qmi_ping_svc
+QMI_DBG += qmi_ping_test
+QMI_DBG += qmi_test_service_clnt_test_0000
+QMI_DBG += qmi_test_service_clnt_test_0001
+QMI_DBG += qmi_test_service_clnt_test_1000
+QMI_DBG += qmi_test_service_clnt_test_1001
+QMI_DBG += qmi_test_service_clnt_test_2000
+QMI_DBG += qmi_test_service_clnt_test_3000
+QMI_DBG += qmi_test_service_clnt_test_3001
+QMI_DBG += qmi_test_service_clnt_test_4000
+QMI_DBG += qmi_test_service_clnt_test_4001
+QMI_DBG += qmi_test_service_start_svc
+QMI_DBG += qmi_test_service_test
+QMI_DBG += qrtr_test_client
+QMI_DBG += qrtr_test_server
+QMI_DBG += glink_pkt_test
+PRODUCT_PACKAGES_DEBUG += $(QMI_DBG)

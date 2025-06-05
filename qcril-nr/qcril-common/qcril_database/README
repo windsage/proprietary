@@ -1,0 +1,17 @@
+/******************************************************************************
+#  Copyright (c) 2019, 2021 Qualcomm Technologies, Inc.
+#  All Rights Reserved.
+#  Confidential and Proprietary - Qualcomm Technologies, Inc.
+#******************************************************************************/
+
+Tested both on Python 2 and Python 3
+Run the below command whenever you update the qcril_database/src/config.xml file:
+
+"python qcril_database/tools/config_gen.py qcril_database/src/configs.xml --sql qcril_database/upgrade/config/"
+
+If there is any new generated file (which happens when version increases), check it in as part of commit, and add it in qcril-common/qcril_database/upgrade/config/Android.bp. Also take care of prebuilt dependencies by adding it to "required [] list" of "qcrilNrDb_vendor" in qcril-common/qcril_database/Android.bp.
+
+Note:
+1) The script replies on existed SQL files inside qcril_database/upgrade/config/ to generate the delta SQL cmds
+2) In OTA upgrade case, besides modifying the items, developer needs to increase the version in configs.xml. The script will generate a new delta SQL file with the new version.
+3) In Non-OTA case, developer can change the item in XML without modifying the version and the script will re-generate the delta SQL file for the current version.

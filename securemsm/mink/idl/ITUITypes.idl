@@ -1,0 +1,43 @@
+/**============================================================================
+ * Copyright (c) 2020, 2022 Qualcomm Technologies, Inc.
+ * All Rights Reserved.
+ * Confidential and Proprietary - Qualcomm Technologies, Inc.
+ ============================================================================*/
+
+/** @file  ITUITypes.idl */
+const uint32 ITUICORESERVICE_PRIMARY_DISPLAY = 1;
+const uint32 ITUICORESERVICE_SECONDARY_DISPLAY = 2;
+const uint32 ITUICORESERVICE_MODE_COUNT_MAX = 10;
+
+struct TUICreateConfig {
+    uint32 displayId;
+    uint32 numDisplayBuffers;
+    uint32 colorFormat;
+    uint32 inputUID;
+    uint32 useCaseHeapSize;
+    int32 sessionTimeOut;
+    uint32 enableSystemEvents;
+};
+
+struct displayConfig {
+    uint32 u32Height;
+    uint32 u32Width;
+    uint32 u32Stride;
+    uint32 u32pixelWidth;
+    uint32 u32ColorFormat;
+    uint32 u32OffHeight;
+    uint32 u32OffWidth;
+};
+
+struct displayColorMode {
+  uint32 gamut;
+  uint32 gamma;
+  uint32 render_intent;
+};
+
+struct displayColorModes {
+  uint32 num_of_modes;
+  displayColorMode[10] modes;
+};
+
+

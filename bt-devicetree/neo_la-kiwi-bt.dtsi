@@ -1,0 +1,65 @@
+#include <dt-bindings/interconnect/qcom,pineapple.h>
+
+&tlmm {
+	bt_en_sleep: bt_en_sleep {
+		mux {
+			pins = "gpio46";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio46";
+			drive-strength = <2>;
+			output-low;
+			bias-pull-down;
+		};
+	};
+};
+
+&soc {
+	bluetooth: bt_kiwi {
+		compatible = "qcom,kiwi";
+		pinctrl-names = "default";
+		pinctrl-0 = <&bt_en_sleep>;
+		qcom,bt-reset-gpio = <&tlmm 46 0>; /* BT_EN */
+		qcom,wl-reset-gpio = <&tlmm 45 0>; /* WL_EN */
+
+		qcom,bt-vdd-io-supply = <&L15A>;  /* IO */
+		/* max voltage are set to regulator max voltage supported */
+		qcom,bt-vdd-io-config = <1800000 2000000 0 1>;
+
+		qcom,bt-vdd18-aon-supply  = <&L15A>; /* BT VDD1.8 AON */
+		qcom,bt-vdd-dig-supply    = <&S4A>; /* BT LDO*/
+		qcom,bt-vdd-aon-supply    = <&S4A>; /* BT AON LDO*/
+		qcom,bt-vdd-rfaOp8_supply = <&S4A>; /* BT RFAOp8 CMN LDO*/
+		qcom,bt-vdd-rfa2-supply   = <&S5A>; /* BT RFA1.8 LDO */
+
+		qcom,bt-vdd18-aon-config  = <1800000 1800000 0 1>;
+		qcom,bt-vdd-aon-config    = <950000 1170000 0 1>;
+		qcom,bt-vdd-dig-config    = <950000 1170000 0 1>;
+		qcom,bt-vdd-rfaOp8-config = <950000 1170000 0 1>;
+		qcom,bt-vdd-rfa2-config   = <1900000 1900000 0 1>;
+	};
+
+	slim_msm: slim@3340000 {
+		status =  "ok";
+		ngd@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+			//slimbus child nodes
+			slimbus: btfmslim-driver {
+				compatible = "slim217,221";
+				reg = <1 0>;
+				qcom,btslim-address  = <0x0>; /* BT SLIM EP address*/
+				qcom,btslimtx-channels = <159 160>; /* slimbus FM_Tx, SCO_Tx channels */
+				qcom,btslimrx-channels = <157 158>; /* slimbus SCO_A2DP_Rx A2DP_Rx */
+			};
+		};
+	};
+};
+
+//uart instance
+&qupv3_se7_4uart {
+	status = "ok";
+};

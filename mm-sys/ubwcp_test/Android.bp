@@ -1,0 +1,39 @@
+
+cc_binary {
+    name: "ubwcp_test",
+
+    include_dirs: [
+        "vendor/qcom/proprietary/mm-sys/ubwcplib/inc",
+    ],
+
+    header_libs: [
+        "libubwcp_headers"
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-missing-field-initializers",
+        "-Wunused",
+    ],
+
+    srcs: ["src/ubwcptest.cpp"],
+
+    shared_libs: [
+        "libubwcp",
+	"liblog",
+	"libdmabufheap"
+    ],
+
+    proprietary: true,
+    compile_multilib: "both",
+    multilib: {
+        lib32: {
+            stem: "ubwcp_test32",
+        },
+        lib64: {
+            stem: "ubwcp_test64",
+        },
+    },
+
+}

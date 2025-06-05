@@ -1,0 +1,6 @@
+cc_library_headers {
+    name: "libcacertclient_headers",
+    vendor: true,
+    host_supported: true,
+    export_include_dirs: ["."],
+}

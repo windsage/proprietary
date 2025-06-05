@@ -1,0 +1,16 @@
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+* @addtogroup CSecureImage
+* @{
+  Class CSecureImage implements \link ISecureImage \endlink interface.
+
+  The class ID `SecureImage` is not included in the default privilege set. It needs to be added to the
+  privileges section in the metadata to allow the TA to use the CSecureImage class.
+*/
+
+const uint32 CSecureImage_UID = 3295;
+
+/** @} */

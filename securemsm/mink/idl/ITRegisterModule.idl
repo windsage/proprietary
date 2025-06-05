@@ -1,0 +1,40 @@
+/** @file ITRegisterModule.idl */
+
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+include "IModule.idl"
+
+/**
+  ITRegisterModule provides interface to register container modules.
+*/
+
+/** @cond */
+interface ITRegisterModule {
+/** @endcond */
+
+  /**
+   * @addtogroup ITRegisterModule
+   * @{
+   */
+
+  /*
+   * Error codes
+   */
+  /** @cond */
+  error ERROR_TIMEDOUT;                     /**< Too much time elapsed during IModule exchange */
+  /** @endcond */
+
+  /**
+    Register processes module according to its PID.
+
+    @param[in]  containerModule  \link IModule \endlink to access the container.
+
+    @return  Object_OK if successful.
+   */
+  method registerIModule(in IModule containerModule);
+
+  /** @} */ /* end_addtogroup ITRegisterModule */
+
+};

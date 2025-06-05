@@ -1,0 +1,12 @@
+#  @file    init.pixel.poweropt-service.rc
+#  @brief   Definition to disable poweropt service
+#
+#  DESCRIPTION
+#  ---------------------------------------------------------------------------
+#       Copyright (c) 2021 Qualcomm Technologies, Inc.
+#       All Rights Reserved.
+#       Confidential and Proprietary - Qualcomm Technologies, Inc.
+#  ---------------------------------------------------------------------------
+service poweropt-service /vendor/bin/poweropt-service
+    override
+    disabled

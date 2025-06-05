@@ -1,0 +1,171 @@
+// Copyright (c) 2019-2020, 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+ * IDiagnostics is an interface enabling clients to obtain
+ * diagnostic information.
+ */
+
+/** @cond */
+
+struct IDiagnostics_HeapInfo
+{
+  uint32 totalSize;             /** Total size of heap */
+  uint32 usedSize;              /** Amount of heap currently allocated */
+  uint32 freeSize;              /** Amount of free space */
+  uint32 overheadSize;          /** Amount of bytes consumed as overhead */
+  uint32 wastedSize;            /** Amount of bytes not available for allocation */
+  uint32 largestFreeBlockSize;  /** Size of largest free block */
+};
+
+struct IDiagnostics_AppRegionInfo
+{
+  uint64 totalSize;             /** The total amount of space in the MemoryType (PIMEM/DDR) */
+  uint64 totalFree;             /** The total amount of available space in the MemoryType (PIMEM/DDR) */
+  uint64 largestContigFree;     /** The size of the largest contiguous region
+                                    in the MemoryType (PIMEM/DDR) */
+};
+
+struct IDiagnostics_AppInfo
+{
+  uint32 appStatus;
+  uint32 userStackSize;
+  uint32 elStackSize;
+  uint32 acceptBufSize;
+  uint64 physMemorySize;
+};
+
+struct IDiagnostics_RegisterInfo
+{
+  uint64[31] regs;              /** Registers (x0~x30) */
+  uint64 sp;                    /** SP register */
+  uint64 cpsr;                  /** CPSR register */
+  uint64 pc;                    /** PC register */
+  uint64 es_reg;                /** ESR */
+  uint64 fa_reg;                /** FAR */
+  uint64 apibkeyhi;             /** APIBKeyHi */
+  uint64 apibkeylo;             /** APIBKeyLo */
+  uint64[4] reserved;           /** Reserved */
+};
+
+/** @endcond */
+
+
+/** @cond */
+interface IDiagnostics {
+/** @endcond */
+
+  /**
+   * @addtogroup IDiagnostics
+   * @{
+   */
+
+/*
+  * Error codes
+  */
+/** @cond */
+  error ERROR_APP_NOT_FOUND;      /** No trusted application found with the given distinguished name. */
+  error ERROR_ARCH_NOT_SUPPORTED; /** Architecture type of given trusted application isn't supported. Currently, only trusted applications for AARCH64 architecture are supported. */
+  error ERROR_RESTRICTED;         /** This function is not supported on production device. */
+/** @endcond */
+
+/*
+ * IDiagnostics_appInfo appStatus values
+ */
+  const uint32 APP_STATUS_IDLE           = 1;  /** The app is idle */
+  const uint32 APP_STATUS_ABORT          = 2;  /** The app is exited, crashed, or killed. */
+  const uint32 APP_STATUS_BLOCKED        = 3;  /** The app is blocked on a request */
+
+  /**
+    Provides the caller with information regarding heap usage in QTEE.
+
+    @param[out] heapInfo  An output structure populated with heap
+                          usage information.
+
+    @return
+    Object_OK on success.
+  */
+  method queryHeapInfo (out IDiagnostics_HeapInfo heapInfo);
+
+
+  /**
+    Provides the caller with a list of the currently loaded
+    trusted applications.
+
+    @param[out] loadedApps  An output buffer populated with the distinguished
+                            name of every currently loaded app.
+                            Each entry in the list is separated by a single
+                            newline character.  A null-character is appended
+                            at the end of the list.
+                            The list has no guaranteed order.
+                            The caller must provide a buffer large enough
+                            for the entire output.
+
+    @return
+    Object_OK on success.
+    Object_ERROR_SIZE_OUT if the output buffer is not sufficiently large.
+  */
+  method queryLoadedApps (out buffer loadedApps);
+
+
+/**
+    Returns the amount of available space (PIMEM and DDR) in the App Region.
+    Also returns the size of the largest contiguous space in PIMEM and DDR
+    and if Scattered Memory Allocation is supported.
+
+    @param[out] pimemInfo                   An output structure populated with PIMEM
+                                            usage information.
+    @param[out] ddrInfo                     An output structure populated with DDR
+                                            usage information.
+    @param[out] scatteredAllocatorSupport   Value of 1 if scattered Memory
+                                            Allocation is supported, 0 if it is not.
+
+    @return
+    Object_OK on success.
+  */
+  method queryAppRegion(out IDiagnostics_AppRegionInfo pimemInfo,
+                        out IDiagnostics_AppRegionInfo ddrInfo,
+                        out uint32 scatteredAllocatorSupport);
+
+
+  /**
+    Provides the caller with information about the specified trusted application.
+
+    @param[in]  appDistName   Trusted application distinguished name.
+    @param[out] appInfo       An output structure populated with application runtime information.
+
+    @return
+    Object_OK - Successful. \n
+    Object_ERROR - Internal error retrieving application info. \n
+    IDiagnostics_ERROR_APP_NOT_FOUND - No loaded application with provided distinguished name. \n
+    IDiagnostics_ERROR_RESTRICTED - if debug is disabled.
+  */
+  method queryAppInfo(in buffer appDistName, out IDiagnostics_AppInfo appInfo);
+
+
+  /**
+    Provides context information and stack content for specific loaded trusted application.
+
+    This API works only when debug is enabled.
+
+    @param[in]  distName     distinguished trusted application name to dump information
+    @param[out] usrRegInfo   Register values for user mode context
+    @param[out] usrStack     User mode stack content buffer
+    @param[out] usrStackAddr Start address of user mode stack
+
+    @return
+    Object_OK - on success. \n
+    Object_ERROR - Internal error retrieving application info. \n
+    Object_ERROR_SIZE_OUT - if provided buffer is too small for dumping stacks of given trusted application. \n
+    IDiagnostics_ERROR_ARCH_NOT_SUPPORTED - if archtecture type of given trusted application isn't supported. \n
+    IDiagnostics_ERROR_APP_NOT_FOUND - if trusted application with the distinguished name not found. \n
+    IDiagnostics_ERROR_RESTRICTED - if debug is disabled.
+
+  */
+  method queryAppDump (in buffer distName,
+                       out IDiagnostics_RegisterInfo usrRegInfo,
+                       out buffer usrStack,
+                       out uint64 usrStackAddr);
+  /* @} */ /* end_addtogroup IDiagnostics */
+};

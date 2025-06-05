@@ -1,0 +1,76 @@
+soong_config_module_type {
+    name: "qtiwifi_aidl_cc_defaults",
+    module_type: "cc_defaults",
+    config_namespace: "qtiwifi",
+    bool_variables: ["automobile"],
+    properties: ["enabled"],
+}
+
+qtiwifi_aidl_cc_defaults {
+    name: "qtiwifi_lib_defaults",
+    soong_config_variables: {
+        automobile: {
+            enabled: true,
+            conditions_default: {
+                enabled: false,
+            },
+        },
+    },
+}
+
+soong_config_module_type {
+   name: "qtiwifi_someip_cc_defaults",
+   module_type: "cc_defaults",
+   config_namespace: "wifi",
+   bool_variables: [
+       "wifi_enable_someip",
+   ],
+   properties: [
+        "cppflags",
+        "shared_libs",
+   ],
+}
+
+qtiwifi_someip_cc_defaults {
+   name: "qtiwifi_someip_defaults",
+   soong_config_variables: {
+        wifi_enable_someip: {
+            cppflags:    ["-DQTIWIFI_RPC"],
+            shared_libs: [
+                "libqti_wifi_vendor_rpc_impl",
+                "libcutils",
+            ],
+        },
+   },
+}
+
+cc_library_headers {
+    name: "libqtiwifi_aidl_headers",
+    export_include_dirs: ["."],
+    soc_specific: true,
+}
+
+cc_library_static {
+    name: "libqtiwifi_aidl_bp",
+    defaults: [
+        "qtiwifi_lib_defaults",
+        "qtiwifi_someip_defaults",
+    ],
+    srcs: ["*.cpp"],
+    soc_specific: true,
+    shared_libs: [
+        "vendor.qti.hardware.wifi.qtiwifi-V1-ndk",
+        "libbinder_ndk",
+        "libbase",
+        "libutils",
+        "liblog",
+    ],
+    cppflags: [
+        "-Wall",
+        "-Werror",
+    ],
+    header_libs: [
+        "qtiwifi_headers",
+        "libqtiwifi_aidl_headers",
+    ],
+}

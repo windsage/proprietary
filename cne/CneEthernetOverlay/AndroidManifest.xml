@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+    All rights reserved.
+    Confidential and Proprietary - Qualcomm Technologies, Inc.
+-->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.qualcomm.qti.cne.ethernet.rro"
+    android:versionCode="1"
+    android:versionName="U-initial">
+    <application android:hasCode="false" />
+    <overlay
+      android:targetPackage="com.android.connectivity.resources"
+      android:targetName="ServiceConnectivityResourcesConfig"
+      android:isStatic="true"
+      android:priority="1"/>
+</manifest>

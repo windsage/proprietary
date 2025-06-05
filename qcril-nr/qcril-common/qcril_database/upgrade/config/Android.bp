@@ -1,0 +1,86 @@
+prebuilt_etc {
+    name: "0006.0_config.sql",
+    src: "0006.0_config.sql",
+    sub_dir: "qcril_database/upgrade/config",
+    vendor: true,
+    proprietary: true,
+    owner: "qti"
+}
+
+prebuilt_etc {
+    name: "0007.0_config.sql",
+    src: "0007.0_config.sql",
+    sub_dir: "qcril_database/upgrade/config",
+    vendor: true,
+    proprietary: true,
+    owner: "qti"
+}
+
+prebuilt_etc {
+    name: "0008.0_config.sql",
+    src: "0008.0_config.sql",
+    sub_dir: "qcril_database/upgrade/config",
+    vendor: true,
+    proprietary: true,
+    owner: "qti"
+}
+
+prebuilt_etc {
+    name: "0009.0_config.sql",
+    src: "0009.0_config.sql",
+    sub_dir: "qcril_database/upgrade/config",
+    vendor: true,
+    proprietary: true,
+    owner: "qti"
+}
+
+prebuilt_etc {
+    name: "0010.0_config.sql",
+    src: "0010.0_config.sql",
+    sub_dir: "qcril_database/upgrade/config",
+    vendor: true,
+    proprietary: true,
+    owner: "qti"
+}
+
+prebuilt_etc {
+    name: "0011.0_config.sql",
+    src: "0011.0_config.sql",
+    sub_dir: "qcril_database/upgrade/config",
+    vendor: true,
+    proprietary: true,
+    owner: "qti"
+}
+
+prebuilt_etc {
+    name: "0012.0_config.sql",
+    src: "0012.0_config.sql",
+    sub_dir: "qcril_database/upgrade/config",
+    vendor: true,
+    proprietary: true,
+    owner: "qti"
+}
+prebuilt_etc {
+    name: "0013.0_config.sql",
+    src: "0013.0_config.sql",
+    sub_dir: "qcril_database/upgrade/config",
+    vendor: true,
+    proprietary: true,
+    owner: "qti"
+}
+prebuilt_etc {
+    name: "0014.0_config.sql",
+    src: "0014.0_config.sql",
+    sub_dir: "qcril_database/upgrade/config",
+    vendor: true,
+    proprietary: true,
+    owner: "qti"
+}
+prebuilt_etc {
+    name: "0015.0_config.sql",
+    src: "0015.0_config.sql",
+    sub_dir: "qcril_database/upgrade/config",
+    vendor: true,
+    proprietary: true,
+    owner: "qti"
+}

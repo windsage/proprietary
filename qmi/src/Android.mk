@@ -1,0 +1,64 @@
+LOCAL_PATH:= $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_CFLAGS += -DFEATURE_QMI_ANDROID
+LOCAL_CFLAGS += -DFEATURE_QMI_IWLAN
+
+# Logging Features. Turn any one ON at any time
+
+#LOCAL_CFLAGS  += -DFEATURE_DATA_LOG_STDERR
+#LOCAL_CFLAGS += -DFEATURE_DATA_LOG_ADB
+LOCAL_CFLAGS += -DFEATURE_DATA_LOG_QXDM
+LOCAL_CFLAGS += -g
+
+
+LOCAL_C_INCLUDES := $(LOCAL_PATH)
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/..
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../inc
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../qmuxd
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../platform
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../core/lib/inc
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../services
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../proxy
+
+LOCAL_EXPORT_HEADER_LIBRARY_HEADERS := libqmi_headers
+
+LOCAL_SRC_FILES += qmi_service.c
+LOCAL_SRC_FILES += qmi.c
+LOCAL_SRC_FILES += qmi_errors.c
+LOCAL_SRC_FILES += qmi_wds_srvc.c
+LOCAL_SRC_FILES += qmi_qos_srvc.c
+LOCAL_SRC_FILES += qmi_nas_srvc.c
+LOCAL_SRC_FILES += qmi_eap_srvc.c
+LOCAL_SRC_FILES += qmi_atcop_srvc.c
+LOCAL_SRC_FILES += qmi_wds_utils.c
+
+LOCAL_SHARED_LIBRARIES := libcutils
+LOCAL_SHARED_LIBRARIES += libqmi_client_qmux
+LOCAL_SHARED_LIBRARIES += libdiag
+LOCAL_SHARED_LIBRARIES += libdsutils
+LOCAL_SHARED_LIBRARIES += libqmiservices
+LOCAL_SHARED_LIBRARIES += libidl
+LOCAL_SHARED_LIBRARIES += liblog
+
+LOCAL_HEADER_LIBRARIES += libril-qc-qmi-services-headers
+LOCAL_HEADER_LIBRARIES += libqmi_cci_headers
+LOCAL_HEADER_LIBRARIES += libdiag_headers
+LOCAL_HEADER_LIBRARIES += vendor_common_inc
+LOCAL_HEADER_LIBRARIES += libconfigdb_headers
+LOCAL_HEADER_LIBRARIES += libdsutils_headers
+
+LOCAL_MODULE := libqmi
+LOCAL_SANITIZE:=integer_overflow
+
+LOCAL_MODULE_TAGS := optional
+
+LOCAL_CLANG := true
+
+LOCAL_PRELINK_MODULE := false
+
+LOCAL_MODULE_OWNER := qti
+LOCAL_PROPRIETARY_MODULE := true
+
+include $(BUILD_SHARED_LIBRARY)

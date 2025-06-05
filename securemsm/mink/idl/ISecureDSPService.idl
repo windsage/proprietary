@@ -1,0 +1,108 @@
+/*
+ * Copyright (c) 2023 Qualcomm Technologies, Inc.
+ * All Rights Reserved.
+ * Confidential and Proprietary - Qualcomm Technologies, Inc.
+ */
+
+/** @file ISecureDSPService.idl */
+
+/**
+ * @brief
+ * ISecureDSPService.idl provides a Mink IDL interface to load and communicate with modules, with a straightforward interface (open/close/run/etc)
+ */
+include "IMemObject.idl"
+
+const uint32 MAX_INPUT_BUFFERS = 4;
+const uint32 MAX_OUTPUT_BUFFERS = 4;
+
+/**
+ * Default domain id to open session on CDSP subsystem
+ */
+const int32 DEFAULT_DOMAIN_ID = -1;
+
+/**
+ * Secure DSP Module interface. Each SecureDspModule represents one module
+ * loaded into a session.
+ */
+interface SecureDspModule {
+    /**
+     * Run an operation defined in the module. The Secure DSP framework
+     * forwards the call to the module_run() function defined in the
+     * library. The client and the module must define a suitable set of
+     * operations.
+     *
+     * Input and output buffers must be Mink memory objects, allocated as
+     * dma-bufs, and implement the FdWrapper interface. The buffers are
+     * mapped to the Secure DSP module for the duration of the call.
+     *
+     * @param [in] operation An operation identifier
+     * @param [in] inbufX Four input buffers
+     * @param [out] outBufX Four output buffers
+     */
+    method run(in uint32 operation,
+               in interface inbuf0, in uint32 inbuf0Size, in interface inbuf1, in uint32 inbuf1Size, in interface inbuf2, in uint32 inbuf2Size, in interface inbuf3, in uint32 inbuf3Size,
+               in interface outbuf0, in uint32 outbuf0Size, in interface outbuf1, in uint32 outbuf1Size, in interface outbuf2, in uint32 outbuf2Size, in interface outbuf3, in uint32 outbuf3Size);
+};
+
+/**
+ * Session object; one session per client.
+ * The initial Kailua implementation only supports one session total and
+ * one module per session.
+*/
+interface SecureDspSession {
+    /**
+     * Open a secure fastrpc session to one of the subsystem
+     *
+     * @param [in] domain Selecting on of the DSP domain to open session from.
+     */
+    method openSession(in int32 domain);
+
+    /**
+     * Allocate memory to be used within this Secure DSP session.
+     *
+     * @param [in] heapSize Heap memory size in bytes
+     * @param [in] codeSize Code memory size in bytes. Used to load modules.
+     */
+    method allocMemory(in uint32 heapSize, in uint32 codeSize);
+
+    /**
+     * Load a DSP module into the session. The client must authenticate the
+     * module as appropriate.
+     *
+     * @param [in] soFile The module as an ELF shared object, stored in a
+     *                    Mink memory object. The underlying memory must
+     *                    be allocated as a dma-buf, and the object must
+     *                    implement FdWrapper interface. The client can free
+     *                    the memory object after the call returns.
+     * @param [in] soFileSize Dynamic library size.
+     * @param [in] moduleName Module name as an UTF-8 string. The module name
+     *                        is used as a prefix for locating module symbols
+     *                        in the shared object, e.g. moduleName_open()
+     * @param [out] dspModule A SecureDspModule object for the module.
+     */
+    method openModule(in interface soFile, in uint32 soFileSize, in uint8[] moduleName,
+                      out SecureDspModule dspModule);
+
+    /**
+     * Unload a DSP module from the session. The client must ensure the
+     * module is no longer executing any code in the background before
+     * unloading it.
+     * FIXME: Should this be a method in SecureDspSession or just a close
+     * method on the module?
+     *
+     * @param [in] dspModule A SecureDspModule object
+     */
+    method closeModule(in SecureDspModule dspModule);
+
+    /**
+     * Enable runtime FARF logs on DSP_service and/or secure PD.
+     * Buffer mask will be written to file DSP_service.farf. farfMask is expected to be
+     * a NULL terminated string with a max length of 511 bytes. Anything above this
+     * length will be discarded.
+     * Fastrpc library will proceed to read DSP_service.farf and enable corresponding runtime FARF logs.
+     * If DSP logs enabled, secure PD logs will be send to QTVM's stdout buffer.
+     *
+     * @param [in] farfMask Runtime FARF mask file sent as a Memory Object
+     */
+    method enableRuntimeFARF(in IMemObject farfMask);
+};

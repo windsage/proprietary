@@ -1,0 +1,19 @@
+// Copyright (c) 2022 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/**
+* @addtogroup CTestService
+* @{
+  Class CTestService implements \link ITestService \endlink interface.
+
+  The class ID `TestService` is not included in the default privilege set. It needs to be added to the
+  privileges section in the metadata to allow the TP to use the CTestService class.
+*/
+
+// This class is app for testing.
+//
+
+const uint32 CCredDealerTestService_UID = 0x00FF0052;
+
+/** @} */

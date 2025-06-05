@@ -1,0 +1,8 @@
+cc_library_headers {
+    name: "qms_sdk_rfid_headers",
+    export_include_dirs: ["inc"],
+    header_libs: ["qms_sdk_common_headers"],
+    export_header_lib_headers: ["qms_sdk_common_headers"],
+    vendor: true,
+    host_supported: true,
+}

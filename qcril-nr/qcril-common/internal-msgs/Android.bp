@@ -1,0 +1,54 @@
+cc_library_headers {
+    name: "qcrilIntermodulemsgs-headers",
+    defaults: ["qtiril_common_defaults"],
+    host_supported: true,
+    export_include_dirs: [
+        "inc",
+    ],
+}
+
+cc_library {
+    name: "qcrilIntermodulemsgs",
+    defaults: ["qtiril_common_defaults"],
+    srcs: [
+        "ims/src/*.cpp",
+        "mbn/src/*.cpp",
+        "nas/src/*.cpp",
+        "pbm/src/*.cpp",
+    ],
+
+    shared_libs: [
+        "libqcrilNrQtiMutex",
+        "libqcrilNrLogger",
+        "libqcrilNrFramework",
+    ],
+    header_libs: [
+        "qcrilInterfaces-headers",
+        "libril-qc-qmi-services-headers",
+        "vendor_common_inc",
+        "libqmi_common_headers",
+        "qcrilnr-toplevel-headers",
+        "qcrilIntermodulemsgs-headers",
+    ],
+
+    export_header_lib_headers: [
+        "qcrilIntermodulemsgs-headers",
+        "vendor_common_inc",
+        "qcrilnr-toplevel-headers",
+    ],
+
+    target: {
+        android: {
+            header_libs: [
+                "libqmi_cci_headers",
+            ],
+        },
+        host: {
+        },
+    },
+
+    vendor: true,
+    owner: "qti",
+    proprietary: true,
+    host_supported: true,
+}

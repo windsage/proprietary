@@ -1,0 +1,4 @@
+# Dsable CFI call checks for this function without affecting cast checks
+[cfi-vcall|cfi-nvcall|cfi-icall]
+fun:*init_listener*
+fun:*CListenerCBO_request*

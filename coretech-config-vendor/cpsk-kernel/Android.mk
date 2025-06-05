@@ -1,0 +1,14 @@
+
+LOCAL_PATH:= $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := vendor.qti.smp2p.rc
+LOCAL_SRC_FILES := vendor.qti.smp2p.rc
+
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_OWNER := qti
+LOCAL_PROPRIETARY_MODULE := true
+LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR_ETC)/init
+include $(BUILD_PREBUILT)
+

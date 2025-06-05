@@ -1,0 +1,28 @@
+
+
+cc_binary {
+    name: "vendor.qti.hardware.factory-service",
+    init_rc: ["vendor.qti.hardware.factory-service.rc"],
+    proprietary: true,
+    relative_install_path: "hw",
+    vintf_fragments: ["vendor.qti.hardware.factory.ifactory.xml"],
+    owner: "qti",
+    srcs: [
+        "service.cpp",
+        "Factory.cpp",
+        "socket.cpp",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libdl",
+        "libbase",
+        "libutils",
+        "libhardware",
+        "libbinder",
+        "libbinder_ndk",
+        "vendor.qti.hardware.factory-V1-ndk",
+    ],
+
+}

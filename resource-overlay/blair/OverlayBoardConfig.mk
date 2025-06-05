@@ -1,0 +1,6 @@
+#Add resource overlays per target
+PRODUCT_PACKAGES += \
+    FrameworksResTarget_Vendor \
+    SecureElementResTarget_Vendor \
+    WifiResTarget \
+    WifiResMainlineTarget

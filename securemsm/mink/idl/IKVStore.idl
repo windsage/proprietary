@@ -1,0 +1,271 @@
+// Copyright (c) 2021-2023 Qualcomm Technologies, Inc.
+// All Rights Reserved.
+// Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+/** @cond */
+struct IKVStoreKey_Info
+{
+  uint32 dataSize;
+  uint32 flags;
+};
+
+struct IKVStore_SpaceInfo
+{
+  uint64 kvstoreSize;
+  uint64 spareSize;
+  uint64 systemSize;
+  uint64 fileSize;
+  uint64 fileRsvdSize;
+  uint64 kvSecSize;
+  uint64 rpmbSecSize;
+};
+/** @endcond */
+
+/** @cond */
+interface IKVStore {
+  /** @endcond */
+
+  /**
+   * @addtogroup IKVStore
+   * @{
+   */
+
+  /** @cond */
+  /** It is used without any additional crypto
+      support.
+   */
+  const int32 NO_CRYPTO_RPMB_SERVICE = 0;
+  /** It is used for any additional crypto
+      support.
+  */
+  const int32 CRYPTO_RPMB_SERVICE    = 1;
+  /** Privileged TA can't delete this key.
+      only the owner of a key can delete the key.
+  */
+  const int32 INERASABLE_RPMB_SERVICE = 2;
+  /** RPMB is not provisioned on the device */
+  error ERROR_RPMB_NOT_PROVISIONED;
+  /** RPMB is not supported on the device */
+  error ERROR_RPMB_NOT_SUPPORTED;
+  /** Storage is full and no space available*/
+  error ERROR_STORAGE_FULL;
+  /** Storage initialization failed */
+  error ERROR_INIT_FAILED;
+  /** List of keys for a client not found*/
+  error ERROR_KEYLIST_NOT_FOUND;
+  /** Key ID not created before */
+  error ERROR_KEY_NOT_FOUND;
+  /** Get Data from key failed*/
+  error ERROR_GET_VALUE_FAILED;
+  /** Get Key Infor failed */
+  error ERROR_GET_INFO_FAILED;
+  /** Get Next Key in iterator failed */
+  error ERROR_GET_NEXT_KEY_FAILED;
+  /** Invalid parameters passed */
+  error ERROR_INVALID_PARAMETERS;
+  /** Key already exists during create */
+  error ERROR_KEY_ALREADY_EXISTS;
+  /** Storage is corrupted */
+  error ERROR_STORAGE_CORRUPTED;
+  /** Storage currently not available for any operations */
+  error ERROR_STORAGE_NOT_AVAILABLE;
+  /** Update of Key Data failed */
+  error ERROR_UPDATE_VALUE_FAILED;
+  /** Delete Key Failed */
+  error ERROR_DELETE_KEY_FAILED;
+  /** Delete Key Failed due to inerasable key*/
+  error ERROR_INERASABLE_KEY;
+  /** @endcond */
+
+  /**
+    Creates a new key value pair and returns the KeyValueStore Object.
+
+    @param[in] Key to be created
+    @param[in] Input Buffer to be stored.
+    @param[in] Flags it's Used for inerasable/encryption keys. bit0
+                     indicates whether to encrypt a key. bit1 is used
+                     to indicate if the key is inerasable. For example:
+                     if we set the Flags to CRYPTO_RPMB_SERVICE|INERASABLE_RPMB_SERVICE,
+                     it means we want to create an encryprted and inerasable key.
+    @param[out] Key Value Store interface object.
+
+    @return
+    Object_OK -- Success \n
+    Object_ERROR -- in other error scenarios \n
+    IKVStore_ERROR_RPMB_STORAGE_FULL -- No space to create the Key \n
+    IKVStore_ERROR_INVALID_PARAMETERS  -- Invalid parameter passed \n
+    IKVStore_ERROR_KEY_ALREADY_EXISTS  -- Key already created \n
+    IKVStore_ERROR_STORAGE_CORRUPTED  -- Storage corrupted \n
+    IKVStore_ERROR_STORAGE_NOT_AVAILABLE  -- Storage not available \n
+
+
+  */
+  method createNewKey(in uint8[] key, in buffer inputBuffer, in uint32 flags, out interface IKVStoreKey);
+
+  /**
+    Obtains the IKeyValueStore interface object for the key
+
+    @param[in] key to be queried.
+    @param[out] Key Value Store interface object
+
+    @return
+    Object_OK -- Success \n
+    Object_ERROR -- Generic error \n
+    Object_ERROR_MEM -- Alloc failure \n
+    IKVStore_ERROR_INVALID_PARAMETERS -- Unacceptable input parameters \n
+    IKVStore_ERROR_INIT_FAILED -- Failure during rpmb device init or keystore init \n
+    IKVStore_ERROR_STORAGE_NOT_AVAILABLE -- Failure during or failure to interface with storage medium \n
+    IKVStore_ERROR_STORAGE_CORRUPTED -- Storage data corrupted \n
+    IKVStore_ERROR_KEY_NOT_FOUND -- Requested Key not found in storage \n
+
+  */
+
+  method getKeyHandle(in uint8[] key, out interface IKVStoreKey);
+
+  /**
+    Obtains the IKVStoreIterator interface object to get details of all keys
+    created by a client
+
+    @param[out] IKVStoreIterator object
+
+    @return
+    Object_OK -- Success \n
+    Object_ERROR_MEM -- Mempry Allocation Failures \n
+    */
+
+  method getIterator(out interface IKVStoreIterator);
+
+  /**
+    Obtains space info of KVStore service
+
+    @param[out] IKVStore_SpaceInfo Space info of KVStore service
+
+    @return
+    Object_OK -- Success \n
+    Object_ERROR -- Generic error \n
+    */
+
+  method getSpaceInfo(out IKVStore_SpaceInfo spaceInfo);
+  /** @} */ /* end_addtogroup IKVStore */
+};
+
+/** @cond */
+interface IKVStoreKey {
+/** @endcond */
+
+  /**
+   * @addtogroup IKVStoreKey
+   * @{
+   */
+
+  /** @endcond */
+
+  /**
+    Modifies data for an existing key.
+
+    @param[in]  input buffer to store in storage.
+    @param[in]  offset specifies the offset from which the data has to be updated.
+                For the first write the offset needs to be 0.
+
+    @return
+    Object_OK -- Success. \n
+    Object_ERROR -- Any error occurred. \n
+    Object_ERROR_MEM -- Memory Allocation failures \n
+    IKVStore_ERROR_INVALID_PARAMETERS -- Invalid parameters passed. \n
+    IKVStore_ERROR_STORAGE_CORRUPTED -- Storage data corrupted \n
+    IKVStore_ERROR_STORAGE_NOT_AVAILABLE -- When storage is full and not available for any updates.
+    IKVStore_ERROR_UPDATE_VALUE_FAILED -- Update of key data failed. \n
+  */
+  method updateValue(in buffer inputBuffer, in uint32 offset);
+
+  /**
+    Retrieve the buffer stored by the key.
+
+    @param[in]  Off set from which the data should be read.
+    @param[in]  Bytes to read
+
+    @param[out]  Buffer to read the requested data in.
+
+    @return
+    Object_OK -- Success. \n
+    Object_ERROR -- Any error occurred.\n
+    Object_ERROR_MEM -- Memory Allocation failures \n
+    IKVStore_ERROR_INVALID_PARAMETERS -- Invalid parameters passed. \n
+    IKVStore_ERROR_STORAGE_CORRUPTED -- Storage data corrupted \n
+    IKVStore_ERROR_STORAGE_NOT_AVAILABLE -- When storage is full and not available for any updates.
+    IKVStore_ERROR_GET_VALUE_FAILED  When invalid parameters are passed \n.
+
+  */
+  method getValue(in uint32 offset, in uint64 bytesToRead, out buffer outputBuffer);
+
+  /**
+    Retrieve metadata associated with the key
+    1. Size
+    2. Flags used for creation
+
+    @param[in]   key value for lookup.
+    @param[out]  Size of the data associated with key.
+
+    @return
+    Object_OK -- Success \n
+    Object_ERROR -- Any error occurred. \n
+    IKVStore_ERROR_INVALID_PARAMETERS -- Invalid parameters passed. \n
+    IKVStore_ERROR_KEY_NOT_FOUND -- Key doesnt not exist for the handle passed \n.
+    IKVStore_ERROR_STORAGE_CORRUPTED -- Storage corrupted \n
+    IKVStore_ERROR_GET_INFO_FAILED -- Failure retrieving details of the key \n
+  */
+
+  method getInfo(out IKVStoreKey_Info keyInfo);
+
+  /**
+     Delete the key from the storage.
+
+     @param[in] Key to be deleted.
+
+     @return
+     Object_OK -- Delete successful;
+     Object_ERROR -- Any error occurred. \n
+     Object_ERROR_MEM - Memory Allocation failure \n
+     IKVStore_ERROR_STORAGE_NOT_AVAILABLE -- Failure during or failure to interface with storage medium \n
+     IKVStore_ERROR_STORAGE_CORRUPTED -- Storage data corrupted \n
+     IKVStore_ERROR_DELETE_KEY_FAILED -- Failure other than storage medium failures. \n.
+  */
+  method delete();
+
+ /** @} */ /* end_addtogroup IKeyValueStore */
+};
+
+/** @cond */
+interface IKVStoreIterator {
+  /** @endcond */
+
+  /**
+   * @addtogroup IKVStoreIterator
+   * @{
+   */
+
+  /** Invalid parameters passed to function */
+  error ERROR_INVALID_PARAMETERS;
+  /** If the requested clients have no keys created */
+  error ERROR_NO_KEYS;
+  /** End of the iterator list */
+  error ERROR_END_KEY_LIST;
+
+   /**
+     Get next key for the client.
+
+     @param [out] Key Name
+
+     @return
+     Object_OK -- Retrieving the next key was successful. \n
+     Object_ERROR -- All other errors.\n
+     IKVStoreIterator_ERROR_INVALID_PARAMETERS -- invalid parameters passed to API \n
+     IKVStoreIterator_ERROR_NO_KEYS -- if the client hasnt created any key. \n
+     IKVStoreIterator_ERROR_END_KEY_LIST -- Iterated through all keys. \n
+
+   */
+
+ method getNextKey(out uint8[] key);
+
+  /** @} */ /* end_addtogroup IKVStoreIterator */
+};

@@ -1,0 +1,36 @@
+cc_binary {
+    name: "qsh_geofence_test",
+    owner: "qti",
+    proprietary: true,
+    srcs: [
+        "src/qsh_geofence_test.cpp",
+    ],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-missing-field-initializers",
+        "-Wno-maybe-uninitialized",
+        "-Wunused-private-field",
+        "-Wno-writable-strings",
+    ] + GNSS_CFLAGS,
+    cppflags: ["-fexceptions"],
+    header_libs: [
+        "libqmi_common_headers",
+        "libgps.utils_headers",
+        "libloc_pla_headers",
+        "libqshutils_headers"
+    ],
+    shared_libs: [
+        "libutils",
+        "libcutils",
+        "liblog",
+        "libgps.utils",
+        "libsnsapi",
+        "libqmi_encdec",
+        "libqmi_cci",
+        "libqshgeofence",
+        "libqshutils",
+        "libprotobuf-cpp-lite"
+    ],
+}

@@ -1,0 +1,37 @@
+cc_library {
+    name: "qcrilNr_aidl_IRadioVoice",
+    defaults: ["qtiril_common_defaults"],
+    srcs: [
+        "src/*.cpp",
+    ],
+    header_libs: [
+        "qtiril-utils-headers",
+        "libril-db-headers",
+        "libqcrilNrLogger-headers",
+        "qtiRilHalUtil-headers",
+        "libril-legacy-headers",
+        "qcrilInterfaces-headers",
+    ],
+    shared_libs: [
+        "libcutils",
+        "liblog",
+        "qtiril-utils",
+        "android.hardware.radio.voice-V2-ndk",
+        "libbinder_ndk",
+        "libbase",
+        "libbinder",
+        "libqcrilNrFramework",
+        "libqcrilNrLogger",
+        "libqcrilNrQtiMutex",
+        "qcrilNr_aidl_common",
+        "libril-db",
+    ],
+    cflags: [
+        "-Wno-unused-parameter",
+    ],
+    cppflags: [
+        "-Wno-unused-parameter",
+    ],
+    owner: "qti",
+    proprietary: true,
+}

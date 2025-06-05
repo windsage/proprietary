@@ -1,0 +1,46 @@
+
+
+cc_library_shared {
+    name: "libreffeature",
+
+    header_libs: [
+        "libutils_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_lm_framework_headers",
+        "perf_lm_meters_headers",
+        "perf_util_headers",
+    ],
+
+    srcs: [
+        "ReferenceFeature.cpp",
+        "ReferenceMetaMeter.cpp",
+        "ReferenceAlgo.cpp",
+        "ReferenceAction.cpp",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libc",
+        "libcutils",
+        "liblearningmodule",
+        "libmeters",
+        "libsqlite",
+    ],
+
+    cppflags: [
+        "-fexceptions",
+    ],
+
+    include_dirs: [
+        "external/tinyxml2",
+        "external/sqlite/dist",
+        "external/libxml2/include",
+    ],
+
+    compile_multilib: "first",
+
+    owner: "qti",
+
+    proprietary: true,
+}
