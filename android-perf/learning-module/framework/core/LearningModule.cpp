@@ -462,10 +462,48 @@ void LearningModule::lmMain() {
             TriggerInfo trigger = mTriggerQueue.pop();
             shouldExit = trigger.exitLMThread;
             if(!shouldExit) {
+                if (trigger.payload.hintID == VENDOR_HINT_ACTIVITY_START ||
+                    trigger.payload.hintID == VENDOR_HINT_ACTIVITY_RESUME ||
+                    trigger.payload.hintID == VENDOR_HINT_PICARD_RENDER_RATE ||
+                    trigger.payload.hintID == VENDOR_HINT_CONTENT_FPS ||
+                    trigger.payload.hintID == VENDOR_HINT_ACTIVITY_PAUSE ||
+                    trigger.payload.hintID == VENDOR_HINT_ACTIVITY_STOP) {
+                    const char *eventType = "UNKNOWN";
+                    switch (trigger.payload.hintID) {
+                        case VENDOR_HINT_ACTIVITY_START:
+                            eventType = "ACTIVITY_START";
+                            break;
+                        case VENDOR_HINT_ACTIVITY_RESUME:
+                            eventType = "ACTIVITY_RESUME";
+                            break;
+                        case VENDOR_HINT_ACTIVITY_PAUSE:
+                            eventType = "ACTIVITY_PAUSE";
+                            break;
+                        case VENDOR_HINT_ACTIVITY_STOP:
+                            eventType = "ACTIVITY_STOP";
+                            break;
+                        case VENDOR_HINT_PICARD_RENDER_RATE:
+                            eventType = "PICARD_RENDER_RATE";
+                            break;
+                        case VENDOR_HINT_CONTENT_FPS:
+                            eventType = "CONTENT_FPS";
+                            break;
+                    }
+                    DEBUGI(LOG_TAG_LM, "=== ACTIVITY EVENT DEBUG ===");
+                    DEBUGI(LOG_TAG_LM, "Event Type: %s (0x%x)", eventType, trigger.payload.hintID);
+                    DEBUGI(LOG_TAG_LM, "Raw appName: %s", trigger.payload.appName.c_str());
+                    DEBUGI(LOG_TAG_LM, "Hint Type: %d", trigger.payload.hintType);
+                    DEBUGI(LOG_TAG_LM, "Duration: %d ms", trigger.payload.duration);
+                    DEBUGI(LOG_TAG_LM, "App PID: %d", trigger.payload.appPID);
+                    DEBUGI(LOG_TAG_LM, "App TID: %d", trigger.payload.appThreadTID);
+                    DEBUGI(LOG_TAG_LM, "Handle: %d", trigger.payload.handle);
+                    DEBUGI(LOG_TAG_LM, "Workload Type: %d", trigger.payload.app_workload_type);
+                    DEBUGI(LOG_TAG_LM, "Timestamp: %lld", trigger.payload.timeStamp);
+                }
                 auto currAsyncEntry = mAsyncFeatMap.find(trigger.payload.hintID);
-                if(currAsyncEntry != mAsyncFeatMap.end()) {
-                    for (Feature* currFeature : currAsyncEntry->second) {
-                        if(currFeature) {
+                if (currAsyncEntry != mAsyncFeatMap.end()) {
+                    for (Feature *currFeature : currAsyncEntry->second) {
+                        if (currFeature) {
                             DEBUGV(LOG_TAG_LM,"Calling storeAsync for %s", currFeature->getFeatureName().c_str());
                             if(mEnableLMtracing) {
                                 string traceLog = "LM-storeAsync() " + currFeature->getFeatureName();

@@ -27,6 +27,16 @@ PRODUCT_PACKAGES += \
     GameOptimizationFeature.xml
 endif
 
+# add for perfconfig submodule by chao.xu5 at Jul 22nd, 2025 start.
+ifeq ($(call is-board-platform-in-list, volcano),true)
+PRODUCT_PACKAGES += \
+    libperfconfigfeature \
+    perf_config.xml \
+    perfconfig_manager2_test \
+    PerfConfigFeature.xml
+endif
+# add for perfconfig submodule by chao.xu5 at Jul 22nd, 2025 start.
+
 ifeq ($(call is-board-platform-in-list, kalama anorak pineapple sun pitti anorak61),true)
 PRODUCT_PACKAGES += \
     libqape_oem_ext

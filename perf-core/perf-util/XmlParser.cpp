@@ -159,3 +159,66 @@ int8_t AppsListXmlParser::FindRootsChildInRegisteredClients(const xmlChar* child
     }
     return ret;
 }
+
+int8_t AppsListXmlParser::ParseFromMemory(const std::string& xmlContent) {
+    xmlDocPtr doc;
+    xmlNodePtr currNode;
+    int8_t idx = -1;
+
+    try {
+        lock_guard<mutex> guard(mMutex);
+
+        // 从内存解析XML
+        doc = xmlParseMemory(xmlContent.c_str(), xmlContent.length());
+        if(!doc) {
+            QLOGE(LOG_TAG, "XML Document not parsed successfully from memory");
+            return -1;
+        }
+
+        currNode = xmlDocGetRootElement(doc);
+        if(!currNode) {
+            QLOGE(LOG_TAG, "Empty document");
+            xmlFreeDoc(doc);
+            xmlCleanupParser();
+            return -1;
+        }
+
+        // 确认根元素
+        if(!IsRoot(currNode->name)) {
+            QLOGE(LOG_TAG, "Document of the wrong type, root node != root");
+            xmlFreeDoc(doc);
+            xmlCleanupParser();
+            return -1;
+        }
+
+        currNode = currNode->xmlChildrenNode;
+
+        // 遍历子节点，复用现有解析逻辑
+        for(; currNode != NULL; currNode=currNode->next) {
+            if(currNode->type != XML_ELEMENT_NODE)
+                continue;
+
+            QLOGV(LOG_TAG, "Parsing the xml of %s", currNode->name);
+
+            xmlNodePtr node = currNode;
+
+            idx = FindRootsChildInRegisteredClients(currNode->name);
+            if(idx >= 0) {
+                node = node->children;
+                while(node != NULL) {
+                    // 调用注册的回调函数解析
+                    mParserClients[idx].mParseElem(node, mParserClients[idx].mData);
+                    QLOGV(LOG_TAG, "parsed the node moving on to next");
+                    node = node->next;
+                }
+            }
+        }
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+    } catch (std::exception &e) {
+        QLOGE(LOG_TAG, "Caught exception: %s in %s", e.what(), __func__);
+    } catch (...) {
+        QLOGE(LOG_TAG, "Error in %s", __func__);
+    }
+    return 0;
+}

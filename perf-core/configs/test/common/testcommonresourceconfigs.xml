@@ -249,6 +249,9 @@ Cluster 2=> Prime
         <Minor OpcodeValue="0xB" WVal="32" RVal="32" />
         <Minor OpcodeValue="0xC" WVal="440" Rval="450" />
         <Minor OpcodeValue="0xD" WVal="" Rval="" /> <!-- not supported -->
+        <Minor OpcodeValue="0xE" WVal="0x1" RVal="1" />
+        <Minor OpcodeValue="0xF" WVal="0x1" Rval="1" />
+        <Minor OpcodeValue="0x10" WVal="0x1" RVal="1" />
     <!-- gpu major end -->
 
     <!-- misc major start -->

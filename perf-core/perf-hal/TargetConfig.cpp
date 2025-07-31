@@ -23,6 +23,7 @@
 #include "TargetConfig.h"
 #include <PerfController.h>
 #include "PerfLog.h"
+#include "ConfigFileManager.h"
 #include "SecureOperations.h"
 
 #define FAILED -1
@@ -439,31 +440,38 @@ bool TargetConfig::CheckDefaultDivergent(TargetConfigInfo *config) {
 }
 
 void TargetConfig::InitTargetConfigXML() {
-    const string fTargetConfigName(TARGET_CONFIGS_XML);
-    const string xmlTargetConfigRoot(TARGET_CONFIGS_XML_ROOT);
-    uint8_t idnum, i;
-    char TargetConfigXMLtag[NODE_MAX] = "";
-    string xmlChildTargetConfig;
     AppsListXmlParser *xmlParser = new(std::nothrow) AppsListXmlParser();
     if (NULL == xmlParser) {
         return;
     }
-    QLOGV(LOG_TAG, "InitTargetConfigXML start");
 
-    //target configs
-    /*Multitple targets can share the same platform. So, these multple target configs
-      are differentiated with the config index number in the configs tag. Parsing of XML
-      file is done by identifying these configs.*/
+    // 读取并解密配置文件
+    std::string configContent;
+    std::string configPath = ConfigFileManager::getConfigFilePath("targetconfig.xml");
+    if (!ConfigFileManager::readAndDecryptConfig(configPath, configContent)) {
+        QLOGE(LOG_TAG, "Failed to read target config file: %s", configPath.c_str());
+        delete xmlParser;
+        return;
+    }
+
+    QLOGV(LOG_TAG, "InitTargetConfigXML start with file: %s", configPath.c_str());
+
+    const string xmlTargetConfigRoot(TARGET_CONFIGS_XML_ROOT);
+    uint8_t idnum, i;
+    char TargetConfigXMLtag[NODE_MAX] = "";
+    string xmlChildTargetConfig;
+
+    // 解析多个配置
     for(i = 1; i <= MAX_CONFIGS_SUPPORTED_PER_PLATFORM; i++) {
         snprintf(TargetConfigXMLtag, NODE_MAX, TARGET_CONFIGS_XML_CHILD_CONFIG, i);
         xmlChildTargetConfig = TargetConfigXMLtag;
         idnum = xmlParser->Register(xmlTargetConfigRoot, xmlChildTargetConfig, TargetConfigsCB, &i);
-        xmlParser->Parse(fTargetConfigName);
+        xmlParser->ParseFromMemory(configContent);  // 使用内存解析
         xmlParser->DeRegister(idnum);
     }
+
     delete xmlParser;
     QLOGV(LOG_TAG, "InitTargetConfigXML end");
-
     return;
 }
 

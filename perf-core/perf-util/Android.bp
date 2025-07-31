@@ -12,6 +12,9 @@ cc_library_headers {
 cc_library_shared {
 
     srcs: [
+        "ConfigFileManager.cpp",
+        "Base64Codec.cpp",
+        //"LibPerfCloud.cpp",
         "XmlParser.cpp",
         "EventQueue.cpp",
         "EventDataPool.cpp",

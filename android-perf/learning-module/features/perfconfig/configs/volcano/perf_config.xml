@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configs>
+    <package name="com.qiyi.video">
+        <activity name="common">
+            <fps value="60">
+                <perflock>0x41440100,0x5F,0x4143C100,1497,0x40804300,1190,0x4143C000,1612,0x4143C200,1478,
+                    0x41000000,0,0x41444000,0,0x41444200,0,0x40C1C000,0x63,
+                    0x40C1C200,0x63,0x40C20000,0x5A,0x40C20200,0x5A</perflock>
+            </fps>
+            <fps value="90">
+                <perflock>0x41440100,0x5F,0x4143C100,1497,0x40804300,1190,0x4143C000,1612,0x4143C200,1478,
+                    0x41000000,0,0x41444000,0,0x41444200,0,0x40C1C000,0x63</perflock>
+            </fps>
+        </activity>
+    </package>
+
+    <package name="com.taobao.taobao">
+        <activity name="common">
+            <fps value="common">
+                <perflock>0x40804000,2572,0x40804100,902,0x40804200,672,0x42804000,10,0x42808000,7,
+                    0x40C9C000,4,0x41444000,0,0x41444200,0,0x40CE0000,0x0014000A,0x40CE0200,0x005A0050</perflock>
+            </fps>
+        </activity>
+    </package>
+
+    <package name="com.ss.android.lark">
+        <activity name="com.ss.android.vc.meeting.module.multi.ByteRTCMeetingActivityInstance">
+            <fps value="common">
+                <perflock>0x40804000,1190,0x40804300,1190,0x40804100,902,0x40804200,1248</perflock>
+            </fps>
+        </activity>
+        <activity name="com.ss.android.vc.meeting.module.preview.facade.MeetingPreviewActivity">
+            <fps value="common">
+                <perflock>0x40804000,1190,0x40804300,1190,0x40804100,902,0x40804200,1248</perflock>
+            </fps>
+        </activity>
+    </package>
+
+    <package name="com.tencent.mm">
+        <activity name="com.tencent.mm.plugin.voip.ui.VideoActivity">
+            <fps value="common">
+                <perflock>0x40804000,1190,0x40804300,1190,0x40804100,902,0x40804200,1248</perflock>
+            </fps>
+        </activity>
+        <activity name="com.tencent.mm.plugin.multitalk.ui.MultiTalkMainUI">
+            <fps value="60">
+                <perflock>0x40804000,1190,0x40804300,1190,0x40804100,902,0x40804200,1248</perflock>
+            </fps>
+            <fps value="90">
+                <perflock>0x40804000,2290,0x40804300,2290,0x40804100,902,0x40804200,1248</perflock>
+            </fps>
+        </activity>
+        <activity name="com.tencent.mm.plugin.finder.ui.FinderHomeAffinityUI">
+            <fps value="common">
+                <perflock>0x41440100,0x5F,0x40804000,1612,0x40804100,1497,0x40804200,1478,
+                    0x41000000,0,0x41444000,0,0x41444200,0,0x40C1C000,0x14,
+                    0x40C1C200,0x63,0x40C20000,0x0A,0x40C20200,0x5F</perflock>
+            </fps>
+        </activity>
+    </package>
+    <package name="com.android.settings">
+        <activity name="common">
+            <fps value="common">
+                <perflock>0x40804000,1200,0x40804100,800</perflock>
+            </fps>
+        </activity>
+    </package>
+</configs>

@@ -232,6 +232,9 @@ need to be added just before the end of it's major group. -->
         <Minor OpcodeValue="0xB" Node="/sys/class/kgsl/kgsl-3d0/idle_timer" />
         <Minor OpcodeValue="0xC" Node="/sys/class/kgsl/kgsl-3d0/min_clock_mhz" />
         <Minor OpcodeValue="0xD" Node="/sys/class/kgsl/kgsl-3d0/touch_wake" />
+        <Minor OpcodeValue="0xE" Node="/sys/class/kgsl/kgsl-3d0/dcvs_tuning_mingap" />
+        <Minor OpcodeValue="0xF" Node="/sys/class/kgsl/kgsl-3d0/dcvs_tuning_numbusy" />
+        <Minor OpcodeValue="0x10" Node="/sys/class/kgsl/kgsl-3d0/dcvs_tuning_penalty" />
     <!-- gpu major end -->
 
     <!-- misc major start -->

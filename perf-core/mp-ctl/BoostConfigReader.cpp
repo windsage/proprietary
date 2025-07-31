@@ -17,6 +17,7 @@
 #include "MpctlUtils.h"
 #include "PerfLog.h"
 #include "config.h"
+#include "ConfigFileManager.h"
 
 //perf mapping tags in xml file
 #define PERF_BOOSTS_XML_ROOT "PerfBoosts"
@@ -72,13 +73,7 @@
 #define MAX_IGNORE_HINTS 8
 
 using namespace std;
-
-#define PERF_MAPPING_XML (VENDOR_DIR"/perf/perfmapping.xml")
-#define PERF_BOOSTS_CONFIGS_XML (VENDOR_DIR"/perf/perfboostsconfig.xml")
-#define POWER_CONFIGS_XML (VENDOR_DIR"/powerhint.xml")
-#define COMMONRESOURCE_CONFIGS_XML (VENDOR_DIR"/perf/commonresourceconfigs.xml")
 #define COMMON_SYSNODES_CONFIGS_XML (VENDOR_DIR"/perf/commonsysnodesconfigs.xml")
-#define TARGETRESOURCE_CONFIGS_XML (VENDOR_DIR"/perf/targetresourceconfigs.xml")
 #define TARGETRE_SYSNODES_CONFIGS_XML (VENDOR_DIR"/perf/targetsysnodesconfigs.xml")
 
 PerfDataStore PerfDataStore::mPerfStore;
@@ -161,81 +156,104 @@ void PerfDataStore::Init() {
 }
 
 void PerfDataStore::XmlParserInit() {
-    const string fMappingsName(PERF_MAPPING_XML);
-    const string fCommonResourcesName(COMMONRESOURCE_CONFIGS_XML);
-    const string fCommonSysNodesName(COMMON_SYSNODES_CONFIGS_XML);
     const string xmlMappingsRoot(PERF_BOOSTS_XML_ROOT);
     const string xmlChildMappings(PERF_BOOSTS_XML_CHILD_MAPPINGS);
     const string xmlResourceConfigRoot(RESOURCE_CONFIGS_XML_ROOT);
     const string xmlChildResourceConfig(RESOURCE_CONFIGS_XML_CHILD_CONFIG);
 
     int32_t idnum;
-
-    AppsListXmlParser *xmlParser = new(std::nothrow) AppsListXmlParser();
+    AppsListXmlParser *xmlParser = new (std::nothrow) AppsListXmlParser();
     if (NULL == xmlParser) {
         return;
     }
 
-    //appboosts mappings
-    idnum = xmlParser->Register(xmlMappingsRoot, xmlChildMappings, BoostParamsMappingsCB, NULL);
-    xmlParser->Parse(fMappingsName);
-    xmlParser->DeRegister(idnum);
+    std::string mappingContent;
+    std::string mappingPath = ConfigFileManager::getConfigFilePath("perfmapping.xml");
+    if (!mappingPath.empty() &&
+        ConfigFileManager::readAndDecryptConfig(mappingPath, mappingContent)) {
+        idnum = xmlParser->Register(xmlMappingsRoot, xmlChildMappings, BoostParamsMappingsCB, NULL);
+        xmlParser->ParseFromMemory(mappingContent);
+        xmlParser->DeRegister(idnum);
+    }
 
-    //common resource configs
-    /*In common resource configs XMl file, the major and minor values are present in different fields
-      and both these values are required to calculate the resource index. So, passing Major value
-      as an argument while parsing each row of XML file and update it when we see a new Major value.*/
-    int32_t major_value = -1;
-    idnum = xmlParser->Register(xmlResourceConfigRoot, xmlChildResourceConfig, CommonResourcesCB, &major_value);
-    xmlParser->Parse(fCommonResourcesName);
-    xmlParser->DeRegister(idnum);
+    std::string commonResourceContent;
+    std::string commonResourcePath =
+        ConfigFileManager::getConfigFilePath("commonresourceconfigs.xml");
+    if (!commonResourcePath.empty() &&
+        ConfigFileManager::readAndDecryptConfig(commonResourcePath, commonResourceContent)) {
+        int32_t major_value = -1;
+        idnum = xmlParser->Register(xmlResourceConfigRoot, xmlChildResourceConfig,
+                                    CommonResourcesCB, &major_value);
+        xmlParser->ParseFromMemory(commonResourceContent);
+        xmlParser->DeRegister(idnum);
+    }
 
-    //sysnode configs
-    idnum = xmlParser->Register(xmlResourceConfigRoot, xmlChildResourceConfig, CommonSysNodesCB, NULL);
-    xmlParser->Parse(fCommonSysNodesName);
-    xmlParser->DeRegister(idnum);
+    std::string commonSysNodesContent;
+    std::string commonSysNodesPath = COMMON_SYSNODES_CONFIGS_XML;
+    if (!commonSysNodesPath.empty() &&
+        ConfigFileManager::readAndDecryptConfig(commonSysNodesPath, commonSysNodesContent)) {
+        idnum = xmlParser->Register(xmlResourceConfigRoot, xmlChildResourceConfig, CommonSysNodesCB,
+                                    NULL);
+        xmlParser->ParseFromMemory(commonSysNodesContent);
+        xmlParser->DeRegister(idnum);
+    }
 
     delete xmlParser;
-
     return;
 }
 
 void PerfDataStore::TargetResourcesInit() {
     const string xmlResourceConfigRoot(RESOURCE_CONFIGS_XML_ROOT);
     const string xmlChildResourceConfig(RESOURCE_CONFIGS_XML_CHILD_CONFIG);
-    const string fTargetResourcesName(TARGETRESOURCE_CONFIGS_XML);
-    const string fTargetSysNodesName(TARGETRE_SYSNODES_CONFIGS_XML);
-    int32_t idnum;
-    AppsListXmlParser *xmlParser = new(std::nothrow) AppsListXmlParser();
-    if (NULL == xmlParser) {
-        return;
-    }
-    idnum = xmlParser->Register(xmlResourceConfigRoot, xmlChildResourceConfig, TargetResourcesCB, NULL);
-    xmlParser->Parse(fTargetResourcesName);
-    xmlParser->DeRegister(idnum);
-
     const string xmlConfigsRoot(BOOSTS_CONFIGS_XML_ROOT);
     const string xmlChildConfigs(BOOSTS_CONFIGS_XML_CHILD_CONFIG);
-    const string fPerfConfigsName(PERF_BOOSTS_CONFIGS_XML);
-
-    //sysnode configs
-    idnum = xmlParser->Register(xmlResourceConfigRoot, xmlChildResourceConfig, TargetSysNodesCB, NULL);
-    xmlParser->Parse(fTargetSysNodesName);
-    xmlParser->DeRegister(idnum);
-
-    //perf boost configs
-    idnum = xmlParser->Register(xmlConfigsRoot, xmlChildConfigs, BoostConfigsCB, NULL);
-    xmlParser->Parse(fPerfConfigsName);
-    xmlParser->DeRegister(idnum);
-
-    const string fPowerHintName(POWER_CONFIGS_XML);
     const string xmlPHintRoot(POWER_HINT_XML_ROOT);
     const string xmlPowerChildConfigs(POWER_HINT_XML_CHILD_CONFIG);
 
-    //power boost configs
-    idnum = xmlParser->Register(xmlPHintRoot, xmlPowerChildConfigs, BoostConfigsCB, NULL);
-    xmlParser->Parse(fPowerHintName);
-    xmlParser->DeRegister(idnum);
+    int32_t idnum;
+    AppsListXmlParser *xmlParser = new (std::nothrow) AppsListXmlParser();
+    if (NULL == xmlParser) {
+        return;
+    }
+
+    std::string targetResourceContent;
+    std::string targetResourcePath =
+        ConfigFileManager::getConfigFilePath("targetresourceconfigs.xml");
+    if (!targetResourcePath.empty() &&
+        ConfigFileManager::readAndDecryptConfig(targetResourcePath, targetResourceContent)) {
+        idnum = xmlParser->Register(xmlResourceConfigRoot, xmlChildResourceConfig,
+                                    TargetResourcesCB, NULL);
+        xmlParser->ParseFromMemory(targetResourceContent);
+        xmlParser->DeRegister(idnum);
+    }
+
+    std::string targetSysNodesContent;
+    std::string targetSysNodesPath = TARGETRE_SYSNODES_CONFIGS_XML;
+    if (!targetSysNodesPath.empty() &&
+        ConfigFileManager::readAndDecryptConfig(targetSysNodesPath, targetSysNodesContent)) {
+        idnum = xmlParser->Register(xmlResourceConfigRoot, xmlChildResourceConfig, TargetSysNodesCB,
+                                    NULL);
+        xmlParser->ParseFromMemory(targetSysNodesContent);
+        xmlParser->DeRegister(idnum);
+    }
+
+    std::string perfConfigContent;
+    std::string perfConfigPath = ConfigFileManager::getConfigFilePath("perfboostsconfig.xml");
+    if (!perfConfigPath.empty() &&
+        ConfigFileManager::readAndDecryptConfig(perfConfigPath, perfConfigContent)) {
+        idnum = xmlParser->Register(xmlConfigsRoot, xmlChildConfigs, BoostConfigsCB, NULL);
+        xmlParser->ParseFromMemory(perfConfigContent);
+        xmlParser->DeRegister(idnum);
+    }
+
+    std::string powerHintContent;
+    std::string powerHintPath = ConfigFileManager::getConfigFilePath("powerhint.xml");
+    if (!powerHintPath.empty() &&
+        ConfigFileManager::readAndDecryptConfig(powerHintPath, powerHintContent)) {
+        idnum = xmlParser->Register(xmlPHintRoot, xmlPowerChildConfigs, BoostConfigsCB, NULL);
+        xmlParser->ParseFromMemory(powerHintContent);
+        xmlParser->DeRegister(idnum);
+    }
 
     delete xmlParser;
     return;
@@ -654,7 +672,7 @@ void PerfDataStore::CommonResourcesCB(xmlNodePtr node, void *prev_major) {
         //Ensuring both the major and minor values are initialized and are in the ranges.
         if ((*major_value == -1) || (*major_value >= MAX_MAJOR_RESOURCES) || (minor_value == -1)) {
             QLOGL(LOG_TAG, QLOG_WARNING, "Major=%" PRId32 " or Minor=%" PRId32 " values are incorrectly Mentioned in %s", *major_value,
-                                        minor_value, COMMONRESOURCE_CONFIGS_XML);
+                                        minor_value, ConfigFileManager::getConfigFilePath("commonresourceconfigs.xml").c_str());
             return;
         }
         tmpr.SetMajor(*major_value);
@@ -716,7 +734,7 @@ void PerfDataStore::TargetResourcesCB(xmlNodePtr node, void *) {
         //Ensuring both the major and minor values are initialized and are in the ranges.
         if ((major_value == -1) || (major_value >= MAX_MAJOR_RESOURCES) || (minor_value == -1)) {
             QLOGL(LOG_TAG, QLOG_WARNING, "Major=%" PRId32 " or Minor=%" PRId32 " values are incorrectly Mentioned in %s", major_value,
-                                        minor_value, TARGETRESOURCE_CONFIGS_XML);
+                                        minor_value, ConfigFileManager::getConfigFilePath("targetresourceconfigs.xml").c_str());
             return;
         }
 

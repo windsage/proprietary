@@ -24,11 +24,11 @@
 #define PERF_CONFIG_STORE_RESOLUTION "Resolution"
 #define PERF_CONFIG_STORE_SKEW_TYPE "SkewType"
 #define PERF_CONFIG_STORE_RAM "Ram"
-#define PERF_CONFIG_STORE_XML (VENDOR_DIR"/perf/perfconfigstore.xml")
 #define FALSE_STR "false"
 
 #include "PerfLog.h"
 #include "PerfConfig.h"
+#include "ConfigFileManager.h"
 #include <unistd.h>
 #include <cutils/properties.h>
 #include "MpctlUtils.h"
@@ -262,24 +262,29 @@ void PerfConfigDataStore::ConfigStoreInit() {
     if (NULL == xmlParser) {
         return;
     }
-    void *handle = dlopen(OBFUSCATION_LIB_NAME, RTLD_LAZY);
-    if (NULL != handle) {
-        mFeature_knob_func = (feature_knob_func_ptr)dlsym(handle, "IsFeatureEnabled");
+    std::string configContent;
+    std::string configPath = ConfigFileManager::getConfigFilePath("perfconfigstore.xml");
+    if (ConfigFileManager::readAndDecryptConfig(configPath, configContent)) {
+        // 加载obfuscation库
+        void *handle = dlopen(OBFUSCATION_LIB_NAME, RTLD_LAZY);
+        if (NULL != handle) {
+            mFeature_knob_func = (feature_knob_func_ptr)dlsym(handle, "IsFeatureEnabled");
+        }
+
+        const string xmlPerfConfigRoot(PERF_CONFIG_STORE_ROOT);
+        const string xmlPerfConfigChild(PERF_CONFIG_STORE_CHILD);
+
+        idnum = xmlParser->Register(xmlPerfConfigRoot, xmlPerfConfigChild, PerfConfigStoreCB, NULL);
+        xmlParser->ParseFromMemory(configContent);  // 使用内存解析
+        xmlParser->DeRegister(idnum);
+
+        if (NULL != handle) {
+            mFeature_knob_func = NULL;
+            dlclose(handle);
+        }
+    } else {
+        QLOGE(LOG_TAG, "Failed to read config file: %s", configPath.c_str());
     }
-    //perf cofig store
-    const string fPerfConfigStore(PERF_CONFIG_STORE_XML);
-    const string xmlPerfConfigRoot(PERF_CONFIG_STORE_ROOT);
-    const string xmlPerfConfigChild(PERF_CONFIG_STORE_CHILD);
-
-    idnum = xmlParser->Register(xmlPerfConfigRoot, xmlPerfConfigChild, PerfConfigStoreCB, NULL);
-    xmlParser->Parse(fPerfConfigStore);
-    xmlParser->DeRegister(idnum);
-
-    if (NULL != handle) {
-        mFeature_knob_func = NULL;
-        dlclose(handle);
-    }
-
     delete xmlParser;
     mPerfConfigInit = true;
     return;
