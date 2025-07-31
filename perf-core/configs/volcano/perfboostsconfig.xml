@@ -791,5 +791,538 @@
                         0x40808000, 1497600, 0x40808100, 1017600, 0x40808200, 633600, 0x40C00000, 2,
                         0x4303C000, 0xA6428, 0x43480000, 0x114900, 0x40C80000, 0x1, 0x40C80000, 0x0" />
 
+<!--===================The following content was added by Performance Development===============================-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <!--Type=1 Touch Down -->
+        <Config
+             Id="0x00001085" Type="1" Enable="true" Timeout="500" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <!--Type=2 Touch Move -->
+        <Config
+             Id="0x00001085" Type="2" Enable="true" Timeout="200" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <!--Type=3 Touch Up -->
+        <Config
+             Id="0x00001085" Type="3" Enable="true" Timeout="100" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00011FE" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <!--Type=1 Launcher animation in -->
+        <Config
+             Id="0x00011FD" Type="1" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <!--Type=2 Launcher animation out -->
+        <Config
+             Id="0x00011FD" Type="2" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00011FC" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00011FB" Enable="true" Timeout="5000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+<!--===================缺失的HINT_ID配置===============================-->
+
+    <!--VENDOR_HINT_SUBSEQ_LAUNCH_BOOST = 0x00001082-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001082" Enable="true" Timeout="1500" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_ACTIVITY_BOOST = 0x00001084-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001084" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_APP_UPDATE = 0x00001092-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001092" Enable="true" Timeout="3000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_KILL = 0x00001093-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001093" Enable="true" Timeout="500" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_SPLIT_WINDOW = 0x00001095-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001095" Enable="true" Timeout="2000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_BOOST_RENDERTHREAD = 0x00001096-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001096" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_PASS_PID = 0x0000109C-->
+        <!--Type=4 APP_PID-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x0000109C" Type="4" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--Type=5 RENDER_TID-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x0000109C" Type="5" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_TEST = 0x0000109D-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x0000109D" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_PERF_INIT_CHECK = 0x0000109E-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x0000109E" Enable="true" Timeout="500" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_IME_LAUNCH_EVENT = 0x0000109F-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x0000109F" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_BINDAPP = 0x000010A0-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x000010A0" Enable="true" Timeout="2000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_WARM_LAUNCH = 0x000010A1-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x000010A1" Enable="true" Timeout="1500" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_PKG_SPEED = 0x000010A2-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x000010A2" Enable="true" Timeout="3000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_PKG_INSTALL = 0x000010A3-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x000010A3" Enable="true" Timeout="5000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_PKG_UNINSTALL = 0x000010A4-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x000010A4" Enable="true" Timeout="3000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_EXPENSIVE_RENDERING = 0x000010A5-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x000010A5" Enable="true" Timeout="2000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+<!--===================缺失TYPE的配置===============================-->
+
+    <!--VENDOR_HINT_SCROLL_BOOST = 0x00001080 缺失TYPE-->
+        <!--Type=2 Horizontal Scroll-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001080" Type="2" Enable="true" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--Type=3 Panel View Scroll-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001080" Type="3" Enable="true" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+    <!--VENDOR_HINT_FIRST_LAUNCH_BOOST = 0x00001081 缺失TYPE-->
+        <!--Type=2 BOOST_V2-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001081" Type="2" Enable="true" Timeout="2000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--Type=4 BOOST_GAME-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001081" Type="4" Enable="true" Timeout="3000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--Type=5 RESERVED_1-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001081" Type="5" Enable="true" Timeout="2000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--Type=100 TYPE_SERVICE_START-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001081" Type="100" Enable="true" Timeout="1000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--Type=101 TYPE_START_PROC-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001081" Type="101" Enable="true" Timeout="1500" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
+
+        <!--Type=102 TYPE_START_APP_FROM_BG-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_LITTLE_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_MIN_FREQ_CLUSTER_PRIME_CORE_0 resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_BIG resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_LITTLE resource opcode, value-->
+        <!--MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value-->
+        <!--MPCTLV3_SCHED_BOOST resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_POWER_LEVEL resource opcode, value-->
+        <!--MPCTLV3_GPU_MIN_FREQ resource opcode, value-->
+        <Config
+             Id="0x00001081" Type="102" Enable="true" Timeout="2000" Target="volcano"
+             Resources="0x40800000, 0xFF, 0x40800100, 0xFF, 0x40800200, 0xFF,
+                        0x40808000, 0xFF, 0x40808100, 0xFF, 0x40808200, 0xFF, 0x40C00000, 0x1,
+                        0x42804000, 0, 0x4280C000, 0xFF" />
     </PerfBoost>
 </BoostConfigs>

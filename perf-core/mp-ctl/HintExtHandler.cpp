@@ -913,3 +913,47 @@ int32_t StorePID::StorePIDPreAction(mpctl_msg_t *pMsg) {
     }
     return PRE_ACTION_SF_RE_VAL;
 }
+
+// add for perflock unlock screen by chao.xu5 at Jul 15th, 2025 start.
+int32_t TranUnlockScreenAction::UnlockScreenPreAction(mpctl_msg_t *pMsg) {
+    if (NULL == pMsg) {
+        return FAILED;
+    }
+
+    // 你的预处理逻辑
+    // 例如：修改参数、检查条件等
+    QLOGL(LOG_TAG, QLOG_L1, "UnlockScreen PreAction: hint_id=0x%x", pMsg->hint_id);
+
+    return SUCCESS;
+}
+
+int32_t TranUnlockScreenAction::UnlockScreenPostAction(mpctl_msg_t *pMsg) {
+    if (NULL == pMsg) {
+        return FAILED;
+    }
+
+    // 你的后处理逻辑
+    //uint16_t size = pMsg->data;
+
+    //for (uint16_t i = 0; i < size - 1; i = i + 2) {
+    //    // 处理资源配置对
+    //    int32_t opcode = pMsg->pl_args[i];
+    //    int32_t value = pMsg->pl_args[i + 1];
+
+    //    // 根据需要修改配置
+    //    if (opcode == MPCTLV3_MIN_FREQ_CLUSTER_BIG_CORE_0) {
+    //        pMsg->pl_args[i + 1] = value * 0.8;    // 例如：降频处理
+    //    }
+    //}
+
+    return SUCCESS;
+}
+
+int32_t TranUnlockScreenAction::UnlockScreenHintExcluder(mpctl_msg_t *pMsg) {
+    // 返回SUCCESS表示排除此hint，返回FAILED表示允许执行
+    if (NULL == pMsg) {
+        return SUCCESS;
+    }
+    return FAILED;
+}
+// add for perflock unlock screen by chao.xu5 at Jul 15th, 2025 end.

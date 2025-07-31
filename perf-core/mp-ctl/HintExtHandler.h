@@ -14,6 +14,7 @@
 #ifndef __HINT_EXT_HANDLER__H_
 #define __HINT_EXT_HANDLER__H_
 
+#include <cstdint>
 #include <mutex>
 #include "PerfConfig.h"
 #include "PerfController.h"
@@ -205,5 +206,12 @@ class PerfInitAction {
         static int32_t PerfInitCheckHintExcluder(mpctl_msg_t *) {
             return SUCCESS;
         }
+};
+
+class TranUnlockScreenAction {
+public:
+    static int32_t UnlockScreenPreAction(mpctl_msg_t *pMsg);
+    static int32_t UnlockScreenPostAction(mpctl_msg_t *pMsg);
+    static int32_t UnlockScreenHintExcluder(mpctl_msg_t *pMsg);
 };
 #endif /*__HINT_EXT_HANDLER__H_*/

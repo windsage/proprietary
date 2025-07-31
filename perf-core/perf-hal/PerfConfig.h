@@ -22,6 +22,7 @@
 typedef int32_t (*feature_knob_func_ptr)(int32_t);
 
 using namespace std;
+
 class PerfConfigDataStore {
 
 private:

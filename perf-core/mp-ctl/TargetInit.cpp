@@ -111,6 +111,9 @@ void Target::InitializeTarget() {
     hintExt.Register(VENDOR_HINT_DISPLAY_OFF,NULL, DisplayAction::DisplayPostAction);
     hintExt.Register(VENDOR_HINT_PERF_INIT_CHECK ,NULL, NULL, PerfInitAction::PerfInitCheckHintExcluder);
     hintExt.Register(VENDOR_HINT_TEST ,NULL, NULL, PerfCtxHelper::PerfCtxHelperExcluder);
+    // add for perflock unlock screen by chao.xu5 at Jul 15th, 2025 start.
+    hintExt.Register(VENDOR_HINT_TRAN_UNLOCK_SCREEN, TranUnlockScreenAction::UnlockScreenPreAction, TranUnlockScreenAction::UnlockScreenPostAction, TranUnlockScreenAction::UnlockScreenHintExcluder);
+    // add for perflock unlock screen by chao.xu5 at Jul 15th, 2025 end.
 
     /* All the target related information parsed from XML file are initialized in the TargetInit()
     function which remains same for all the targets. For any target specific initializations provided
@@ -208,8 +211,9 @@ void invoke_tinyu_wa(uint16_t socid) {
       socid == 613 || socid == 619 || socid == 608 || socid == 618 || socid == 631 || socid == 633 ||
       socid == 634 || socid == 638 || socid == 614 || socid == 632 || socid == 642 || socid == 643 ||
       socid == 644 || socid == 623 || socid == 649 || socid == 663 || socid == 629 || socid == 652 ||
-      socid == 636 || socid == 640 || socid == 641 || socid == 657 || socid == 658 ||
-      socid == 568 || socid == 602 || socid == 653 || socid == 654 || socid == 687 || socid == 696 || socid == 554 || socid == 579) {
+      socid == 636 || socid == 640 || socid == 641 || socid == 657 || socid == 658 || socid == 712 ||
+      socid == 568 || socid == 602 || socid == 653 || socid == 654 || socid == 687 || socid == 696 || socid == 554 || socid == 579 ||
+      socid == 700) {
       strlcpy(tinyu_wa_detl[1].node, "/proc/sys/walt/sched_lib_mask_force", NODE_MAX);
       strlcpy(tinyu_wa_detl[2].node, "/proc/sys/walt/sched_lib_name", NODE_MAX);
       st_idx = 1;
@@ -223,7 +227,7 @@ void invoke_tinyu_wa(uint16_t socid) {
 
   /* for kalama,cliffs 3 silver cores, 4 golden cores, 1 prime core */
   if (socid == 519 || socid == 536 || socid == 600 || socid == 601 || socid == 614 || socid == 632 ||
-      socid == 642 || socid == 643) {
+      socid == 642 || socid == 643 || socid == 700) {
       tinyu_wa_detl[1].val = "0xf8";
   }
 
@@ -248,7 +252,7 @@ void invoke_tinyu_wa(uint16_t socid) {
   }
 
   /* for volcano 1 prime, 3 gold and 4 Silver*/
-  if (socid == 636 || socid == 640 || socid == 641 || socid == 657 || socid == 658) {
+  if (socid == 636 || socid == 640 || socid == 641 || socid == 657 || socid == 658 || socid == 712) {
       tinyu_wa_detl[1].val = "0xf0";
   }
 
@@ -416,6 +420,7 @@ void Target::ExtendedTargetInit() {
     case 632: /*cliffs*/
     case 642: /*cliffs*/
     case 643: /*cliffs*/
+    case 700: /*cliffs*/
     case 623: /*pitti*/
     case 629: /*niobe*/
     case 652: /*niobe*/
@@ -424,6 +429,7 @@ void Target::ExtendedTargetInit() {
     case 641: /*volcano*/
     case 657: /*volcano*/
     case 658: /*volcano*/
+    case 712: /*volcano*/
        invoke_tinyu_wa(mTargetConfig.getSocID());
        mUpDownComb = true;
        mGrpUpDownComb = true;

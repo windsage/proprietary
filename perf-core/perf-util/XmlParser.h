@@ -53,6 +53,7 @@ public:
                  void (*parseElem)(xmlNodePtr, void *), void *data);
     bool DeRegister(int8_t idx);
     int8_t Parse(const string &xmlFName);
+    int8_t ParseFromMemory(const std::string& xmlContent);
 private:
     bool IsRoot(const xmlChar* root);
     int8_t FindRootsChildInRegisteredClients(const xmlChar* child);

@@ -1,0 +1,124 @@
+license {
+    name: "transsion_vendor_modules_license",
+    visibility: [":__subpackages__"],
+    license_kinds: [
+        "SPDX-license-identifier-Apache-2.0",
+    ],
+    license_text: [
+        "LICENSE",
+    ],
+}
+cc_library_shared {
+    name: "libperfconfigfeature",
+    licenses: ["transsion_vendor_modules_license"],
+
+    header_libs: [
+        "libutils_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_lm_framework_headers",
+        "perf_lm_meters_headers",
+        "perf_util_headers",
+        "perf_client_headers",
+    ],
+
+    srcs: [
+        "StringUtils.cpp",
+        "TLog.cpp",
+        "ConfigManager.cpp",
+        "FpsManager.cpp",
+        "GlobalFpsMonitor.cpp",
+        "PerfConfigFeature.cpp",
+        "PerfConfigMeter.cpp",
+        "MatchingAlgorithm.cpp",
+        "PerfLockAction.cpp",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libc",
+        "libcutils",
+        "liblearningmodule",
+        "libmeters",
+        "libsqlite",
+        "libxml2",
+        "libqti-perfd-client",
+        "libqti-util",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Wno-unused-parameter",
+        "-DQC_DEBUG=1",
+        "-DTLOG_COMPILE_LEVEL=0", // 0=VERBOSE, 1=DEBUG, 2=INFO, 3=WARN, 4=ERROR, 5=OFF
+        "-DTLOG_ENABLE=1",        // 1=启用, 0=完全禁用所有日志
+    ],
+
+    cppflags: [
+        "-fexceptions",
+    ],
+
+    include_dirs: [
+        "external/tinyxml2",
+        "external/sqlite/dist",
+        "external/libxml2/include",
+    ],
+
+    local_include_dirs: [
+        "include",
+    ],
+
+    compile_multilib: "first",
+    owner: "transsion",
+    proprietary: true,
+}
+
+prebuilt_etc {
+    name: "PerfConfigFeature.xml",
+    src: "configs/volcano/PerfConfigFeature.xml",
+    sub_dir: "lm",
+    proprietary: true,
+}
+
+prebuilt_etc {
+    name: "perf_config.xml",
+    src: "configs/volcano/perf_config.xml",
+    sub_dir: "perf",
+    proprietary: true,
+}
+
+cc_binary {
+    name: "perfconfig_manager2_test",
+
+    srcs: [
+        "tests/ConfigManager2Test.cpp",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libxml2",
+        "libc++",
+        "libperfconfigfeature",
+        "libqti-util",
+    ],
+
+    header_libs: [
+        "libutils_headers",
+        "perf_mpctl_headers",
+        "perf_hal_headers",
+        "perf_lm_framework_headers",
+        "perf_lm_meters_headers",
+        "perf_util_headers",
+        "perf_client_headers",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-Wno-macro-redefined",
+    ],
+
+    proprietary: true,
+    owner: "transsion",
+}

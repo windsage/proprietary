@@ -111,6 +111,12 @@ extern "C" {
         VENDOR_HINT_HDR_CONTENT = 0x000010A8,
         VENDOR_HINT_EXIT_ANIM_BOOST = 0x000010A9,
 
+        // add for perflock scene by chao.xu5 at Jul 17th, 2025 start.
+        VENDOR_HINT_TRAN_FILE_OPERATION = 0x00011FB,
+        VENDOR_HINT_TRAN_TRANSITION_BOOST = 0x00011FC,
+        VENDOR_HINT_TRAN_LAUNCHER_ANIM_BOOST = 0x00011FD,
+        VENDOR_HINT_TRAN_UNLOCK_SCREEN = 0x00011FE,
+        // add for perflock scene by chao.xu5 at Jul 17th, 2025 end.
         VENDOR_PERF_HINT_END = 0x000011FF,
 
         //reserved for power hints
@@ -359,6 +365,9 @@ extern "C" {
         MPCTLV3_GPU_IDLE_TIMER                            = 0X4282C000,
         MPCTLV3_GPU_MIN_FREQ_MHZ                          = 0X42830000,
         MPCTLV3_GPU_TOUCH_WAKEUP                          = 0X42834000,
+        MPCTLV3_GPU_DCVS_TUNING_MINGAP                    = 0X42838000,
+        MPCTLV3_GPU_DCVS_TUNING_NUMBUSY                   = 0X4283c000,
+        MPCTLV3_GPU_DCVS_TUNING_PENALTY                   = 0X42840000,
 
         MPCTLV3_UNSUPPORTED                               = 0X42C00000,
         MPCTLV3_IRQ_BALANCER                              = 0X42C04000,
@@ -732,6 +741,9 @@ extern "C" {
         GPU_IDLE_TIMER_OPCODE,
         GPU_MIN_FREQ_MHZ_OPCODE,
         GPU_TOUCH_WAKEUP_OPCODE,
+        GPU_DCVS_TUNING_MINGAP,
+        GPU_DCVS_TUNING_NUMBUSY,
+        GPU_DCVS_TUNING_PENALTY,
         MAX_GPU_MINOR_OPCODE,
 
         MISC_START_INDEX = GPU_START_INDEX + MAX_GPU_MINOR_OPCODE,

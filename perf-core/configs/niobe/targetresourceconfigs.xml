@@ -111,6 +111,9 @@ as anyway perflock calls of these resources would fail. -->
         <Config MajorValue="0xA" MinorValue="0x6" Supported="no" />
         <Config MajorValue="0xA" MinorValue="0x8" Supported="no" />
         <Config MajorValue="0xA" MinorValue="0x9" Supported="no" />
+        <Config MajorValue="0xA" MinorValue="0xE" Supported="no" />
+        <Config MajorValue="0xA" MinorValue="0xF" Supported="no" />
+        <Config MajorValue="0xA" MinorValue="0x10" Supported="no" />
 
         <Config MajorValue="0xB" MinorValue="0x2" Node="/proc/sys/walt/input_boost/input_boost_freq" />
         <Config MajorValue="0xB" MinorValue="0x3" Supported="no" />
