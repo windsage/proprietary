@@ -40,13 +40,11 @@ std::string ConfigFileManager::getConfigFilePath(const char *filename) {
     std::string debugPath = std::string(DEBUG_CONFIG_DIR) + filename;
     std::string vendorPath = std::string(VENDOR_CONFIG_DIR) + filename;
 
-    // 优先检查debug目录
     if (access(debugPath.c_str(), F_OK) == 0) {
         QLOGL(LOG_TAG, QLOG_L1, "Using debug config: %s", debugPath.c_str());
         return debugPath;
     }
 
-    // 回退到vendor目录
     if (access(vendorPath.c_str(), F_OK) == 0) {
         QLOGL(LOG_TAG, QLOG_L1, "Using vendor config: %s", vendorPath.c_str());
         return vendorPath;
@@ -71,7 +69,6 @@ bool ConfigFileManager::isFileEncrypted(const std::string &filepath) {
         return false;
     }
 
-    // 检查是否以"BASE64:"开头
     bool isEncrypted = (header == BASE64_HEADER);
 
     QLOGL(LOG_TAG, QLOG_L2, "File %s encryption check: %s", filepath.c_str(),
@@ -88,24 +85,18 @@ bool ConfigFileManager::decryptFileContent(const std::string &encryptedContent,
         return false;
     }
 
-    // 提取BASE64编码的部分（跳过"BASE64:"头部）
     std::string base64Data = encryptedContent.substr(HEADER_SIZE);
 
-    if (!Base64Codec::isValidBase64(base64Data)) {
-        QLOGE(LOG_TAG, "Invalid BASE64 format in encrypted file");
-        return false;
-    }
-
     try {
-        decryptedContent = Base64Codec::decode(base64Data);
-        QLOGL(LOG_TAG, QLOG_L1, "Successfully decoded BASE64 content, size: %zu -> %zu",
+        decryptedContent = Base64Codec::decodeMtk(base64Data);
+        QLOGL(LOG_TAG, QLOG_L1, "Successfully decoded MTK encrypted content, size: %zu -> %zu",
               base64Data.length(), decryptedContent.length());
         return true;
     } catch (const std::exception &e) {
-        QLOGE(LOG_TAG, "Exception during BASE64 decoding: %s", e.what());
+        QLOGE(LOG_TAG, "Exception during MTK decoding: %s", e.what());
         return false;
     } catch (...) {
-        QLOGE(LOG_TAG, "Unknown exception during BASE64 decoding");
+        QLOGE(LOG_TAG, "Unknown exception during MTK decoding");
         return false;
     }
 }
@@ -144,7 +135,7 @@ bool ConfigFileManager::readAndDecryptConfig(const std::string &filepath, std::s
 
     if (fileContent.length() >= HEADER_SIZE &&
         fileContent.substr(0, HEADER_SIZE) == BASE64_HEADER) {
-        QLOGL(LOG_TAG, QLOG_L1, "Decrypting BASE64 config file: %s", filepath.c_str());
+        QLOGL(LOG_TAG, QLOG_L1, "Decrypting MTK encrypted config file: %s", filepath.c_str());
         return decryptFileContent(fileContent, content);
     } else {
         QLOGL(LOG_TAG, QLOG_L1, "Using plain config file: %s", filepath.c_str());

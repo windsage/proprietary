@@ -14,7 +14,7 @@ cc_library_shared {
     srcs: [
         "ConfigFileManager.cpp",
         "Base64Codec.cpp",
-        //"LibPerfCloud.cpp",
+        "LibPerfCloud.cpp",
         "XmlParser.cpp",
         "EventQueue.cpp",
         "EventDataPool.cpp",
@@ -32,6 +32,7 @@ cc_library_shared {
         "libxml2",
         "liblog",
         "libq-perflog",
+        "libtranlog",
     ],
 
     include_dirs: [
