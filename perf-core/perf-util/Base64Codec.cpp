@@ -16,8 +16,6 @@
 
 #include "Base64Codec.h"
 
-#include <algorithm>
-
 const std::string Base64Codec::CHARS =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -55,7 +53,7 @@ std::string Base64Codec::decode(const std::string &encoded) {
 
         int index = findCharIndex(c);
         if (index == -1)
-            continue;    // 跳过无效字符
+            continue;
 
         val = (val << 6) + index;
         valb += 6;
@@ -68,6 +66,17 @@ std::string Base64Codec::decode(const std::string &encoded) {
     return decoded;
 }
 
+std::string Base64Codec::decodeMtk(const std::string &offsetEncoded) {
+    std::string base64Data;
+    base64Data.reserve(offsetEncoded.length());
+
+    for (char c : offsetEncoded) {
+        base64Data.push_back(static_cast<char>(static_cast<unsigned char>(c) - MTK_OFFSET));
+    }
+
+    return decode(base64Data);
+}
+
 int Base64Codec::findCharIndex(char c) {
     size_t pos = CHARS.find(c);
     return (pos != std::string::npos) ? static_cast<int>(pos) : -1;
@@ -78,14 +87,12 @@ bool Base64Codec::isValidBase64(const std::string &str) {
         return false;
     }
 
-    // 检查字符是否都在BASE64字符集中
     for (size_t i = 0; i < str.length(); ++i) {
         char c = str[i];
         if (c != PAD_CHAR && findCharIndex(c) == -1) {
             return false;
         }
 
-        // 填充字符只能出现在末尾
         if (c == PAD_CHAR && i < str.length() - 2) {
             return false;
         }

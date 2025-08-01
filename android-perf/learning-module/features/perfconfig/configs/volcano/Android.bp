@@ -1,0 +1,30 @@
+prebuilt_etc {
+    name: "PerfConfigFeature.xml.volcano",
+    src: "PerfConfigFeature.xml",
+    filename: "PerfConfigFeature.xml",
+    sub_dir: "lm",
+    proprietary: true,
+}
+
+genrule {
+    name: "perf_config_validated_encrypted_volcano",
+    srcs: [
+        "perf_config.xml",
+        ":perf_config_validator_py",
+        ":perfcore_encrypt_py",
+    ],
+    out: ["perf_config_encrypted.xml"],
+    cmd: "echo 'Building perf_config.xml for volcano platform' && " +
+         "echo 'Validating perf_config.xml' && " +
+         "python3 $(location :perf_config_validator_py) $(location perf_config.xml) && " +
+         "echo 'XML validation passed, encrypting...' && " +
+         "python3 $(location :perfcore_encrypt_py) -e $(location perf_config.xml) $(out)",
+}
+
+prebuilt_etc {
+    name: "perf_config.xml.volcano",
+    src: ":perf_config_validated_encrypted_volcano",
+    filename: "perf_config.xml",
+    sub_dir: "perf",
+    proprietary: true,
+}

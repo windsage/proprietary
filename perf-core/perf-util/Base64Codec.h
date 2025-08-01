@@ -18,13 +18,15 @@
 #define __BASE64_CODEC_H__
 
 #include <string>
-#include <vector>
 
 class Base64Codec {
 private:
     // BASE64字符表
     static const std::string CHARS;
     static const char PAD_CHAR = '=';
+
+    // MTK偏移量常量
+    static const int MTK_OFFSET = 33;
 
     // 查找字符在BASE64表中的索引
     static int findCharIndex(char c);
@@ -43,6 +45,13 @@ public:
      * @return 解码后的原始数据
      */
     static std::string decode(const std::string &encoded);
+
+    /**
+     * MTK风格解码：33偏移解密 + base64解码
+     * @param offsetEncoded 33偏移加密的数据
+     * @return 解码后的原始数据
+     */
+    static std::string decodeMtk(const std::string &offsetEncoded);
 
     /**
      * 检查字符串是否为有效的BASE64格式

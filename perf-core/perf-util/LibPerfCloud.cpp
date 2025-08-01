@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "LibPerfCloud.h"
+
 #include <cutils/properties.h>
 #include <dlfcn.h>
 #include <errno.h>
@@ -23,51 +25,26 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
+#include <tranlog/libtranlog.h>
 #include <unistd.h>
-//#include <tranlog/libtranlog.h>
+
 #include "PerfLog.h"
-#include "LibPerfCloud.h"
+
 #ifdef LOG_TAG
 #undef LOG_TAG
 #endif
 #define LOG_TAG "LIB-PERF-CLOUD"
 
-static const char *POWER_CLDCTL_ID = "1001000034";
-static const char *POWER_CLDCTL_VER = "v1.0";
-static const char *POWER_FILE_TYPE = "f_type";
-static const char *POWER_FILE_ENCODE =
-    "f_encode";    // Indicates whether the configuration file is encrypted
+// Cloud control configuration
+static const char *PERF_CLDCTL_ID = "1008000048";
+static const char *PERF_CLDCTL_VER = "v1.0";
+static const char *PERF_FILE_TYPE = "f_type";
 
-static const int PERF_TARGET_RESOURCE_CONFIGS_MASK = 0b00000001;
-static const int PERF_COMMON_RESOURCE_CONFIGS_MASK = 0b00000010;
-static const int PERF_HINT_MASK = 0b00000100;
-static const int PERF_BOOSTS_CONFIG_MASK = 0b00010000;
-static const int PERF_MAPPING_MASK = 0b00100000;
-static const int PERF_CONFIG_STORE_MASK = 0b01000000;
-static int encodeSupport = 0;
+static const int PERF_CONFIG_STORE_MASK = 0b001;     // 1 - perfconfigstore.xml
+static const int PERF_BOOSTS_CONFIG_MASK = 0b010;    // 2 - perfboostsconfig.xml
+static const int PERF_CONFIG_MASK = 0b100;           // 4 - perf_config.xml
+
 static int cloudSupport = 0;
-
-static const char *THERMAL_UX_TEMP_MAX_CLOUD_KEY = "thermal_ux_temp_max";
-static const char *THERMAL_UX_TEMP_MIN_CLOUD_KEY = "thermal_ux_temp_min";
-char *thermalUxTempMaxCloudValue = NULL;
-char *thermalUxTempMinCloudValue = NULL;
-#define THERMAL_UX_TEMP_MAX_CLOUD_PROP "persist.vendor.powerhal.thermal_ux_temp_max"
-#define THERMAL_UX_TEMP_MIN_CLOUD_PROP "persist.vendor.powerhal.thermal_ux_temp_min"
-
-/**
- * Update thermal UX temperature threshold properties
- * Sets the thermal UX temperature maximum and minimum values to system properties
- * if the corresponding cloud values are available
- */
-static void UpdateThermalUxTempThreshold() {
-    if (thermalUxTempMaxCloudValue) {
-        property_set(THERMAL_UX_TEMP_MAX_CLOUD_PROP, thermalUxTempMaxCloudValue);
-    }
-
-    if (thermalUxTempMinCloudValue) {
-        property_set(THERMAL_UX_TEMP_MIN_CLOUD_PROP, thermalUxTempMinCloudValue);
-    }
-}
 
 /**
  * Check and retrieve integer value from system property
@@ -93,7 +70,7 @@ static int CheckPropertyValue(char *prop) {
  * @param dest Destination file path
  * @return 0 on success, -1 on failure
  */
-static int PowerCloudCopyFile(char *src, const char *dest) {
+static int PerfCloudCopyFile(char *src, const char *dest) {
     int fd1, fd2;
     int fileSize, buffSize;
     int ret = -1;
@@ -117,6 +94,8 @@ static int PowerCloudCopyFile(char *src, const char *dest) {
     ret = chmod(dest, 0664);
     if (ret < 0) {
         QLOGE(LOG_TAG, "chmod %s failed ! ret = %d", dest, ret);
+        close(fd1);
+        close(fd2);
         return ret;
     }
 
@@ -126,7 +105,7 @@ static int PowerCloudCopyFile(char *src, const char *dest) {
 
     buff = (char *)malloc(SIZE_1_K_BYTES);
     if (buff == NULL) {
-        QLOGE(LOG_TAG, "fpsmgr:buff malloc fail!");
+        QLOGE(LOG_TAG, "buff malloc fail!");
         ret = -1;
         goto out;
     }
@@ -138,19 +117,16 @@ static int PowerCloudCopyFile(char *src, const char *dest) {
         } else {
             buffSize = fileSize;
         }
-
         ret = read(fd1, buff, buffSize);
         if (ret < 0) {
             QLOGE(LOG_TAG, "read %s failed ! ret =%d", src, ret);
             break;
         }
-
         ret = write(fd2, buff, buffSize);
         if (ret < 0) {
             QLOGE(LOG_TAG, "write %s failed ! ret =%d", dest, ret);
             break;
         }
-
         fileSize -= SIZE_1_K_BYTES;
     }
 
@@ -162,10 +138,10 @@ out:
 }
 
 /**
- * Generate source file path by combining directory path and file name
- * @param filePath Directory path
- * @param fileName File name to append
- * @return Allocated string containing full file path, NULL on failure
+ * Generate source file path by combining base path and filename
+ * @param filePath Base directory path
+ * @param fileName Target filename
+ * @return Allocated string containing full source path, caller must free
  */
 static char *GetSrcFilePath(char *filePath, const char *fileName) {
     char *fileSrcPath = NULL;
@@ -176,25 +152,22 @@ static char *GetSrcFilePath(char *filePath, const char *fileName) {
         QLOGE(LOG_TAG, "alloc mem failed!!");
         goto ERROR;
     }
-
     sprintf(fileSrcPath, "%s/%s", filePath, fileName);
     fileSrcPath[length - 1] = '\0';
-
 ERROR:
     return fileSrcPath;
 }
 
 /**
- * Perform file copy operation with validation
- * Checks if source file exists before copying to destination
- * @param srcPath Source file path (will be freed after use)
+ * Copy configuration file from source to destination if source exists
+ * @param srcPath Source file path (will be freed by this function)
  * @param destPath Destination file path
  */
-static void DoFileCopy(char *srcPath, char *destPath) {
+static void DoFileCopy(char *srcPath, const char *destPath) {
     struct stat statBuf;
 
     if (!srcPath) {
-        QLOGE(LOG_TAG, "path is null!");
+        QLOGE(LOG_TAG, "srcPath is null!");
         return;
     }
 
@@ -206,46 +179,70 @@ static void DoFileCopy(char *srcPath, char *destPath) {
 
     if (0 == stat(srcPath, &statBuf)) {
         QLOGI(LOG_TAG, "srcPath =%s", srcPath);
-        PowerCloudCopyFile(srcPath, destPath);
+        PerfCloudCopyFile(srcPath, destPath);
         free(srcPath);
     } else {
+        QLOGE(LOG_TAG, "srcPath %s not found", srcPath);
         free(srcPath);
     }
 }
 
 /**
+ * Copy perf_config.xml to both vendor and data paths
+ * @param srcPath Source file path (will be freed by this function)
+ */
+static void DoPerfConfigFileCopy(char *srcPath) {
+    struct stat statBuf;
+
+    if (!srcPath) {
+        QLOGE(LOG_TAG, "srcPath is null!");
+        return;
+    }
+
+    if (0 == stat(srcPath, &statBuf)) {
+        QLOGI(LOG_TAG, "srcPath =%s", srcPath);
+        // Copy to data vendor path
+        PerfCloudCopyFile(srcPath, DATA_VENDOR_PERF_CONFIG_FILE);
+        // Also copy to vendor etc path if needed
+        PerfCloudCopyFile(srcPath, "/vendor/etc/perf/perf_config.xml");
+        free(srcPath);
+    } else {
+        QLOGE(LOG_TAG, "srcPath %s not found", srcPath);
+        free(srcPath);
+    }
+}
+
+/*
+The file mask corresponds to the XML configuration files to be updated:
+perf_config boosts configstore
+    0        0       1   //=1 - perfconfigstore.xml
+    0        1       0   //=2 - perfboostsconfig.xml
+    1        0       0   //=4 - perf_config.xml
+........................
+    1        1       1   //=7 - All files
+
+Example cloud command:
+{"v":"v1.0","m":"a","t":"20201123","e":false,"f":"http://cdn.shalltry.com/public/OSFeature_test/file/1605096764001.zip","f_type":"5"}
+
+f_type="5" means: perfconfigstore(1) + perf_config(4) = 5
+f_type="7" means: perfconfigstore(1) + perfboostsconfig(2) + perf_config(4) = 7
+*/
+
+/**
  * Cloud control data callback function
- * Handles cloud configuration updates and file synchronization
+ * Handles cloud configuration updates and XML file synchronization
  * @param key Configuration key (not used in current implementation)
  */
-static void PowerCloudctlDataCallback(char *key) {
-    char *content = getConfig(POWER_CLDCTL_ID);
-    char *fileEncode = NULL;
+static void PerfCloudctlDataCallback(char *key) {
+    char *content = getConfig(PERF_CLDCTL_ID);
     char *fileType = NULL;
     char *filePath = NULL;
+
     QLOGI(LOG_TAG, "content = %s", content);
 
-    char *thermalUxTempMin = NULL;
-    char *thermalUxTempMax = NULL;
-
     if (content) {
-        /* update file */
-        fileEncode = getString(content, POWER_FILE_ENCODE);
-        QLOGI(LOG_TAG, "fileEncode = %s,encodeSupport = %d", fileEncode, encodeSupport);
-        if (!fileEncode) {
-            QLOGE(LOG_TAG, "fileEncode is fail!");
-            goto OUT;
-        }
-
-        if (!strcmp(fileEncode, "Y") && !encodeSupport) {
-            QLOGD(LOG_TAG, "project need not encodeSupport!");
-            goto OUT;
-        } else if (!strcmp(fileEncode, "N") && encodeSupport) {
-            QLOGD(LOG_TAG, "project need encodeSupport!");
-            goto OUT;
-        }
-
-        fileType = getString(content, POWER_FILE_TYPE);
+        /* Get file type mask */
+        fileType = getString(content, PERF_FILE_TYPE);
         if (!fileType) {
             QLOGE(LOG_TAG, "fileType is fail!");
             goto OUT;
@@ -254,69 +251,31 @@ static void PowerCloudctlDataCallback(char *key) {
         int fileNum = atoi(fileType);
         QLOGI(LOG_TAG, "fileNum = %d", fileNum);
 
-        filePath = getFilePath(POWER_CLDCTL_ID);
+        /* Get download file path */
+        filePath = getFilePath(PERF_CLDCTL_ID);
         if (!filePath) {
             QLOGE(LOG_TAG, "filePath is fail!");
             goto OUT;
         }
 
-        QLOGI(LOG_TAG, "filepath =%s", filePath);
+        QLOGI(LOG_TAG, "filePath = %s", filePath);
 
+        /* Process each XML file based on mask - only 3 files needed */
         if (fileNum & PERF_CONFIG_STORE_MASK) {
-            char *srcPerfConfigStoreFilePath = GetSrcFilePath(filePath, PERF_CONFIG_STORE_FILE);
-            DoFileCopy(srcPerfConfigStoreFilePath, DATA_VENDOR_PERF_CONFIG_STORE_FILE);
-        }
-
-        if (fileNum & PERF_TARGET_RESOURCE_CONFIGS_MASK) {
-            char *srcPerfTargetResourceConfigsFilePath =
-                GetSrcFilePath(filePath, PERF_TARGET_RESOURCE_CONFIGS_FILE);
-            DoFileCopy(srcPerfTargetResourceConfigsFilePath,
-                       DATA_VENDOR_PERF_TARGET_RESOURCE_CONFIGS_FILE);
-        }
-
-        if (fileNum & PERF_COMMON_RESOURCE_CONFIGS_MASK) {
-            char *srcPerfCommonResourceConfigsFilePath =
-                GetSrcFilePath(filePath, PERF_COMMON_RESOURCE_CONFIGS_FILE);
-            DoFileCopy(srcPerfCommonResourceConfigsFilePath,
-                       DATA_VENDOR_PERF_COMMON_RESOURCE_CONFIGS_FILE);
-        }
-
-        if (fileNum & PERF_HINT_MASK) {
-            char *srcPerfHintFilePath = GetSrcFilePath(filePath, PERF_HINT_FILE);
-            DoFileCopy(srcPerfHintFilePath, DATA_VENDOR_PERF_HINT_FILE);
+            char *srcConfigStorePath = GetSrcFilePath(filePath, PERF_CONFIG_STORE_FILE);
+            DoFileCopy(srcConfigStorePath, DATA_VENDOR_PERF_CONFIG_STORE_FILE);
         }
 
         if (fileNum & PERF_BOOSTS_CONFIG_MASK) {
-            char *srcPerfBoostsConfigFilePath = GetSrcFilePath(filePath, PEFF_BOOSTS_CONFIG_FILE);
-            DoFileCopy(srcPerfBoostsConfigFilePath, DATA_VENDOR_PEFF_BOOSTS_CONFIG_FILE);
+            char *srcBoostsPath = GetSrcFilePath(filePath, PEFF_BOOSTS_CONFIG_FILE);
+            DoFileCopy(srcBoostsPath, DATA_VENDOR_PEFF_BOOSTS_CONFIG_FILE);
         }
 
-        if (fileNum & PERF_MAPPING_MASK) {
-            char *srcPerfMappingFilePath = GetSrcFilePath(filePath, PERF_MAPPING_FILE);
-            DoFileCopy(srcPerfMappingFilePath, DATA_VENDOR_PERF_MAPPING_FILE);
+        if (fileNum & PERF_CONFIG_MASK) {
+            char *srcPerfConfigPath = GetSrcFilePath(filePath, PERF_CONFIG_FILE);
+            DoPerfConfigFileCopy(srcPerfConfigPath);
         }
-
-        /* update thermal_ux policy temp Threshold*/
-        thermalUxTempMax = getString(content, THERMAL_UX_TEMP_MAX_CLOUD_KEY);
-        if (!thermalUxTempMax) {
-            QLOGE(LOG_TAG, "get thermal ux temp is fail!");
-            goto OUT;
-        }
-        thermalUxTempMaxCloudValue = thermalUxTempMax;
-        QLOGI(LOG_TAG, "thermalUxTemp max = %s", thermalUxTempMaxCloudValue);
-
-        thermalUxTempMin = getString(content, THERMAL_UX_TEMP_MIN_CLOUD_KEY);
-        if (!thermalUxTempMin) {
-            QLOGE(LOG_TAG, "get thermal ux temp is fail!");
-            goto OUT;
-        }
-        thermalUxTempMinCloudValue = thermalUxTempMin;
-        QLOGI(LOG_TAG, "thermalUxTemp min = %s", thermalUxTempMinCloudValue);
-
-        UpdateThermalUxTempThreshold();
     }
-
-    libpowerhal_wrap_ReInit(1);
 
 OUT:
     if (fileType) {
@@ -327,59 +286,43 @@ OUT:
         free(filePath);
     }
 
-    if (fileEncode) {
-        free(fileEncode);
-    }
-
     if (content) {
         free(content);
     }
 
-    if (thermalUxTempMin) {
-        free(thermalUxTempMin);
-    }
-
-    if (thermalUxTempMax) {
-        free(thermalUxTempMax);
-    }
-
-    feedBack(POWER_CLDCTL_ID, 1);
+    feedBack(PERF_CLDCTL_ID, 1);
 }
 
-static struct config_notify powerCloudctlNotify = {.notify = PowerCloudctlDataCallback};
+static struct config_notify perfCloudctlNotify = {.notify = PerfCloudctlDataCallback};
 
 /**
- * Register cloud control listener
- * Initializes cloud and encode support flags and starts the listener
- * for power cloud control configuration updates
+ * Register cloud control listener for perf configuration updates
  */
 void RegistCloudctlListener() {
-    // cloudSupport = CheckPropertyValue(TRAN_POWERHAL_CLOUD_PROP);
-    // encodeSupport = CheckPropertyValue(TRAN_POWERHAL_ENCODE_PROP);
-    cloudSupport = 1;
-    encodeSupport = 1;
+    cloudSupport = CheckPropertyValue((char *)TRAN_PERF_CLOUD_PROP);
 
     if (!cloudSupport) {
-        QLOGD(LOG_TAG, "powerhal doesn't support cloudEngine");
+        QLOGD(LOG_TAG, "perf doesn't support cloudEngine");
         return;
     }
 
-    // int ret = startListener(&powerCloudctlNotify, POWER_CLDCTL_ID, POWER_CLDCTL_VER);
-    int ret = 1;
+    int ret = startListener(&perfCloudctlNotify, PERF_CLDCTL_ID, PERF_CLDCTL_VER);
     if (ret == 0) {
         QLOGE(LOG_TAG, "RegistCloudctlListener failed!");
+    } else {
+        QLOGI(LOG_TAG, "RegistCloudctlListener success");
     }
 }
 
 /**
  * Unregister cloud control listener
- * Stops the cloud control listener if cloud support is enabled
  */
 void UnregistCloudctlListener() {
     if (!cloudSupport) {
-        QLOGD(LOG_TAG, "powerhal doesn't support cloudEngine");
+        QLOGD(LOG_TAG, "perf doesn't support cloudEngine");
         return;
     }
 
-    // stopListener(POWER_CLDCTL_ID);
+    stopListener(PERF_CLDCTL_ID);
+    QLOGI(LOG_TAG, "UnregistCloudctlListener success");
 }

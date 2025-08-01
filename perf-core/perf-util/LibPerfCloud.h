@@ -18,23 +18,17 @@
 #define __LIBPERFCORE_CLOUD_H__
 
 #define PERF_CONFIG_STORE_FILE "perfconfigstore.xml"
-#define PERF_MAPPING_FILE "perfmapping.xml"
 #define PEFF_BOOSTS_CONFIG_FILE "perfboostsconfig.xml"
-#define PERF_HINT_FILE "powerhint.xml"
-#define PERF_COMMON_RESOURCE_CONFIGS_FILE "commonresourceconfigs.xml"
-#define PERF_TARGET_RESOURCE_CONFIGS_FILE "targetresourceconfigs.xml"
+#define PERF_CONFIG_FILE "perf_config.xml"
 
 #define DATA_VENDOR_PERF_CONFIG_STORE_FILE "/data/vendor/perf/perfconfigstore.xml"
-#define DATA_VENDOR_PERF_MAPPING_FILE "/data/vendor/perf/perfmapping.xml"
 #define DATA_VENDOR_PEFF_BOOSTS_CONFIG_FILE "/data/vendor/perf/perfboostsconfig.xml"
-#define DATA_VENDOR_PERF_HINT_FILE "/data/vendor/perf/powerhint.xml"
-#define DATA_VENDOR_PERF_COMMON_RESOURCE_CONFIGS_FILE "/data/vendor/perf/commonresourceconfigs.xml"
-#define DATA_VENDOR_PERF_TARGET_RESOURCE_CONFIGS_FILE "/data/vendor/perf/targetresourceconfigs.xml"
+#define DATA_VENDOR_PERF_CONFIG_FILE "/data/vendor/perf/perf_config.xml"
 
 #define SIZE_1_K_BYTES 1024
 #define TRAN_PERF_CLOUD_PROP "ro.vendor.perf.cloud"
-#define TRAN_PERF_ENCODE_PROP "ro.vendor.perf.encode"
 
 extern void RegistCloudctlListener();
 extern void UnregistCloudctlListener();
+
 #endif

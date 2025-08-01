@@ -19,6 +19,9 @@
 #include <android/binder_manager.h>
 #include <android/binder_process.h>
 
+// add for cloud control by chao.xu5 at Jul 31th, 2025 start.
+#include "LibPerfCloud.h"
+// add for cloud control by chao.xu5 at Jul 31th, 2025 end.
 #include "Perf.h"
 #include "PerfLog.h"
 
@@ -39,6 +42,9 @@ int main() {
     ABinderProcess_setThreadPoolMaxThreadCount(0);
     std::shared_ptr<Perf> ser = ndk::SharedRefBase::make<Perf>();
     binder_status_t status = STATUS_OK;
+    // add for cloud control by chao.xu5 at Jul 31th, 2025 start.
+    RegistCloudctlListener();
+    // add for cloud control by chao.xu5 at Jul 31th, 2025 end.
 
     const std::string instance = std::string() + Perf::descriptor + "/default";
     if (ser != NULL) {
@@ -54,5 +60,8 @@ int main() {
     QLOGE(LOG_TAG, "Registered IPerf HAL service success!");
     ABinderProcess_joinThreadPool();
 
+    // add for cloud control by chao.xu5 at Jul 31th, 2025 start.
+    UnregistCloudctlListener();
+    // add for cloud control by chao.xu5 at Jul 31th, 2025 end.
     return EXIT_FAILURE;
 }

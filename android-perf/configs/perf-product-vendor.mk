@@ -31,10 +31,27 @@ endif
 ifeq ($(call is-board-platform-in-list, volcano),true)
 PRODUCT_PACKAGES += \
     libperfconfigfeature \
-    perf_config.xml \
-    perfconfig_manager2_test \
-    PerfConfigFeature.xml
+    perfconfig_manager2_test
 endif
+
+# Platform-specific XML modules
+ifeq ($(call is-board-platform-in-list, volcano),true)
+PRODUCT_PACKAGES += \
+    perf_config.xml.volcano \
+    PerfConfigFeature.xml.volcano
+endif
+# Add more platforms as needed...
+#ifeq ($(call is-board-platform-in-list, kalama),true)
+#PRODUCT_PACKAGES += \
+#    perf_config.xml.kalama \
+#    PerfConfigFeature.xml.kalama
+#endif
+#
+#ifeq ($(call is-board-platform-in-list, pineapple),true)
+#PRODUCT_PACKAGES += \
+#    perf_config.xml.pineapple \
+#    PerfConfigFeature.xml.pineapple
+#endif
 # add for perfconfig submodule by chao.xu5 at Jul 22nd, 2025 start.
 
 ifeq ($(call is-board-platform-in-list, kalama anorak pineapple sun pitti anorak61),true)

@@ -8,6 +8,19 @@ license {
         "LICENSE",
     ],
 }
+
+// Define script filegroups for cross-directory access
+filegroup {
+    name: "perf_config_validator_py",
+    srcs: ["configs/perf_config_validator.py"],
+}
+
+filegroup {
+    name: "perfcore_encrypt_py",
+    srcs: ["configs/perfcore_encrypt.py"],
+}
+
+// Common modules that don't depend on platform
 cc_library_shared {
     name: "libperfconfigfeature",
     licenses: ["transsion_vendor_modules_license"],
@@ -70,20 +83,6 @@ cc_library_shared {
 
     compile_multilib: "first",
     owner: "transsion",
-    proprietary: true,
-}
-
-prebuilt_etc {
-    name: "PerfConfigFeature.xml",
-    src: "configs/volcano/PerfConfigFeature.xml",
-    sub_dir: "lm",
-    proprietary: true,
-}
-
-prebuilt_etc {
-    name: "perf_config.xml",
-    src: "configs/volcano/perf_config.xml",
-    sub_dir: "perf",
     proprietary: true,
 }
 
