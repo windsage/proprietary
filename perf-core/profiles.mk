@@ -26,6 +26,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 		  $(foreach file,$(wildcard vendor/qcom/proprietary/perf-core/configs/common/common*.xml),$(file):$(TARGET_COPY_OUT_VENDOR)/etc/perf/$(notdir $(file)))
 
+# add for encrypt perfconfigstore and perfboostsconfig by chao.xu5 at Aug 1st, 2025 start.
 # Remove the perfconfigstore.xml wildcard copy, handled by Android.mk
 # PRODUCT_COPY_FILES += \
 #		  $(foreach file,$(wildcard vendor/qcom/proprietary/perf-core/configs/$(PERF_CONFIG_DIR)/perfconfigstore.xml),$(file):$(TARGET_COPY_OUT_VENDOR)/etc/perf/$(notdir $(file)))
@@ -34,6 +35,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     perfboostsconfig.xml \
     perfconfigstore.xml
+# add for encrypt perfconfigstore and perfboostsconfig by chao.xu5 at Aug 1st, 2025 end.
 
 PRODUCT_COPY_FILES += \
                    $(foreach file,$(wildcard vendor/qcom/proprietary/perf-core/configs/test/*.xml),$(file):$(TARGET_COPY_OUT_VENDOR)/etc/perf/$(notdir $(file)))

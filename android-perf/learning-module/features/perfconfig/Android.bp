@@ -9,7 +9,7 @@ license {
     ],
 }
 
-// Define script filegroups for cross-directory access
+// add for encrypt perf_config.xml by chao.xu5 at Aug 1st, 2025 start.
 filegroup {
     name: "perf_config_validator_py",
     srcs: ["configs/perf_config_validator.py"],
@@ -19,8 +19,8 @@ filegroup {
     name: "perfcore_encrypt_py",
     srcs: ["configs/perfcore_encrypt.py"],
 }
+// add for encrypt perf_config.xml by chao.xu5 at Aug 1st, 2025 end.
 
-// Common modules that don't depend on platform
 cc_library_shared {
     name: "libperfconfigfeature",
     licenses: ["transsion_vendor_modules_license"],

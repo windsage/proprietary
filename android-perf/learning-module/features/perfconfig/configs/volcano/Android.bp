@@ -1,3 +1,13 @@
+// Copyright (c) 2025 Transsion Holdings Limited. All rights reserved.
+//
+// Multi-platform perf_config encryption build script
+// Author: chao.xu5
+// Date: August 2025
+//
+// This script replaces the original platform-specific Android.mk files
+// to provide unified multi-platform compilation and encryption support
+// for perf_config.xml file.
+
 prebuilt_etc {
     name: "PerfConfigFeature.xml.volcano",
     src: "PerfConfigFeature.xml",

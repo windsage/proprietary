@@ -30,8 +30,8 @@ endif
 # add for perfconfig submodule by chao.xu5 at Jul 22nd, 2025 start.
 ifeq ($(call is-board-platform-in-list, volcano),true)
 PRODUCT_PACKAGES += \
-    libperfconfigfeature \
-    perfconfig_manager2_test
+    libperfconfigfeature
+#    perfconfig_manager2_test
 endif
 
 # Platform-specific XML modules
