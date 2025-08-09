@@ -9,6 +9,7 @@ license {
     ],
 }
 
+// add for encrypt perf_config.xml by chao.xu5 at Aug 1st, 2025 start.
 filegroup {
     name: "perf_config_validator_py",
     srcs: ["configs/perf_config_validator.py"],
@@ -18,6 +19,7 @@ filegroup {
     name: "perfcore_encrypt_py",
     srcs: ["configs/perfcore_encrypt.py"],
 }
+// add for encrypt perf_config.xml by chao.xu5 at Aug 1st, 2025 end.
 
 cc_library_shared {
     name: "libperfconfigfeature",
@@ -31,7 +33,6 @@ cc_library_shared {
         "perf_lm_meters_headers",
         "perf_util_headers",
         "perf_client_headers",
-        "display_intf_headers",
     ],
 
     srcs: [
@@ -44,7 +45,6 @@ cc_library_shared {
         "PerfConfigMeter.cpp",
         "MatchingAlgorithm.cpp",
         "PerfLockAction.cpp",
-        "DisplayRateManager.cpp",
     ],
 
     shared_libs: [
@@ -57,22 +57,18 @@ cc_library_shared {
         "libxml2",
         "libqti-perfd-client",
         "libqti-util",
-        "vendor.qti.hardware.display.config-V1-ndk",
-        "libbinder_ndk",
     ],
 
     cflags: [
         "-Wall",
         "-Wno-unused-parameter",
         "-DQC_DEBUG=1",
-        "-DDISPLAY_CONFIG_ENABLED=1",  // Display Config相关编译选项
-        "-DTLOG_COMPILE_LEVEL=0",      // 0=VERBOSE, 1=DEBUG, 2=INFO, 3=WARN, 4=ERROR, 5=OFF
-        "-DTLOG_ENABLE=1",             // 1=启用, 0=完全禁用所有日志
+        "-DTLOG_COMPILE_LEVEL=0", // 0=VERBOSE, 1=DEBUG, 2=INFO, 3=WARN, 4=ERROR, 5=OFF
+        "-DTLOG_ENABLE=1",        // 1=启用, 0=完全禁用所有日志
     ],
 
     cppflags: [
         "-fexceptions",
-        "-std=c++17",
     ],
 
     include_dirs: [
@@ -85,17 +81,16 @@ cc_library_shared {
         "include",
     ],
 
-    min_sdk_version: "30",
     compile_multilib: "first",
     owner: "transsion",
     proprietary: true,
 }
 
 cc_binary {
-    name: "perfconfig_manager3_test",
+    name: "perfconfig_manager2_test",
 
     srcs: [
-        "tests/ConfigManager3Test.cpp",
+        "tests/ConfigManager2Test.cpp",
     ],
 
     shared_libs: [
@@ -104,9 +99,6 @@ cc_binary {
         "libc++",
         "libperfconfigfeature",
         "libqti-util",
-        "liblearningmodule",
-        "libcutils",
-        "libqti-perfd-client",
     ],
 
     header_libs: [
@@ -117,7 +109,6 @@ cc_binary {
         "perf_lm_meters_headers",
         "perf_util_headers",
         "perf_client_headers",
-        "display_intf_headers",
     ],
 
     cflags: [
