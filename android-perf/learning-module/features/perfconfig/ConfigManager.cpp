@@ -194,20 +194,239 @@ bool ConfigManager::parseActivityNodeDirectly(xmlNodePtr activityNode,
     ActivityConfig activityConfig;
     activityConfig.activityName = activityName;
 
+    // 统计解析的配置节点
+    int fpsNodeCount = 0;
+    int rateNodeCount = 0;
+
     for (xmlNodePtr child = activityNode->children; child != nullptr; child = child->next) {
         if (child->type != XML_ELEMENT_NODE)
             continue;
 
-        if (strcmp(reinterpret_cast<const char *>(child->name), "fps") == 0) {
-            FpsConfig fpsConfig;
-            if (parseFpsNodeDirectly(child, &fpsConfig)) {
-                activityConfig.fpsConfigs[fpsConfig.fpsValue] = fpsConfig;
+        const char *nodeName = reinterpret_cast<const char *>(child->name);
+
+        if (strcmp(nodeName, "fps") == 0) {
+            // 解析fps节点
+            PerformanceConfig perfConfig;
+            if (parsePerformanceNodeDirectly(child, &perfConfig, ConfigType::FPS)) {
+                activityConfig.addPerformanceConfig(perfConfig.value, perfConfig.type,
+                                                    perfConfig.perfLock);
+                fpsNodeCount++;
+                TLOGI("%s: Added fps config: %s", LOG_TAG_CONFIGMGR2, perfConfig.value.c_str());
+            }
+        } else if (strcmp(nodeName, "rate") == 0) {
+            // 解析rate节点
+            PerformanceConfig perfConfig;
+            if (parsePerformanceNodeDirectly(child, &perfConfig, ConfigType::RATE)) {
+                activityConfig.addPerformanceConfig(perfConfig.value, perfConfig.type,
+                                                    perfConfig.perfLock);
+                rateNodeCount++;
+                TLOGI("%s: Added rate config: %s", LOG_TAG_CONFIGMGR2, perfConfig.value.c_str());
             }
         }
     }
 
+    // 验证配置的合法性（不能混用fps和rate）
+    if (fpsNodeCount > 0 && rateNodeCount > 0) {
+        TLOGE("%s: Activity %s contains both fps and rate configurations, which is not allowed",
+              LOG_TAG_CONFIGMGR2, activityName.c_str());
+        return false;
+    }
+
+    if (fpsNodeCount == 0 && rateNodeCount == 0) {
+        TLOGE("%s: Activity %s has no performance configurations", LOG_TAG_CONFIGMGR2,
+              activityName.c_str());
+        return false;
+    }
+
     (*context->configs)[packageName].activities[activityName] = activityConfig;
+
+    TLOGI("%s: Successfully parsed activity %s with %d fps configs and %d rate configs",
+          LOG_TAG_CONFIGMGR2, activityName.c_str(), fpsNodeCount, rateNodeCount);
+
     return true;
+}
+
+bool ConfigManager::parsePerformanceNodeDirectly(xmlNodePtr perfNode, PerformanceConfig *perfConfig,
+                                                 ConfigType configType) {
+    if (!perfNode || !perfConfig) {
+        TLOGE("%s: Invalid parsePerformanceNodeDirectly parameters", LOG_TAG_CONFIGMGR2);
+        return false;
+    }
+
+    std::string nodeValue = getNodeAttribute(perfNode, "value");
+    if (nodeValue.empty()) {
+        const char *nodeTypeName = (configType == ConfigType::FPS) ? "fps" : "rate";
+        TLOGE("%s: %s node missing 'value' attribute", LOG_TAG_CONFIGMGR2, nodeTypeName);
+        return false;
+    }
+
+    // 验证配置值的合法性
+    if (!validatePerformanceValue(nodeValue, configType)) {
+        const char *nodeTypeName = (configType == ConfigType::FPS) ? "fps" : "rate";
+        TLOGE("%s: Invalid %s value: %s", LOG_TAG_CONFIGMGR2, nodeTypeName, nodeValue.c_str());
+        return false;
+    }
+
+    TLOGI("%s: Processing %s: %s", LOG_TAG_CONFIGMGR2,
+          (configType == ConfigType::FPS) ? "fps" : "rate", nodeValue.c_str());
+
+    perfConfig->value = nodeValue;
+    perfConfig->type = configType;
+
+    // 解析perflock子节点
+    for (xmlNodePtr child = perfNode->children; child != nullptr; child = child->next) {
+        if (child->type != XML_ELEMENT_NODE)
+            continue;
+
+        if (strcmp(reinterpret_cast<const char *>(child->name), "perflock") == 0) {
+            std::string perfLockContent = getNodeContent(child);
+            TLOGD("%s: PerfLock content: %s", LOG_TAG_CONFIGMGR2, perfLockContent.c_str());
+
+            if (!parseOpcodes(perfLockContent, perfConfig->perfLock.opcodes)) {
+                TLOGW("%s: Failed to parse opcodes: %s", LOG_TAG_CONFIGMGR2,
+                      perfLockContent.c_str());
+            } else {
+                TLOGD("%s: Successfully parsed %zu opcodes", LOG_TAG_CONFIGMGR2,
+                      perfConfig->perfLock.opcodes.size());
+            }
+
+            perfConfig->perfLock.timeout = 0;
+            break;
+        }
+    }
+
+    return true;
+}
+
+// 新增：验证性能配置值的合法性
+bool ConfigManager::validatePerformanceValue(const std::string &value, ConfigType configType) {
+    static const std::set<std::string> validFpsValues = {"30", "60", "90", "120", "144", "common"};
+    static const std::set<std::string> validRateValues = {"common", "60", "90", "120", "144"};
+
+    if (configType == ConfigType::FPS) {
+        return validFpsValues.find(value) != validFpsValues.end();
+    } else if (configType == ConfigType::RATE) {
+        return validRateValues.find(value) != validRateValues.end();
+    }
+
+    return false;
+}
+
+// 修改findConfig方法，支持从PerformanceConfig查询
+ConfigQueryResult ConfigManager::findConfig(const std::string &packageName,
+                                            const std::string &activityName,
+                                            const std::string &fpsValue) const {
+    mQueryCount++;
+
+    ConfigQueryResult result;
+    result.clear();
+
+    TLOGV("%s: Query: %s::%s@%s", LOG_TAG_CONFIGMGR2, packageName.c_str(), activityName.c_str(),
+          fpsValue.c_str());
+
+    if (!mLoaded) {
+        TLOGW("%s: Configuration not loaded", LOG_TAG_CONFIGMGR2);
+        return result;
+    }
+
+    auto packageIt = mConfigs.find(packageName);
+    if (packageIt == mConfigs.end()) {
+        TLOGV("%s: Package not found: %s", LOG_TAG_CONFIGMGR2, packageName.c_str());
+        return result;
+    }
+
+    const PackageConfig &packageConfig = packageIt->second;
+
+    auto activityIt = packageConfig.activities.find(activityName);
+    if (activityIt == packageConfig.activities.end()) {
+        TLOGV("%s: Activity not found: %s in package: %s", LOG_TAG_CONFIGMGR2, activityName.c_str(),
+              packageName.c_str());
+        return result;
+    }
+
+    const ActivityConfig &activityConfig = activityIt->second;
+
+    // 优先从performanceConfigs中查找
+    const PerformanceConfig *perfConfig = activityConfig.getPerformanceConfig(fpsValue);
+    if (perfConfig) {
+        result.setFromPerformanceConfig(*perfConfig, packageName, activityName);
+        mHitCount++;
+        TLOGI("%s: Found config for %s with %zu opcodes (type: %s)", LOG_TAG_CONFIGMGR2,
+              result.getConfigDescription().c_str(), result.perfLock.opcodes.size(),
+              perfConfig->getConfigTypeString().c_str());
+        return result;
+    }
+
+    // 向后兼容：如果performanceConfigs中没有，从fpsConfigs中查找
+    auto fpsIt = activityConfig.fpsConfigs.find(fpsValue);
+    if (fpsIt != activityConfig.fpsConfigs.end()) {
+        const FpsConfig &fpsConfig = fpsIt->second;
+
+        result.found = true;
+        result.packageName = packageName;
+        result.activityName = activityName;
+        result.fpsValue = fpsValue;
+        result.configValue = fpsValue;
+        result.configType = ConfigType::FPS;    // 兼容模式默认为FPS
+        result.perfLock = fpsConfig.perfLock;
+        result.source = "fps_compat";
+
+        mHitCount++;
+        TLOGI("%s: Found legacy config for %s::%s@%s with %zu opcodes", LOG_TAG_CONFIGMGR2,
+              packageName.c_str(), activityName.c_str(), fpsValue.c_str(),
+              result.perfLock.opcodes.size());
+    }
+
+    return result;
+}
+
+// 修改dumpConfig方法，显示新的配置信息
+void ConfigManager::dumpConfig() const {
+    TLOGI("%s: ========== Configuration Dump ==========", LOG_TAG_CONFIGMGR2);
+    TLOGI("%s: Config Path: %s", LOG_TAG_CONFIGMGR2, mConfigPath.c_str());
+    TLOGI("%s: Loaded: %s", LOG_TAG_CONFIGMGR2, mLoaded ? "true" : "false");
+    TLOGI("%s: Package Count: %zu", LOG_TAG_CONFIGMGR2, mConfigs.size());
+
+    for (const auto &packagePair : mConfigs) {
+        const PackageConfig &packageConfig = packagePair.second;
+        auto packageStats = packageConfig.getPackageStats();
+
+        TLOGI("%s: Package: %s (%zu activities, %zu fps configs, %zu rate configs)",
+              LOG_TAG_CONFIGMGR2, packageConfig.packageName.c_str(), packageStats.activityCount,
+              packageStats.totalFpsConfigs, packageStats.totalRateConfigs);
+
+        for (const auto &activityPair : packageConfig.activities) {
+            const ActivityConfig &activityConfig = activityPair.second;
+            auto activityStats = activityConfig.getConfigStats();
+
+            TLOGI("%s:   Activity: %s (fps: %zu, rate: %zu, total: %zu)", LOG_TAG_CONFIGMGR2,
+                  activityConfig.activityName.c_str(), activityStats.fpsCount,
+                  activityStats.rateCount, activityStats.totalCount);
+
+            // 显示性能配置详情
+            for (const auto &perfPair : activityConfig.performanceConfigs) {
+                const PerformanceConfig &perfConfig = perfPair.second;
+                TLOGI("%s:     %s: %s (opcodes: %zu)", LOG_TAG_CONFIGMGR2,
+                      perfConfig.getConfigTypeString().c_str(), perfConfig.value.c_str(),
+                      perfConfig.perfLock.opcodes.size());
+
+                if (perfConfig.perfLock.opcodes.size() > 0) {
+                    std::stringstream ss;
+                    size_t maxToPrint = std::min<size_t>(4, perfConfig.perfLock.opcodes.size());
+                    for (size_t i = 0; i < maxToPrint; i++) {
+                        if (i > 0)
+                            ss << ", ";
+                        ss << "0x" << std::hex << perfConfig.perfLock.opcodes[i];
+                    }
+                    if (perfConfig.perfLock.opcodes.size() > maxToPrint) {
+                        ss << ", ...";
+                    }
+                    TLOGI("%s:       Opcodes: [%s]", LOG_TAG_CONFIGMGR2, ss.str().c_str());
+                }
+            }
+        }
+    }
+    TLOGI("%s: ==========================================", LOG_TAG_CONFIGMGR2);
 }
 
 bool ConfigManager::parseFpsNodeDirectly(xmlNodePtr fpsNode, FpsConfig *fpsConfig) {
@@ -532,62 +751,6 @@ void ConfigManager::logParseProgress(const std::string &element, const std::stri
     }
 }
 
-ConfigQueryResult ConfigManager::findConfig(const std::string &packageName,
-                                            const std::string &activityName,
-                                            const std::string &fpsValue) const {
-    mQueryCount++;
-
-    ConfigQueryResult result;
-    result.found = false;
-
-    TLOGV("%s: Query: %s::%s@%s", LOG_TAG_CONFIGMGR2, packageName.c_str(), activityName.c_str(),
-          fpsValue.c_str());
-
-    if (!mLoaded) {
-        TLOGW("%s: Configuration not loaded", LOG_TAG_CONFIGMGR2);
-        return result;
-    }
-
-    auto packageIt = mConfigs.find(packageName);
-    if (packageIt == mConfigs.end()) {
-        TLOGV("%s: Package not found: %s", LOG_TAG_CONFIGMGR2, packageName.c_str());
-        return result;
-    }
-
-    const PackageConfig &packageConfig = packageIt->second;
-
-    auto activityIt = packageConfig.activities.find(activityName);
-    if (activityIt == packageConfig.activities.end()) {
-        TLOGV("%s: Activity not found: %s in package: %s", LOG_TAG_CONFIGMGR2, activityName.c_str(),
-              packageName.c_str());
-        return result;
-    }
-
-    const ActivityConfig &activityConfig = activityIt->second;
-
-    auto fpsIt = activityConfig.fpsConfigs.find(fpsValue);
-    if (fpsIt == activityConfig.fpsConfigs.end()) {
-        TLOGV("%s: FPS config not found: %s for %s::%s", LOG_TAG_CONFIGMGR2, fpsValue.c_str(),
-              packageName.c_str(), activityName.c_str());
-        return result;
-    }
-
-    const FpsConfig &fpsConfig = fpsIt->second;
-
-    result.found = true;
-    result.packageName = packageName;
-    result.activityName = activityName;
-    result.fpsValue = fpsValue;
-    result.perfLock = fpsConfig.perfLock;
-
-    mHitCount++;
-    TLOGI("%s: Found config for %s::%s@%s with %zu opcodes", LOG_TAG_CONFIGMGR2,
-          packageName.c_str(), activityName.c_str(), fpsValue.c_str(),
-          result.perfLock.opcodes.size());
-
-    return result;
-}
-
 bool ConfigManager::hasPackage(const std::string &packageName) const {
     bool found = mLoaded && mConfigs.find(packageName) != mConfigs.end();
     TLOGV("%s: hasPackage(%s) = %s", LOG_TAG_CONFIGMGR2, packageName.c_str(),
@@ -608,46 +771,6 @@ bool ConfigManager::hasActivity(const std::string &packageName,
     return found;
 }
 
-void ConfigManager::dumpConfig() const {
-    TLOGI("%s: ========== Configuration Dump ==========", LOG_TAG_CONFIGMGR2);
-    TLOGI("%s: Config Path: %s", LOG_TAG_CONFIGMGR2, mConfigPath.c_str());
-    TLOGI("%s: Loaded: %s", LOG_TAG_CONFIGMGR2, mLoaded ? "true" : "false");
-    TLOGI("%s: Package Count: %zu", LOG_TAG_CONFIGMGR2, mConfigs.size());
-
-    for (const auto &packagePair : mConfigs) {
-        const PackageConfig &packageConfig = packagePair.second;
-        TLOGI("%s: Package: %s (%zu activities)", LOG_TAG_CONFIGMGR2,
-              packageConfig.packageName.c_str(), packageConfig.activities.size());
-
-        for (const auto &activityPair : packageConfig.activities) {
-            const ActivityConfig &activityConfig = activityPair.second;
-            TLOGI("%s:   Activity: %s (%zu fps configs)", LOG_TAG_CONFIGMGR2,
-                  activityConfig.activityName.c_str(), activityConfig.fpsConfigs.size());
-
-            for (const auto &fpsPair : activityConfig.fpsConfigs) {
-                const FpsConfig &fpsConfig = fpsPair.second;
-                TLOGI("%s:     FPS: %s (opcodes: %zu)", LOG_TAG_CONFIGMGR2,
-                      fpsConfig.fpsValue.c_str(), fpsConfig.perfLock.opcodes.size());
-
-                if (fpsConfig.perfLock.opcodes.size() > 0) {
-                    std::stringstream ss;
-                    size_t maxToPrint = std::min<size_t>(4, fpsConfig.perfLock.opcodes.size());
-                    for (size_t i = 0; i < maxToPrint; i++) {
-                        if (i > 0)
-                            ss << ", ";
-                        ss << "0x" << std::hex << fpsConfig.perfLock.opcodes[i];
-                    }
-                    if (fpsConfig.perfLock.opcodes.size() > maxToPrint) {
-                        ss << ", ...";
-                    }
-                    TLOGI("%s:       Opcodes: [%s]", LOG_TAG_CONFIGMGR2, ss.str().c_str());
-                }
-            }
-        }
-    }
-    TLOGI("%s: ==========================================", LOG_TAG_CONFIGMGR2);
-}
-
 void ConfigManager::dumpStatistics() const {
     TLOGI("%s: ========== Statistics ==========", LOG_TAG_CONFIGMGR2);
     TLOGI("%s: Query Count: %u", LOG_TAG_CONFIGMGR2, mQueryCount);
@@ -666,6 +789,186 @@ std::vector<std::string> ConfigManager::getPackageNames() const {
 
     std::sort(names.begin(), names.end());
     return names;
+}
+
+// 新增：按配置类型查询
+perfconfig::ConfigQueryResult ConfigManager::findConfigByType(
+    const std::string &packageName, const std::string &activityName, const std::string &value,
+    perfconfig::ConfigType configType) const {
+    mQueryCount++;
+
+    perfconfig::ConfigQueryResult result;
+    result.clear();
+
+    TLOGV("%s: Query by type: %s::%s@%s (type: %s)", LOG_TAG_CONFIGMGR2, packageName.c_str(),
+          activityName.c_str(), value.c_str(),
+          (configType == perfconfig::ConfigType::FPS) ? "fps" : "rate");
+
+    if (!mLoaded) {
+        TLOGW("%s: Configuration not loaded", LOG_TAG_CONFIGMGR2);
+        return result;
+    }
+
+    auto packageIt = mConfigs.find(packageName);
+    if (packageIt == mConfigs.end()) {
+        TLOGV("%s: Package not found: %s", LOG_TAG_CONFIGMGR2, packageName.c_str());
+        return result;
+    }
+
+    const perfconfig::PackageConfig &packageConfig = packageIt->second;
+    auto activityIt = packageConfig.activities.find(activityName);
+    if (activityIt == packageConfig.activities.end()) {
+        TLOGV("%s: Activity not found: %s in package: %s", LOG_TAG_CONFIGMGR2, activityName.c_str(),
+              packageName.c_str());
+        return result;
+    }
+
+    const perfconfig::ActivityConfig &activityConfig = activityIt->second;
+    const perfconfig::PerformanceConfig *perfConfig = activityConfig.getPerformanceConfig(value);
+
+    if (perfConfig && perfConfig->type == configType) {
+        result.setFromPerformanceConfig(*perfConfig, packageName, activityName);
+        mHitCount++;
+        TLOGI("%s: Found typed config: %s with %zu opcodes", LOG_TAG_CONFIGMGR2,
+              result.getConfigDescription().c_str(), result.perfLock.opcodes.size());
+    }
+
+    return result;
+}
+
+// 新增：检查Activity是否包含指定类型的配置
+bool ConfigManager::hasConfigType(const std::string &packageName, const std::string &activityName,
+                                  perfconfig::ConfigType configType) const {
+    if (!mLoaded) {
+        return false;
+    }
+
+    auto packageIt = mConfigs.find(packageName);
+    if (packageIt == mConfigs.end()) {
+        return false;
+    }
+
+    const perfconfig::PackageConfig &packageConfig = packageIt->second;
+    auto activityIt = packageConfig.activities.find(activityName);
+    if (activityIt == packageConfig.activities.end()) {
+        return false;
+    }
+
+    const perfconfig::ActivityConfig &activityConfig = activityIt->second;
+    return activityConfig.hasConfigType(configType);
+}
+
+// 新增：获取全局配置统计信息
+ConfigManager::GlobalConfigStats ConfigManager::getGlobalStats() const {
+    GlobalConfigStats stats;
+
+    stats.totalPackages = mConfigs.size();
+
+    for (const auto &packagePair : mConfigs) {
+        const perfconfig::PackageConfig &packageConfig = packagePair.second;
+        auto packageStats = packageConfig.getPackageStats();
+
+        stats.totalActivities += packageStats.activityCount;
+        stats.totalFpsConfigs += packageStats.totalFpsConfigs;
+        stats.totalRateConfigs += packageStats.totalRateConfigs;
+        stats.totalPerformanceConfigs += packageStats.totalPerformanceConfigs;
+
+        // 统计包级配置类型
+        if (packageStats.totalFpsConfigs > 0 && packageStats.totalRateConfigs == 0) {
+            stats.packagesWithFpsOnly++;
+        } else if (packageStats.totalRateConfigs > 0 && packageStats.totalFpsConfigs == 0) {
+            stats.packagesWithRateOnly++;
+        } else if (packageStats.totalFpsConfigs > 0 && packageStats.totalRateConfigs > 0) {
+            stats.packagesWithMixed++;    // 理论上应该为0
+        }
+    }
+
+    return stats;
+}
+
+// 新增：获取Activity的配置类型
+perfconfig::ConfigType ConfigManager::getActivityConfigType(const std::string &packageName,
+                                                            const std::string &activityName) const {
+    if (!mLoaded) {
+        return perfconfig::ConfigType::FPS;    // 默认返回FPS
+    }
+
+    auto packageIt = mConfigs.find(packageName);
+    if (packageIt == mConfigs.end()) {
+        return perfconfig::ConfigType::FPS;
+    }
+
+    const perfconfig::PackageConfig &packageConfig = packageIt->second;
+    auto activityIt = packageConfig.activities.find(activityName);
+    if (activityIt == packageConfig.activities.end()) {
+        return perfconfig::ConfigType::FPS;
+    }
+
+    const perfconfig::ActivityConfig &activityConfig = activityIt->second;
+
+    // 检查配置类型优先级：rate > fps
+    if (activityConfig.hasConfigType(perfconfig::ConfigType::RATE)) {
+        return perfconfig::ConfigType::RATE;
+    } else if (activityConfig.hasConfigType(perfconfig::ConfigType::FPS)) {
+        return perfconfig::ConfigType::FPS;
+    }
+
+    return perfconfig::ConfigType::FPS;    // 默认
+}
+
+// 新增：获取所有配置值（按类型）
+std::vector<std::string> ConfigManager::getConfigValues(const std::string &packageName,
+                                                        const std::string &activityName,
+                                                        perfconfig::ConfigType configType) const {
+    std::vector<std::string> values;
+
+    if (!mLoaded) {
+        return values;
+    }
+
+    auto packageIt = mConfigs.find(packageName);
+    if (packageIt == mConfigs.end()) {
+        return values;
+    }
+
+    const perfconfig::PackageConfig &packageConfig = packageIt->second;
+    auto activityIt = packageConfig.activities.find(activityName);
+    if (activityIt == packageConfig.activities.end()) {
+        return values;
+    }
+
+    const perfconfig::ActivityConfig &activityConfig = activityIt->second;
+
+    // 遍历所有性能配置，筛选指定类型
+    for (const auto &perfPair : activityConfig.performanceConfigs) {
+        if (perfPair.second.type == configType) {
+            values.push_back(perfPair.first);
+        }
+    }
+
+    std::sort(values.begin(), values.end());
+    return values;
+}
+
+// 新增：增强的调试输出方法
+void ConfigManager::dumpDetailedStats() const {
+    auto globalStats = getGlobalStats();
+
+    TLOGI("%s: ========== Detailed Statistics ==========", LOG_TAG_CONFIGMGR2);
+    TLOGI("%s: Total Packages: %zu", LOG_TAG_CONFIGMGR2, globalStats.totalPackages);
+    TLOGI("%s: Total Activities: %zu", LOG_TAG_CONFIGMGR2, globalStats.totalActivities);
+    TLOGI("%s: Total FPS Configs: %zu", LOG_TAG_CONFIGMGR2, globalStats.totalFpsConfigs);
+    TLOGI("%s: Total Rate Configs: %zu", LOG_TAG_CONFIGMGR2, globalStats.totalRateConfigs);
+    TLOGI("%s: Total Performance Configs: %zu", LOG_TAG_CONFIGMGR2,
+          globalStats.totalPerformanceConfigs);
+    TLOGI("%s: Packages with FPS only: %zu", LOG_TAG_CONFIGMGR2, globalStats.packagesWithFpsOnly);
+    TLOGI("%s: Packages with Rate only: %zu", LOG_TAG_CONFIGMGR2, globalStats.packagesWithRateOnly);
+    TLOGI("%s: Packages with Mixed configs: %zu", LOG_TAG_CONFIGMGR2,
+          globalStats.packagesWithMixed);
+    TLOGI("%s: Query Count: %u", LOG_TAG_CONFIGMGR2, mQueryCount);
+    TLOGI("%s: Hit Count: %u", LOG_TAG_CONFIGMGR2, mHitCount);
+    TLOGI("%s: Hit Rate: %.2f%%", LOG_TAG_CONFIGMGR2, getHitRate() * 100.0);
+    TLOGI("%s: ==========================================", LOG_TAG_CONFIGMGR2);
 }
 
 }    // namespace perfconfig
